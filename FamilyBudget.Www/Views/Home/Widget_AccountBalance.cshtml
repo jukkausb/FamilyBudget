@@ -1,0 +1,51 @@
+﻿@using FamilyBudget.Www.Models.Home
+@model FamilyBudget.Www.Models.Widgets.AccountBalanceWidgetModel
+
+<div class="table-responsive">
+    @{
+        if (Model != null && Model.Accounts != null && Model.Accounts.Any())
+        {
+            <blockquote>
+                Основная валюта - @Model.MainCurrency<br />
+                Суммарный эквивалент в основной валюте (@Model.Wealth.Currency): <b>@Model.Wealth.Value.ToString("N")</b>
+            </blockquote>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Счет</th>
+                        <th>Остаток</th>
+                        <th>Эквивалент в основной валюте</th>
+                        <th>Курс</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (AccountRateView accountView in Model.Accounts)
+                    {
+                        string rateString = " - ";
+                        string equivalent = " - ";
+                        if (accountView.RateView != null)
+                        {
+                            rateString = string.Format("1 x {0} = {1} ({2} - {3}) {4}",
+                                accountView.RateView.OriginCurrency,
+                                accountView.RateView.Rate.MainRate.ToString("F4"),
+                                accountView.RateView.Rate.SellRate.ToString("F4"),
+                                accountView.RateView.Rate.PurchaseRate.ToString("F4"),
+                                accountView.RateView.MainCurrency);
+                            equivalent = string.Format("{0} ({1})", accountView.RateView.Equivalent.ToString("N"), Model.MainCurrency);
+                        }
+                        <tr>
+                            <td>@accountView.Account.DisplayName</td>
+                            <td><b>@string.Format("{0} ({1})", accountView.Account.Balance.ToString("N"), accountView.Account.Currency.Code)</b></td>
+                            <td><b>@equivalent</b></td>
+                            <td>@rateString</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div>Счета не найдены</div>
+        }
+    }
+</div>

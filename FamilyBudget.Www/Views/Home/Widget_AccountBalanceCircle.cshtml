@@ -1,0 +1,23 @@
+﻿@model FamilyBudget.Www.Models.Widgets.AccountBalanceCircleWidgetModel
+<div id="flot-pie-chart-account-equivalent"></div>
+<script type="text/javascript">
+    function AccountEquivalentsCircleCallback() {
+        var containerId = 'flot-pie-chart-account-equivalent';
+        var pieChart = $(document.getElementById(containerId));
+        pieChart.html('');
+        $.ajax({
+                type: "POST",
+                url: "/Home/Widget_AccountBalanceCircleData",
+            })
+            .done(function(reportData) {
+                Morris.Donut({
+                    element: containerId,
+                    data: reportData,
+                    resize: true,
+                    formatter: function(y, data) {
+                        return y;
+                    }
+                });
+            });
+    }
+</script>
