@@ -6,18 +6,33 @@ using System.Web.Mvc;
 using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Models;
+using System.Collections.Generic;
+using FamilyBudget.Www.Repository.Interfaces;
+using System.Globalization;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class ExpenditureController : MoneyControllerBase<Expenditure>
     {
+        private IAccountRepository _acountRepository;
+        private IExpenditureRepository _expenditureRepository;
+        private IExpenditureCategoryRepository _expenditureCategoryRepository;
+
+        public ExpenditureController(IAccountRepository acountRepository, IExpenditureRepository expenditureRepository, IExpenditureCategoryRepository expenditureCategoryRepository)
+            : base(acountRepository)
+        {
+            _acountRepository = acountRepository;
+            _expenditureRepository = expenditureRepository;
+            _expenditureCategoryRepository = expenditureCategoryRepository;
+        }
+
         public ViewResult Index(int? page, ExpenditureListModel listModel)
         {
             try
             {
                 listModel.ParseModelState(Request);
                 listModel.InitializeFilter(GetAccountsForDropDownExtended());
-                IQueryable<Expenditure> query = DbModelFamilyBudgetEntities.Expenditure.AsQueryable();
+                IQueryable<Expenditure> query = _expenditureRepository.Context.Expenditure.AsQueryable();
 
                 if (!string.IsNullOrEmpty(listModel.Filter.Description))
                 {
@@ -56,27 +71,24 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var context = new FamilyBudgetEntities())
+                _expenditureRepository.Context.Database.Connection.Open();
+                using (DbTransaction dbContextTransaction = _expenditureRepository.Context.Database.Connection.BeginTransaction())
                 {
-                    context.Database.Connection.Open();
-                    using (DbTransaction dbContextTransaction = context.Database.Connection.BeginTransaction())
+                    try
                     {
-                        try
-                        {
-                            DbModelFamilyBudgetEntities.Expenditure.Add(expenditureModel.Object);
-                            ChangeAccountBalance(expenditureModel.Object.AccountID, expenditureModel.Object);
-                            DbModelFamilyBudgetEntities.SaveChanges();
-                            dbContextTransaction.Commit();
-                            expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                            return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
-                        }
-                        catch (Exception ex)
-                        {
-                            dbContextTransaction.Rollback();
-                            expenditureModel.Categories = GetExpenditureCategories();
-                            expenditureModel.Accounts = GetAccountsForDropDownExtended();
-                            HandleException(ex);
-                        }
+                        _expenditureRepository.Add(expenditureModel.Object);
+                        ChangeAccountBalance(expenditureModel.Object.AccountID, expenditureModel.Object);
+                        _expenditureRepository.SaveChanges();
+                        dbContextTransaction.Commit();
+                        expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                        return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
+                    }
+                    catch (Exception ex)
+                    {
+                        dbContextTransaction.Rollback();
+                        expenditureModel.Categories = GetExpenditureCategories();
+                        expenditureModel.Accounts = GetAccountsForDropDownExtended();
+                        HandleException(ex);
                     }
                 }
             }
@@ -96,7 +108,7 @@ namespace FamilyBudget.Www.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Expenditure expenditure = DbModelFamilyBudgetEntities.Expenditure.Find(id);
+            Expenditure expenditure = _expenditureRepository.FindBy(e => e.ID == id).FirstOrDefault();
             if (expenditure == null)
             {
                 return HttpNotFound();
@@ -122,20 +134,17 @@ namespace FamilyBudget.Www.Controllers
                 DbTransaction dbContextTransaction = null;
                 try
                 {
-                    using (var context = new FamilyBudgetEntities())
+                    _expenditureRepository.Context.Database.Connection.Open();
+                    using (dbContextTransaction = _expenditureRepository.Context.Database.Connection.BeginTransaction())
                     {
-                        context.Database.Connection.Open();
-                        using (dbContextTransaction = context.Database.Connection.BeginTransaction())
-                        {
-                            Expenditure expenditureToRestore = FindAndRestoreAccountBalance(expenditureModel.Object);
-                            Expenditure.Copy(expenditureToRestore, expenditureModel.Object);
-                            ChangeAccountBalance(expenditureToRestore.Account.ID, expenditureModel.Object);
-                            DbModelFamilyBudgetEntities.SaveChanges();
+                        Expenditure expenditureToRestore = FindAndRestoreAccountBalance(expenditureModel.Object);
+                        Expenditure.Copy(expenditureToRestore, expenditureModel.Object);
+                        ChangeAccountBalance(expenditureToRestore.Account.ID, expenditureModel.Object);
+                        _expenditureRepository.SaveChanges();
 
-                            dbContextTransaction.Commit();
-                            expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                            return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
-                        }
+                        dbContextTransaction.Commit();
+                        expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                        return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
                     }
                 }
                 catch (Exception ex)
@@ -164,13 +173,13 @@ namespace FamilyBudget.Www.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Expenditure expenditure = DbModelFamilyBudgetEntities.Expenditure.Find(id);
+            Expenditure expenditure = _expenditureRepository.FindBy(e => e.ID == id).FirstOrDefault();
             if (expenditure == null)
             {
                 return HttpNotFound();
             }
 
-            var model = new ExpenditureModel {Categories = GetExpenditureCategories(), Object = expenditure};
+            var model = new ExpenditureModel { Categories = GetExpenditureCategories(), Object = expenditure };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
             return View(model);
@@ -180,35 +189,45 @@ namespace FamilyBudget.Www.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int? id, ExpenditureModel expenditureModel)
         {
-            Expenditure expenditure = DbModelFamilyBudgetEntities.Expenditure.Find(id);
+            Expenditure expenditure = _expenditureRepository.FindBy(e => e.ID == id).FirstOrDefault();
             if (expenditure == null)
             {
                 return HttpNotFound();
             }
 
-            using (var context = new FamilyBudgetEntities())
+            _expenditureRepository.Context.Database.Connection.Open();
+            using (DbTransaction dbContextTransaction = _expenditureRepository.Context.Database.Connection.BeginTransaction())
             {
-                context.Database.Connection.Open();
-                using (DbTransaction dbContextTransaction = context.Database.Connection.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        FindAndRestoreAccountBalance(expenditure);
-                        DbModelFamilyBudgetEntities.Expenditure.Remove(expenditure);
-                        DbModelFamilyBudgetEntities.SaveChanges();
-                        expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                        return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
-                    }
-                    catch (Exception ex)
-                    {
-                        dbContextTransaction.Rollback();
-                        expenditureModel.Categories = GetExpenditureCategories();
-                        HandleException(ex);
-                    }
+                    FindAndRestoreAccountBalance(expenditure);
+                    _expenditureRepository.Delete(expenditure);
+                    _expenditureRepository.SaveChanges();
+                    expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
+                }
+                catch (Exception ex)
+                {
+                    dbContextTransaction.Rollback();
+                    expenditureModel.Categories = GetExpenditureCategories();
+                    HandleException(ex);
                 }
             }
 
             return View(expenditureModel);
+        }
+
+        protected List<SelectListItem> GetExpenditureCategories()
+        {
+            List<SelectListItem> categories =
+                _expenditureCategoryRepository.GetAll().ToList().Select(c => new SelectListItem
+                {
+                    Value = c.ID.ToString(CultureInfo.InvariantCulture),
+                    Text = string.Format("{0}", c.Name)
+                }).ToList();
+
+            categories.Insert(0, new SelectListItem { Text = " - Выберите категорию - ", Value = "" });
+            return categories;
         }
     }
 }

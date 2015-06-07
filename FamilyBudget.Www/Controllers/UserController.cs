@@ -3,6 +3,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Security;
 using FamilyBudget.Www.Models;
+using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Controllers
 {

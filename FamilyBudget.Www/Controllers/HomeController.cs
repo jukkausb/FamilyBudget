@@ -12,11 +12,29 @@ using FamilyBudget.Www.App_Utils;
 using FamilyBudget.Www.Models;
 using FamilyBudget.Www.Models.Home;
 using FamilyBudget.Www.Models.Widgets;
+using Microsoft.Practices.Unity;
+using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class HomeController : BaseController
     {
+        private IAccountRepository _accountRepository;
+        private IIncomeRepository _incomeRepository;
+        private IExpenditureRepository _expenditureRepository;
+
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository)
+        {
+            _accountRepository = accountRepository;
+            _incomeRepository = incomeRepository;
+            _expenditureRepository = expenditureRepository;
+        }
+
+        protected List<Account> GetAccountsData()
+        {
+            return _accountRepository.GetAll().ToList();
+        }
+
         #region Widget services
 
         private List<Widget> GenerateWidgetDefinitions()
@@ -57,7 +75,7 @@ namespace FamilyBudget.Www.Controllers
             DateTime startDate, DateTime endDate)
         {
             var incomesPerMonth =
-                (from income in DbModelFamilyBudgetEntities.Income
+                (from income in _incomeRepository.GetAll()
                     where income.AccountID == accountId
                     where income.Date >= startDate.Date && income.Date <= endDate.Date
                     group income by new {income.Date.Year, income.Date.Month}
@@ -69,7 +87,7 @@ namespace FamilyBudget.Www.Controllers
                     }).ToList();
 
             var expendituresPerMonth =
-                (from expenditure in DbModelFamilyBudgetEntities.Expenditure
+                (from expenditure in _expenditureRepository.GetAll()
                     where expenditure.AccountID == accountId
                     where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
                     group expenditure by new {expenditure.Date.Month, expenditure.Date.Year}
@@ -104,7 +122,7 @@ namespace FamilyBudget.Www.Controllers
             DateTime startDate, DateTime endDate)
         {
             List<ExpenditureByCategoryItem> expendituresPerMonth =
-                (from expenditure in DbModelFamilyBudgetEntities.Expenditure
+                (from expenditure in _expenditureRepository.GetAll()
                     where expenditure.AccountID == accountId
                     where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
                     group expenditure by expenditure.ExpenditureCategory.Name
@@ -122,7 +140,7 @@ namespace FamilyBudget.Www.Controllers
         private decimal CalculateWealth(string mainCurrencyCode)
         {
             decimal wealthValue = 0;
-            List<Account> accounts = DbModelFamilyBudgetEntities.Account.ToList();
+            List<Account> accounts = _accountRepository.GetAll().ToList();
             accounts.ForEach(a =>
             {
                 if (a.Currency.Code != mainCurrencyCode)
@@ -156,7 +174,7 @@ namespace FamilyBudget.Www.Controllers
                 Wealth = new WealthModel()
             };
 
-            Account mainAccount = DbModelFamilyBudgetEntities.Account.FirstOrDefault(a => a.IsMain);
+            Account mainAccount = _accountRepository.GetAll().FirstOrDefault(a => a.IsMain);
             if (mainAccount != null)
             {
                 string mainCurrencyCode = mainAccount.Currency.Code;
@@ -283,7 +301,7 @@ namespace FamilyBudget.Www.Controllers
         public ActionResult Widget_AccountBalanceCircleData()
         {
             List<Account> accounts = GetAccountsData();
-            Account mainAccount = DbModelFamilyBudgetEntities.Account.FirstOrDefault(a => a.IsMain);
+            Account mainAccount = _accountRepository.GetAll().FirstOrDefault(a => a.IsMain);
             IEnumerable<AccountCircleEquivalentView> accountEquivalentViews = null;
             if (mainAccount != null)
             {
@@ -314,6 +332,21 @@ namespace FamilyBudget.Www.Controllers
                 Widgets = GenerateWidgetDefinitions()
             };
             return View(model);
+        }
+
+        protected List<ExtendedSelectListItem> GetAccountsForDropDownExtended()
+        {
+            List<ExtendedSelectListItem> accounts = _accountRepository.GetAll().ToList().Select(c => new ExtendedSelectListItem
+            {
+                IsBold = c.IsMain,
+                Value = c.ID.ToString(CultureInfo.InvariantCulture),
+                Text = c.DisplayName,
+                Selected = c.IsMain,
+                HtmlAttributes = new { data_currency = c.Currency.Code }
+            }).ToList();
+
+            accounts.Insert(0, new ExtendedSelectListItem { Text = " - Выберите счет - ", Value = "" });
+            return accounts;
         }
     }
 }

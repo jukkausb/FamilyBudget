@@ -8,6 +8,8 @@ using System.Web.Mvc;
 using FamilyBudget.Www.App_CodeBase;
 using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Utils;
+using FamilyBudget.Www.Repository.Interfaces;
+using Microsoft.Practices.Unity;
 
 namespace FamilyBudget.Www.Controllers
 {
@@ -16,7 +18,8 @@ namespace FamilyBudget.Www.Controllers
     [HandleError]
     public class BaseController : Controller
     {
-        protected FamilyBudgetEntities DbModelFamilyBudgetEntities = new FamilyBudgetEntities();
+        [Dependency]
+        public IAccountRepository AccountRepository { get; set; }
 
         /// <summary>
         ///     Default error view name
@@ -42,7 +45,7 @@ namespace FamilyBudget.Www.Controllers
         {
             var culture = new CultureInfo("ru-RU")
             {
-                NumberFormat = {NumberDecimalSeparator = "."}
+                NumberFormat = { NumberDecimalSeparator = "." }
             };
 
             Thread.CurrentThread.CurrentCulture = culture;
@@ -69,78 +72,5 @@ namespace FamilyBudget.Www.Controllers
             filterContext.ExceptionHandled = true;
             filterContext.Result = new ViewResult() { ViewName = ErrorViewName, MasterName = "_Layout" };
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                DbModelFamilyBudgetEntities.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #region Business Logic
-
-        protected List<SelectListItem> GetCurrencies()
-        {
-            List<SelectListItem> currencies =
-                DbModelFamilyBudgetEntities.Currency.ToList().Select(c => new SelectListItem
-                {
-                    Value = c.ID.ToString(CultureInfo.InvariantCulture),
-                    Text = string.Format("{0} ({1})", c.Name, c.Code)
-                }).ToList();
-
-            currencies.Insert(0, new SelectListItem {Text = " - Выберите валюту - ", Value = ""});
-            return currencies;
-        }
-
-        protected List<Account> GetAccountsData()
-        {
-            return DbModelFamilyBudgetEntities.Account.ToList();
-        }
-
-        protected List<ExtendedSelectListItem> GetAccountsForDropDownExtended()
-        {
-            List<ExtendedSelectListItem> accounts =
-                DbModelFamilyBudgetEntities.Account.ToList().Select(c => new ExtendedSelectListItem
-                {
-                    IsBold = c.IsMain,
-                    Value = c.ID.ToString(CultureInfo.InvariantCulture),
-                    Text = c.DisplayName,
-                    Selected = c.IsMain,
-                    HtmlAttributes = new {data_currency = c.Currency.Code}
-                }).ToList();
-
-            accounts.Insert(0, new ExtendedSelectListItem {Text = " - Выберите счет - ", Value = ""});
-            return accounts;
-        }
-
-        protected List<SelectListItem> GetExpenditureCategories()
-        {
-            List<SelectListItem> categories =
-                DbModelFamilyBudgetEntities.ExpenditureCategory.ToList().Select(c => new SelectListItem
-                {
-                    Value = c.ID.ToString(CultureInfo.InvariantCulture),
-                    Text = string.Format("{0}", c.Name)
-                }).ToList();
-
-            categories.Insert(0, new SelectListItem {Text = " - Выберите категорию - ", Value = ""});
-            return categories;
-        }
-
-        protected List<SelectListItem> GetIncomeCategories()
-        {
-            List<SelectListItem> categories =
-                DbModelFamilyBudgetEntities.IncomeCategory.ToList().Select(c => new SelectListItem
-                {
-                    Value = c.ID.ToString(CultureInfo.InvariantCulture),
-                    Text = string.Format("{0}", c.Name)
-                }).ToList();
-
-            categories.Insert(0, new SelectListItem {Text = " - Выберите категорию - ", Value = ""});
-            return categories;
-        }
-
-        #endregion
     }
 }

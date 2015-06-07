@@ -4,11 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using FamilyBudget.Www.App_DataModel;
+using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class ReportController : BaseController
     {
+        private IExpenditureCategoryRepository _expenditureCategoryRepository;
+        private IIncomeRepository _incomeRepository;
+        private IExpenditureRepository _expenditureRepository;
+
+        public ReportController(IExpenditureCategoryRepository expenditureCategoryRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository)
+        {
+            _expenditureCategoryRepository = expenditureCategoryRepository;
+            _incomeRepository = incomeRepository;
+            _expenditureRepository = expenditureRepository;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -17,7 +29,7 @@ namespace FamilyBudget.Www.Controllers
         public ActionResult PerformIncomesReport(DateTime startDate, DateTime endDate)
         {
             var incomesPerMonth =
-                (from income in DbModelFamilyBudgetEntities.Income
+                (from income in _incomeRepository.GetAll()
                  where income.Date >= startDate && income.Date <= endDate
                  group income by new { income.Date.Month, income.Date.Year }
                      into g
@@ -45,7 +57,7 @@ namespace FamilyBudget.Www.Controllers
         public ActionResult PerformExpendituresReport(DateTime startDate, DateTime endDate)
         {
             var expendituresPerMonth =
-                (from expenditure in DbModelFamilyBudgetEntities.Expenditure
+                (from expenditure in _expenditureRepository.GetAll()
                  where expenditure.Date >= startDate && expenditure.Date <= endDate
                  group expenditure by new { expenditure.Date.Month, expenditure.Date.Year }
                      into g
@@ -72,7 +84,7 @@ namespace FamilyBudget.Www.Controllers
 
         public ActionResult PerformExpendituresByCategoryReport(DateTime startDate, DateTime endDate)
         {
-            List<ExpenditureCategory> categories = DbModelFamilyBudgetEntities.ExpenditureCategory.ToList();
+            List<ExpenditureCategory> categories = _expenditureCategoryRepository.GetAll().ToList();
 
             var data = new ArrayList();
             var titles = new ArrayList { "Период" };

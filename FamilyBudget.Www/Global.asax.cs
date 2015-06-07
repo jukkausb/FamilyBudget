@@ -17,6 +17,8 @@ namespace FamilyBudget.Www
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            ContainerBootstrapper.Configure();
         }
     }
 }

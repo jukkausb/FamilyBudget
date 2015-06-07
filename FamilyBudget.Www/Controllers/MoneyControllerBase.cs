@@ -1,11 +1,22 @@
 ﻿using System;
+using System.Linq;
 using FamilyBudget.Www.App_CodeBase;
 using FamilyBudget.Www.App_DataModel;
+using FamilyBudget.Www.Repository.Interfaces;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class MoneyControllerBase<T> : BaseController where T : class, IAccountableEntity
     {
+        private IAccountRepository _acountRepository;
+
+        public MoneyControllerBase(IAccountRepository acountRepository)
+        {
+            _acountRepository = acountRepository;
+        }
+
         private static void CheckChangeBalanceRequest(Account account, IAccountableEntity accountableEntity)
         {
             if (accountableEntity == null)
@@ -45,8 +56,7 @@ namespace FamilyBudget.Www.Controllers
 
         protected void ChangeAccountBalance(int accountId, IAccountableEntity accountableEntity)
         {
-            ChangeAccountBalance(DbModelFamilyBudgetEntities.Account.Find(accountableEntity.AccountID),
-                accountableEntity);
+            ChangeAccountBalance(AccountRepository.FindBy(a => a.ID == accountId).FirstOrDefault(), accountableEntity);
         }
 
         protected void RestoreAccountBalance(Account account, IAccountableEntity accountableEntity)
@@ -67,29 +77,41 @@ namespace FamilyBudget.Www.Controllers
 
         protected void RestoreAccountBalance(int accountId, IAccountableEntity accountableEntity)
         {
-            RestoreAccountBalance(DbModelFamilyBudgetEntities.Account.Find(accountableEntity.AccountID),
-                accountableEntity);
+            RestoreAccountBalance(AccountRepository.FindBy(a => a.ID == accountId).FirstOrDefault(), accountableEntity);
         }
 
         protected T FindAndRestoreAccountBalance(T accountableEntity)
         {
-            Account accountToRestoreBalance =
-                DbModelFamilyBudgetEntities.Account.Find(accountableEntity.AccountID);
+            Account accountToRestoreBalance = AccountRepository.FindBy(a => a.ID == accountableEntity.AccountID).FirstOrDefault();
             if (accountToRestoreBalance == null)
             {
                 throw new Exception("No account found to restore balance");
             }
 
-            T expenditureToRestore =
-                DbModelFamilyBudgetEntities.Set<T>().Find(accountableEntity.ID);
-            if (expenditureToRestore == null)
+            T entityToRestore = AccountRepository.Context.Set<T>().Find(accountableEntity.ID);
+            if (entityToRestore == null)
             {
-                throw new Exception("No expenditure found to restore balance");
+                throw new Exception("No entity found to restore balance");
             }
 
-            RestoreAccountBalance(accountToRestoreBalance, expenditureToRestore);
+            RestoreAccountBalance(accountToRestoreBalance, entityToRestore);
 
-            return expenditureToRestore;
+            return entityToRestore;
+        }
+
+        protected List<ExtendedSelectListItem> GetAccountsForDropDownExtended()
+        {
+            List<ExtendedSelectListItem> accounts = _acountRepository.GetAll().Select(c => new ExtendedSelectListItem
+            {
+                IsBold = c.IsMain,
+                Value = c.ID.ToString(CultureInfo.InvariantCulture),
+                Text = c.DisplayName,
+                Selected = c.IsMain,
+                HtmlAttributes = new { data_currency = c.Currency.Code }
+            }).ToList();
+
+            accounts.Insert(0, new ExtendedSelectListItem { Text = " - Выберите счет - ", Value = "" });
+            return accounts;
         }
     }
 }

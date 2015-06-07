@@ -7,17 +7,27 @@ using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
+using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class CurrencyController : BaseController
     {
+        private ICurrencyRepository _currencyRepository;
+        private IAccountRepository _accountRepository;
+
+        public CurrencyController(ICurrencyRepository currencyRepository, IAccountRepository accountRepository)
+        {
+            _currencyRepository = currencyRepository;
+            _accountRepository = accountRepository;
+        }
+
         public ViewResult Index(int? page, CurrencyListModel listModel)
         {
             try
             {
                 listModel.ParseModelState(Request);
-                listModel.Entities = DbModelFamilyBudgetEntities.Currency.ToList();
+                listModel.Entities = _currencyRepository.GetAll().ToList();
                 return View(listModel);
             }
             catch (Exception ex)
@@ -38,10 +48,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CurrencyModel CurrencyModel)
         {
-            if (
-                DbModelFamilyBudgetEntities.Currency.Any(
-                    c => c.Code.Equals(CurrencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) &&
-                         c.ID != CurrencyModel.Object.ID))
+            if (_currencyRepository.FindBy(c => c.Code.Equals(CurrencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) && c.ID != CurrencyModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Валюта с таким кодом уже существует");
             }
@@ -50,8 +57,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    DbModelFamilyBudgetEntities.Currency.Add(CurrencyModel.Object);
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _currencyRepository.Add(CurrencyModel.Object);
+                    _currencyRepository.SaveChanges();
                     CurrencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", CurrencyModel.ToRouteValueDictionary());
                 }
@@ -71,14 +78,14 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Currency Currency = DbModelFamilyBudgetEntities.Currency.Find(id);
-            if (Currency == null)
+            Currency currency = _currencyRepository.FindBy(c => c.ID == id.Value).FirstOrDefault();
+            if (currency == null)
             {
                 return HttpNotFound();
             }
 
             var model = new CurrencyModel();
-            model.Object = Currency;
+            model.Object = currency;
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
             return View(model);
@@ -86,12 +93,10 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(CurrencyModel CurrencyModel)
+        public ActionResult Edit(CurrencyModel currencyModel)
         {
             if (
-                DbModelFamilyBudgetEntities.Currency.Any(
-                    c => c.Code.Equals(CurrencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) &&
-                         c.ID != CurrencyModel.Object.ID))
+                _currencyRepository.FindBy(c => c.Code.Equals(currencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) && c.ID != currencyModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Валюта с таким кодом уже существует");
             }
@@ -100,11 +105,11 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    DbModelFamilyBudgetEntities.Entry(CurrencyModel.Object).State = EntityState.Modified;
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _currencyRepository.Edit(currencyModel.Object);
+                    _currencyRepository.SaveChanges();
 
-                    CurrencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                    return RedirectToAction("Index", CurrencyModel.ToRouteValueDictionary());
+                    currencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", currencyModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
@@ -112,7 +117,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 }
             }
 
-            return View(CurrencyModel);
+            return View(currencyModel);
         }
 
         public ActionResult Delete(int? id)
@@ -121,14 +126,14 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Currency Currency = DbModelFamilyBudgetEntities.Currency.Find(id);
-            if (Currency == null)
+            Currency currency = _currencyRepository.FindBy(c => c.ID == id.Value).FirstOrDefault();
+            if (currency == null)
             {
                 return HttpNotFound();
             }
 
             var model = new CurrencyModel();
-            model.Object = Currency;
+            model.Object = currency;
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
             return View(model);
@@ -143,13 +148,13 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Currency Currency = DbModelFamilyBudgetEntities.Currency.Find(id);
-            if (Currency == null)
+            Currency currency = _currencyRepository.FindBy(c => c.ID == id.Value).FirstOrDefault();
+            if (currency == null)
             {
                 return HttpNotFound();
             }
 
-            if (DbModelFamilyBudgetEntities.Account.Any(e => e.CurrencyID == Currency.ID))
+            if (_accountRepository.FindBy(e => e.CurrencyID == currency.ID).Any())
             {
                 ModelState.AddModelError("", "Эта валюта имеет связанные с ней счета. Сначала удалите связанные счета");
             }
@@ -158,8 +163,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    DbModelFamilyBudgetEntities.Currency.Remove(Currency);
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _currencyRepository.Delete(currency);
+                    _currencyRepository.SaveChanges();
                     CurrencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", CurrencyModel.ToRouteValueDictionary());
                 }

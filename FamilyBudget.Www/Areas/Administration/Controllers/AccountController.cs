@@ -7,11 +7,23 @@ using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
+using System.Collections.Generic;
+using FamilyBudget.Www.Repository.Interfaces;
+using System.Globalization;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class AccountController : BaseController
     {
+        private IAccountRepository _accountRepository;
+        private ICurrencyRepository _currencyRepository;
+
+        public AccountController(IAccountRepository accountRepository, ICurrencyRepository currencyRepository)
+        {
+            _accountRepository = accountRepository;
+            _currencyRepository = currencyRepository;
+        }
+
         private void MarkAccountAsMain(Account account)
         {
             if (account == null)
@@ -20,7 +32,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             }
 
             account.IsMain = true;
-            DbModelFamilyBudgetEntities.Account.Where(a => a.ID != account.ID)
+            _accountRepository.FindBy(a => a.ID != account.ID)
                 .ToList()
                 .ForEach(acc => acc.IsMain = false);
         }
@@ -30,7 +42,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             try
             {
                 listModel.ParseModelState(Request);
-                listModel.Entities = DbModelFamilyBudgetEntities.Account.ToList();
+                listModel.Entities = _accountRepository.GetAll().ToList();
                 return View(listModel);
             }
             catch (Exception ex)
@@ -52,8 +64,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
         public ActionResult Create(AccountModel accountModel)
         {
             if (
-                DbModelFamilyBudgetEntities.Account.Any(
-                    c => c.CurrencyID == accountModel.Object.CurrencyID && c.ID != accountModel.Object.ID))
+                _accountRepository.FindBy(
+                    c => c.CurrencyID == accountModel.Object.CurrencyID && c.ID != accountModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Счет с таким кодом валюты уже существует");
             }
@@ -67,8 +79,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                         MarkAccountAsMain(accountModel.Object);
                     }
 
-                    DbModelFamilyBudgetEntities.Account.Add(accountModel.Object);
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _accountRepository.Add(accountModel.Object);
+                    _accountRepository.SaveChanges();
                     accountModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", accountModel.ToRouteValueDictionary());
                 }
@@ -92,7 +104,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Account account = DbModelFamilyBudgetEntities.Account.Find(id);
+            Account account = _accountRepository.FindBy(a => a.ID == id.Value).FirstOrDefault();
             if (account == null)
             {
                 return HttpNotFound();
@@ -109,8 +121,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
         public ActionResult Edit(AccountModel accountModel)
         {
             if (
-                DbModelFamilyBudgetEntities.Account.Any(
-                    c => c.CurrencyID == accountModel.Object.CurrencyID && c.ID != accountModel.Object.ID))
+                _accountRepository.FindBy(
+                    c => c.CurrencyID == accountModel.Object.CurrencyID && c.ID != accountModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Счет с таким кодом валюты уже существует");
             }
@@ -124,8 +136,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                         MarkAccountAsMain(accountModel.Object);
                     }
 
-                    DbModelFamilyBudgetEntities.Entry(accountModel.Object).State = EntityState.Modified;
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _accountRepository.Edit(accountModel.Object);
+                    _accountRepository.SaveChanges();
                     accountModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", accountModel.ToRouteValueDictionary());
                 }
@@ -149,7 +161,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Account account = DbModelFamilyBudgetEntities.Account.Find(id);
+            Account account = _accountRepository.FindBy(a => a.ID == id.Value).FirstOrDefault();
             if (account == null)
             {
                 return HttpNotFound();
@@ -170,7 +182,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Account account = DbModelFamilyBudgetEntities.Account.Find(id);
+            Account account = _accountRepository.FindBy(a => a.ID == id.Value).FirstOrDefault();
             if (account == null)
             {
                 return HttpNotFound();
@@ -190,13 +202,14 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
+                    _accountRepository.Delete(account);
+                    _accountRepository.SaveChanges();
+
                     if (accountModel.Object.IsMain)
                     {
-                        MarkAccountAsMain(DbModelFamilyBudgetEntities.Account.FirstOrDefault());
+                        MarkAccountAsMain(_accountRepository.GetAll().FirstOrDefault());
                     }
 
-                    DbModelFamilyBudgetEntities.Account.Remove(account);
-                    DbModelFamilyBudgetEntities.SaveChanges();
                     accountModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", accountModel.ToRouteValueDictionary());
                 }
@@ -211,6 +224,19 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             }
 
             return View(accountModel);
+        }
+
+        protected List<SelectListItem> GetCurrencies()
+        {
+            List<SelectListItem> currencies =
+                _currencyRepository.GetAll().ToList().Select(c => new SelectListItem
+                {
+                    Value = c.ID.ToString(CultureInfo.InvariantCulture),
+                    Text = string.Format("{0} ({1})", c.Name, c.Code)
+                }).ToList();
+
+            currencies.Insert(0, new SelectListItem { Text = " - Выберите валюту - ", Value = "" });
+            return currencies;
         }
     }
 }

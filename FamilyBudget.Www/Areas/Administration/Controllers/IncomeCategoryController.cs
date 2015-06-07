@@ -7,17 +7,27 @@ using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
+using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class IncomeCategoryController : BaseController
     {
+        private IIncomeRepository _incomeRepository;
+        private IIncomeCategoryRepository _incomeCategoryRepository;
+
+        public IncomeCategoryController(IIncomeRepository incomeRepository, IIncomeCategoryRepository incomeCategoryRepository)
+        {
+            _incomeRepository = incomeRepository;
+            _incomeCategoryRepository = incomeCategoryRepository;
+        }
+
         public ViewResult Index(int? page, IncomeCategoryListModel listModel)
         {
             try
             {
                 listModel.ParseModelState(Request);
-                listModel.Entities = DbModelFamilyBudgetEntities.IncomeCategory.ToList();
+                listModel.Entities = _incomeCategoryRepository.GetAll().ToList();
                 return View(listModel);
             }
             catch (Exception ex)
@@ -39,9 +49,9 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
         public ActionResult Create(IncomeCategoryModel incomeCategoryModel)
         {
             if (
-                DbModelFamilyBudgetEntities.IncomeCategory.Any(
+                _incomeCategoryRepository.FindBy(
                     c => c.Name.Equals(incomeCategoryModel.Object.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                         c.ID != incomeCategoryModel.Object.ID))
+                         c.ID != incomeCategoryModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Категория с таким именем уже существует");
             }
@@ -50,8 +60,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    DbModelFamilyBudgetEntities.IncomeCategory.Add(incomeCategoryModel.Object);
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _incomeCategoryRepository.Add(incomeCategoryModel.Object);
+                    _incomeCategoryRepository.SaveChanges();
                     incomeCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", incomeCategoryModel.ToRouteValueDictionary());
                 }
@@ -71,7 +81,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            IncomeCategory incomeCategory = DbModelFamilyBudgetEntities.IncomeCategory.Find(id);
+            IncomeCategory incomeCategory = _incomeCategoryRepository.FindBy(ic => ic.ID == id.Value).FirstOrDefault();
             if (incomeCategory == null)
             {
                 return HttpNotFound();
@@ -88,9 +98,9 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
         public ActionResult Edit(IncomeCategoryModel incomeCategoryModel)
         {
             if (
-                DbModelFamilyBudgetEntities.IncomeCategory.Any(
+                _incomeCategoryRepository.FindBy(
                     c => c.Name.Equals(incomeCategoryModel.Object.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                         c.ID != incomeCategoryModel.Object.ID))
+                         c.ID != incomeCategoryModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Категория с таким именем уже существует");
             }
@@ -99,8 +109,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    DbModelFamilyBudgetEntities.Entry(incomeCategoryModel.Object).State = EntityState.Modified;
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _incomeCategoryRepository.Edit(incomeCategoryModel.Object);
+                    _incomeCategoryRepository.SaveChanges();
 
                     incomeCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", incomeCategoryModel.ToRouteValueDictionary());
@@ -120,7 +130,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            IncomeCategory incomeCategory = DbModelFamilyBudgetEntities.IncomeCategory.Find(id);
+            IncomeCategory incomeCategory = _incomeCategoryRepository.FindBy(ic => ic.ID == id.Value).FirstOrDefault();
             if (incomeCategory == null)
             {
                 return HttpNotFound();
@@ -141,13 +151,13 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            IncomeCategory incomeCategory = DbModelFamilyBudgetEntities.IncomeCategory.Find(id);
+            IncomeCategory incomeCategory = _incomeCategoryRepository.FindBy(ic => ic.ID == id.Value).FirstOrDefault();
             if (incomeCategory == null)
             {
                 return HttpNotFound();
             }
 
-            if (DbModelFamilyBudgetEntities.Income.Any(e => e.CategoryID == incomeCategory.ID))
+            if (_incomeRepository.FindBy(e => e.CategoryID == incomeCategory.ID).Any())
             {
                 ModelState.AddModelError("",
                     "Эта категория имеет связанные с ней доходы. Сначала удалите связанные доходы");
@@ -157,8 +167,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    DbModelFamilyBudgetEntities.IncomeCategory.Remove(incomeCategory);
-                    DbModelFamilyBudgetEntities.SaveChanges();
+                    _incomeCategoryRepository.Delete(incomeCategory);
+                    _incomeCategoryRepository.SaveChanges();
                     incomeCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", incomeCategoryModel.ToRouteValueDictionary());
                 }
