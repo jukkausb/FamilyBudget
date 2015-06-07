@@ -10,98 +10,28 @@ namespace FamilyBudget.Www.Controllers
 {
     public class MoneyControllerBase<T> : BaseController where T : class, IAccountableEntity
     {
-        private IAccountRepository _acountRepository;
-
-        public MoneyControllerBase(IAccountRepository acountRepository)
+        protected T FindAndRestoreAccountBalance(IAccountRepository _accountRepository, T accountableEntity)
         {
-            _acountRepository = acountRepository;
-        }
-
-        private static void CheckChangeBalanceRequest(Account account, IAccountableEntity accountableEntity)
-        {
-            if (accountableEntity == null)
-            {
-                throw new Exception("No entity found to change balance");
-            }
-
-            if (account == null)
-            {
-                throw new Exception("No account found to decrease balance");
-            }
-        }
-
-        private static void IncreaseAccountBalance(Account account, IAccountableEntity accountableEntity)
-        {
-            account.Balance += accountableEntity.Summa;
-        }
-
-        private static void DecreaseAccountBalance(Account account, IAccountableEntity accountableEntity)
-        {
-            account.Balance -= accountableEntity.Summa;
-        }
-
-        protected void ChangeAccountBalance(Account account, IAccountableEntity accountableEntity)
-        {
-            CheckChangeBalanceRequest(account, accountableEntity);
-            switch (accountableEntity.AccountTransactionOperationType)
-            {
-                case AccountTransactionOperation.Increase:
-                    IncreaseAccountBalance(account, accountableEntity);
-                    break;
-                case AccountTransactionOperation.Decrease:
-                    DecreaseAccountBalance(account, accountableEntity);
-                    break;
-            }
-        }
-
-        protected void ChangeAccountBalance(int accountId, IAccountableEntity accountableEntity)
-        {
-            ChangeAccountBalance(AccountRepository.FindBy(a => a.ID == accountId).FirstOrDefault(), accountableEntity);
-        }
-
-        protected void RestoreAccountBalance(Account account, IAccountableEntity accountableEntity)
-        {
-            if (account == null || accountableEntity == null)
-                return;
-
-            switch (accountableEntity.AccountRestoreOperationType)
-            {
-                case AccountRestoreOperation.Increase:
-                    IncreaseAccountBalance(account, accountableEntity);
-                    break;
-                case AccountRestoreOperation.Decrease:
-                    DecreaseAccountBalance(account, accountableEntity);
-                    break;
-            }
-        }
-
-        protected void RestoreAccountBalance(int accountId, IAccountableEntity accountableEntity)
-        {
-            RestoreAccountBalance(AccountRepository.FindBy(a => a.ID == accountId).FirstOrDefault(), accountableEntity);
-        }
-
-        protected T FindAndRestoreAccountBalance(T accountableEntity)
-        {
-            Account accountToRestoreBalance = AccountRepository.FindBy(a => a.ID == accountableEntity.AccountID).FirstOrDefault();
+            Account accountToRestoreBalance = _accountRepository.FindBy(a => a.ID == accountableEntity.AccountID).FirstOrDefault();
             if (accountToRestoreBalance == null)
             {
                 throw new Exception("No account found to restore balance");
             }
 
-            T entityToRestore = AccountRepository.Context.Set<T>().Find(accountableEntity.ID);
+            T entityToRestore = _accountRepository.Context.Set<T>().Find(accountableEntity.ID);
             if (entityToRestore == null)
             {
                 throw new Exception("No entity found to restore balance");
             }
 
-            RestoreAccountBalance(accountToRestoreBalance, entityToRestore);
+            _accountRepository.RestoreAccountBalance(accountToRestoreBalance, entityToRestore);
 
             return entityToRestore;
         }
 
-        protected List<ExtendedSelectListItem> GetAccountsForDropDownExtended()
+        protected List<ExtendedSelectListItem> GetAccountsForDropDownExtended(IAccountRepository _accountRepository)
         {
-            List<ExtendedSelectListItem> accounts = _acountRepository.GetAll().Select(c => new ExtendedSelectListItem
+            List<ExtendedSelectListItem> accounts = _accountRepository.GetAll().ToList().Select(c => new ExtendedSelectListItem
             {
                 IsBold = c.IsMain,
                 Value = c.ID.ToString(CultureInfo.InvariantCulture),

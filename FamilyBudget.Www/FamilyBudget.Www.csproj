@@ -226,6 +226,7 @@
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryListModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryModel.cs" />
+    <Compile Include="CallHandlers\LoggingCallHandler.cs" />
     <Compile Include="ContainerBootstrapper.cs" />
     <Compile Include="Controllers\MoneyControllerBase.cs" />
     <Compile Include="Controllers\UserController.cs" />

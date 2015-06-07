@@ -18,9 +18,6 @@ namespace FamilyBudget.Www.Controllers
     [HandleError]
     public class BaseController : Controller
     {
-        [Dependency]
-        public IAccountRepository AccountRepository { get; set; }
-
         /// <summary>
         ///     Default error view name
         /// </summary>

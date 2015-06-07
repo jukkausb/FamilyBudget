@@ -9,19 +9,19 @@ using FamilyBudget.Www.Models;
 using System.Collections.Generic;
 using FamilyBudget.Www.Repository.Interfaces;
 using System.Globalization;
+using System.Transactions;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class ExpenditureController : MoneyControllerBase<Expenditure>
     {
-        private IAccountRepository _acountRepository;
+        private IAccountRepository _accountRepository;
         private IExpenditureRepository _expenditureRepository;
         private IExpenditureCategoryRepository _expenditureCategoryRepository;
 
         public ExpenditureController(IAccountRepository acountRepository, IExpenditureRepository expenditureRepository, IExpenditureCategoryRepository expenditureCategoryRepository)
-            : base(acountRepository)
         {
-            _acountRepository = acountRepository;
+            _accountRepository = acountRepository;
             _expenditureRepository = expenditureRepository;
             _expenditureCategoryRepository = expenditureCategoryRepository;
         }
@@ -31,7 +31,7 @@ namespace FamilyBudget.Www.Controllers
             try
             {
                 listModel.ParseModelState(Request);
-                listModel.InitializeFilter(GetAccountsForDropDownExtended());
+                listModel.InitializeFilter(GetAccountsForDropDownExtended(_accountRepository));
                 IQueryable<Expenditure> query = _expenditureRepository.Context.Expenditure.AsQueryable();
 
                 if (!string.IsNullOrEmpty(listModel.Filter.Description))
@@ -58,7 +58,7 @@ namespace FamilyBudget.Www.Controllers
             var model = new ExpenditureModel
             {
                 Categories = GetExpenditureCategories(),
-                Accounts = GetAccountsForDropDownExtended()
+                Accounts = GetAccountsForDropDownExtended(_accountRepository)
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
@@ -71,23 +71,24 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                _expenditureRepository.Context.Database.Connection.Open();
-                using (DbTransaction dbContextTransaction = _expenditureRepository.Context.Database.Connection.BeginTransaction())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     try
                     {
                         _expenditureRepository.Add(expenditureModel.Object);
-                        ChangeAccountBalance(expenditureModel.Object.AccountID, expenditureModel.Object);
+                        _accountRepository.ChangeAccountBalance(expenditureModel.Object.AccountID, expenditureModel.Object);
                         _expenditureRepository.SaveChanges();
-                        dbContextTransaction.Commit();
+                        _accountRepository.SaveChanges();
+
+                        scope.Complete();
+
                         expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                         return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
                     }
                     catch (Exception ex)
                     {
-                        dbContextTransaction.Rollback();
                         expenditureModel.Categories = GetExpenditureCategories();
-                        expenditureModel.Accounts = GetAccountsForDropDownExtended();
+                        expenditureModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
                         HandleException(ex);
                     }
                 }
@@ -95,7 +96,7 @@ namespace FamilyBudget.Www.Controllers
             else
             {
                 expenditureModel.Categories = GetExpenditureCategories();
-                expenditureModel.Accounts = GetAccountsForDropDownExtended();
+                expenditureModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
             }
 
             return View(expenditureModel);
@@ -117,7 +118,7 @@ namespace FamilyBudget.Www.Controllers
             var model = new ExpenditureModel
             {
                 Categories = GetExpenditureCategories(),
-                Accounts = GetAccountsForDropDownExtended(),
+                Accounts = GetAccountsForDropDownExtended(_accountRepository),
                 Object = expenditure
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
@@ -131,37 +132,33 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                DbTransaction dbContextTransaction = null;
                 try
                 {
-                    _expenditureRepository.Context.Database.Connection.Open();
-                    using (dbContextTransaction = _expenditureRepository.Context.Database.Connection.BeginTransaction())
+                    using (TransactionScope scope = new TransactionScope())
                     {
-                        Expenditure expenditureToRestore = FindAndRestoreAccountBalance(expenditureModel.Object);
+                        Expenditure expenditureToRestore = FindAndRestoreAccountBalance(_accountRepository, expenditureModel.Object);
                         Expenditure.Copy(expenditureToRestore, expenditureModel.Object);
-                        ChangeAccountBalance(expenditureToRestore.Account.ID, expenditureModel.Object);
+                        _accountRepository.ChangeAccountBalance(expenditureToRestore.AccountID, expenditureModel.Object);
                         _expenditureRepository.SaveChanges();
+                        _accountRepository.SaveChanges();
 
-                        dbContextTransaction.Commit();
+                        scope.Complete();
+
                         expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                         return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (dbContextTransaction != null)
-                    {
-                        dbContextTransaction.Rollback();
-                    }
                     expenditureModel.Categories = GetExpenditureCategories();
-                    expenditureModel.Accounts = GetAccountsForDropDownExtended();
+                    expenditureModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
                     HandleException(ex);
                 }
             }
             else
             {
                 expenditureModel.Categories = GetExpenditureCategories();
-                expenditureModel.Accounts = GetAccountsForDropDownExtended();
+                expenditureModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
             }
 
             return View(expenditureModel);
@@ -195,20 +192,22 @@ namespace FamilyBudget.Www.Controllers
                 return HttpNotFound();
             }
 
-            _expenditureRepository.Context.Database.Connection.Open();
-            using (DbTransaction dbContextTransaction = _expenditureRepository.Context.Database.Connection.BeginTransaction())
+            using (TransactionScope scope = new TransactionScope())
             {
                 try
                 {
-                    FindAndRestoreAccountBalance(expenditure);
+                    FindAndRestoreAccountBalance(_accountRepository, expenditure);
                     _expenditureRepository.Delete(expenditure);
                     _expenditureRepository.SaveChanges();
+                    _accountRepository.SaveChanges();
+
+                    scope.Complete();
+
                     expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                     return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
-                    dbContextTransaction.Rollback();
                     expenditureModel.Categories = GetExpenditureCategories();
                     HandleException(ex);
                 }

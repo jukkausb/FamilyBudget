@@ -9,19 +9,19 @@ using FamilyBudget.Www.Models;
 using System.Collections.Generic;
 using FamilyBudget.Www.Repository.Interfaces;
 using System.Globalization;
+using System.Transactions;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class IncomeController : MoneyControllerBase<Income>
     {
-        private IAccountRepository _acountRepository;
+        private IAccountRepository _accountRepository;
         private IIncomeRepository _incomeRepository;
         private IIncomeCategoryRepository _incomeCategoryRepository;
 
         public IncomeController(IAccountRepository acountRepository, IIncomeRepository incomeRepository, IIncomeCategoryRepository incomeCategoryRepository)
-            : base(acountRepository)
         {
-            _acountRepository = acountRepository;
+            _accountRepository = acountRepository;
             _incomeRepository = incomeRepository;
             _incomeCategoryRepository = incomeCategoryRepository;
         }
@@ -31,7 +31,7 @@ namespace FamilyBudget.Www.Controllers
             try
             {
                 listModel.ParseModelState(Request);
-                listModel.InitializeFilter(GetAccountsForDropDownExtended());
+                listModel.InitializeFilter(GetAccountsForDropDownExtended(_accountRepository));
                 IQueryable<Income> query = _incomeRepository.Context.Income.AsQueryable();
 
                 if (!string.IsNullOrEmpty(listModel.Filter.Description))
@@ -58,7 +58,7 @@ namespace FamilyBudget.Www.Controllers
             var model = new IncomeModel
             {
                 Categories = GetIncomeCategories(),
-                Accounts = GetAccountsForDropDownExtended()
+                Accounts = GetAccountsForDropDownExtended(_accountRepository)
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
@@ -71,15 +71,17 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                _incomeRepository.Context.Database.Connection.Open();
-                using (DbTransaction dbContextTransaction = _incomeRepository.Context.Database.Connection.BeginTransaction())
+                using (TransactionScope scope = new TransactionScope())
                 {
                     try
                     {
                         _incomeRepository.Add(incomeModel.Object);
-                        ChangeAccountBalance(incomeModel.Object.AccountID, incomeModel.Object);
+                        _accountRepository.ChangeAccountBalance(incomeModel.Object.AccountID, incomeModel.Object);
                         _incomeRepository.SaveChanges();
-                        dbContextTransaction.Commit();
+                        _accountRepository.SaveChanges();
+
+                        scope.Complete();
+
                         incomeModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                         switch (submit)
                         {
@@ -92,9 +94,8 @@ namespace FamilyBudget.Www.Controllers
                     }
                     catch (Exception ex)
                     {
-                        dbContextTransaction.Rollback();
                         incomeModel.Categories = GetIncomeCategories();
-                        incomeModel.Accounts = GetAccountsForDropDownExtended();
+                        incomeModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
                         HandleException(ex);
                     }
                 }
@@ -102,7 +103,7 @@ namespace FamilyBudget.Www.Controllers
             else
             {
                 incomeModel.Categories = GetIncomeCategories();
-                incomeModel.Accounts = GetAccountsForDropDownExtended();
+                incomeModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
             }
 
             return View(incomeModel);
@@ -123,7 +124,7 @@ namespace FamilyBudget.Www.Controllers
             var model = new IncomeModel
             {
                 Categories = GetIncomeCategories(),
-                Accounts = GetAccountsForDropDownExtended(),
+                Accounts = GetAccountsForDropDownExtended(_accountRepository),
                 Object = income
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
@@ -137,37 +138,33 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                DbTransaction dbContextTransaction = null;
-                try
+                using (TransactionScope scope = new TransactionScope())
                 {
-                    _incomeRepository.Context.Database.Connection.Open();
-                    using (dbContextTransaction = _incomeRepository.Context.Database.Connection.BeginTransaction())
+                    try
                     {
-                        Income incomeToRestore = FindAndRestoreAccountBalance(incomeModel.Object);
+                        Income incomeToRestore = FindAndRestoreAccountBalance(_accountRepository, incomeModel.Object);
                         Income.Copy(incomeToRestore, incomeModel.Object);
-                        ChangeAccountBalance(incomeToRestore.Account.ID, incomeModel.Object);
+                        _accountRepository.ChangeAccountBalance(incomeToRestore.AccountID, incomeModel.Object);
                         _incomeRepository.SaveChanges();
+                        _accountRepository.SaveChanges();
 
-                        dbContextTransaction.Commit();
+                        scope.Complete();
+
                         incomeModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
                         return RedirectToAction("Index", incomeModel.ToRouteValueDictionary());
                     }
-                }
-                catch (Exception ex)
-                {
-                    if (dbContextTransaction != null)
+                    catch (Exception ex)
                     {
-                        dbContextTransaction.Rollback();
+                        incomeModel.Categories = GetIncomeCategories();
+                        incomeModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
+                        HandleException(ex);
                     }
-                    incomeModel.Categories = GetIncomeCategories();
-                    incomeModel.Accounts = GetAccountsForDropDownExtended();
-                    HandleException(ex);
                 }
             }
             else
             {
                 incomeModel.Categories = GetIncomeCategories();
-                incomeModel.Accounts = GetAccountsForDropDownExtended();
+                incomeModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
             }
 
             return View(incomeModel);
@@ -193,38 +190,37 @@ namespace FamilyBudget.Www.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int? id, IncomeModel IncomeModel)
+        public ActionResult Delete(int? id, IncomeModel incomeModel)
         {
-            Income Income = _incomeRepository.FindBy(i => i.ID == id.Value).FirstOrDefault();
-            if (Income == null)
+            Income income = _incomeRepository.FindBy(i => i.ID == id.Value).FirstOrDefault();
+            if (income == null)
             {
                 return HttpNotFound();
             }
 
-            using (var context = new FamilyBudgetEntities())
+            using (TransactionScope scope = new TransactionScope())
             {
-                context.Database.Connection.Open();
-                using (DbTransaction dbContextTransaction = context.Database.Connection.BeginTransaction())
+                try
                 {
-                    try
-                    {
-                        FindAndRestoreAccountBalance(Income);
-                        _incomeRepository.Delete(Income);
-                        _incomeRepository.SaveChanges();
-                        IncomeModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                        return RedirectToAction("Index", IncomeModel.ToRouteValueDictionary());
-                    }
-                    catch (Exception ex)
-                    {
-                        dbContextTransaction.Rollback();
-                        IncomeModel.Categories = GetIncomeCategories();
-                        HandleException(ex);
-                    }
+                    FindAndRestoreAccountBalance(_accountRepository, income);
+                    _incomeRepository.Delete(income);
+                    _incomeRepository.SaveChanges();
+                    _accountRepository.SaveChanges();
+
+                    scope.Complete();
+
+                    incomeModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", incomeModel.ToRouteValueDictionary());
+                }
+                catch (Exception ex)
+                {
+                    incomeModel.Categories = GetIncomeCategories();
+                    HandleException(ex);
                 }
             }
 
 
-            return View(IncomeModel);
+            return View(incomeModel);
         }
 
         protected List<SelectListItem> GetIncomeCategories()
