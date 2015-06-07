@@ -17,7 +17,7 @@ namespace FamilyBudget.Www.Controllers
         [System.Web.Mvc.AllowAnonymous]
         [System.Web.Mvc.HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login([FromBody] LoginModel model, string returnUrl)
+        public ActionResult Login(LoginModel model, string returnUrl)
         {
             double s = DateTime.Now.Subtract(DateTime.MinValue).TotalSeconds;
 
