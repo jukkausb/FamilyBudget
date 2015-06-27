@@ -322,6 +322,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="App_Data\currency-rates-EUR-RUB.csv" />
+    <Content Include="App_Data\currency-rates-RUB-RUB.csv" />
+    <Content Include="App_Data\currency-rates-UAH-RUB.csv" />
+    <Content Include="App_Data\currency-rates-USD-RUB.csv" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
@@ -453,7 +457,6 @@
     <Content Include="Views\Home\Widget_AccountBalanceCircle.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
