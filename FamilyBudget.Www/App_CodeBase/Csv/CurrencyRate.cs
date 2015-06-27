@@ -10,8 +10,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
     [DelimitedRecord(",")]
     public class CurrencyRate
     {
-        public const string RateSourceFormatString =
-            "http://finance.yahoo.com/d/quotes.csv?s={0}{1}=X&f=sl1d1t1ba&e=.csv";
+        public const string RateSourceFormatString = "http://finance.yahoo.com/d/quotes.csv?s={0}{1}=X&f=sl1d1t1ba&e=.csv";
 
         public const string CurrencyRateCacheKeyFormat = "CurrencyRateCacheKey_{0}_{1}";
 

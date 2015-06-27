@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using FamilyBudget.Www.App_Utils;
 using FileHelpers;
+using System.IO;
 
 namespace FamilyBudget.Www.App_CodeBase.Csv
 {
@@ -26,6 +27,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
                     csvData =
                         web.DownloadString(string.Format(CurrencyRate.RateSourceFormatString, sellCurrencyCode,
                             purchaseCurrencyCode));
+                    CurrencyRateFileWriter.SaveRatesToFile(sellCurrencyCode, purchaseCurrencyCode, csvData);
                 }
                 var engine = new FileHelperEngine<CurrencyRate>();
                 rates = engine.ReadString(csvData);
@@ -45,6 +47,17 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             try
             {
                 CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
+                // Try get rates from latest successful session
+                if (rates == null)
+                {
+                    var engine = new FileHelperEngine<CurrencyRate>();
+                    rates = engine.ReadString(CurrencyRateFileWriter.ReadRatesFromFile(sellCurrencyCode, purchaseCurrencyCode));
+                }
+
+                if (rates == null)
+                    return null;
+
                 return
                     rates.FirstOrDefault(
                         r => r.ConversionPath.Contains(string.Format("{0}{1}", sellCurrencyCode, purchaseCurrencyCode)));

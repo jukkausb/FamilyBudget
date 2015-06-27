@@ -160,6 +160,7 @@
     <Compile Include="App_CodeBase\CacheHelper.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyProvider.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRate.cs" />
+    <Compile Include="App_CodeBase\Csv\CurrencyRateFileWriter.cs" />
     <Compile Include="App_CodeBase\DecimalFormatConverter.cs" />
     <Compile Include="App_CodeBase\DecimalModelBinder.cs" />
     <Compile Include="App_CodeBase\ExtendedSelectListItem.cs" />
@@ -452,6 +453,7 @@
     <Content Include="Views\Home\Widget_AccountBalanceCircle.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>

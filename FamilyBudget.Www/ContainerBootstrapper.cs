@@ -21,6 +21,7 @@ namespace FamilyBudget.Www
             var container = new UnityContainer();
 
             InjectionMember[] injectionMembers = { new InterceptionBehavior<PolicyInjectionBehavior>(), new Interceptor<InterfaceInterceptor>() };
+            InjectionMember[] injectionMembersType = { new InterceptionBehavior<PolicyInjectionBehavior>(), new Interceptor<VirtualMethodInterceptor>() };
 
             container.RegisterType(typeof(IAccountRepository), typeof(AccountRepository), injectionMembers);
             container.RegisterType(typeof(ICurrencyRepository), typeof(CurrencyRepository), injectionMembers);
@@ -29,15 +30,15 @@ namespace FamilyBudget.Www
             container.RegisterType(typeof(IIncomeCategoryRepository), typeof(IncomeCategoryRepository), injectionMembers);
             container.RegisterType(typeof(IIncomeRepository), typeof(IncomeRepository), injectionMembers);
 
-            container.RegisterType(typeof(HomeController));
-            container.RegisterType(typeof(ExpenditureController));
-            container.RegisterType(typeof(IncomeController));
-            container.RegisterType(typeof(ReportController));
-            container.RegisterType(typeof(UserController));
-            container.RegisterType(typeof(AccountController));
-            container.RegisterType(typeof(CurrencyController));
-            container.RegisterType(typeof(ExpenditureCategoryController));
-            container.RegisterType(typeof(IncomeCategoryController));
+            container.RegisterType(typeof(HomeController), injectionMembersType);
+            container.RegisterType(typeof(ExpenditureController), injectionMembersType);
+            container.RegisterType(typeof(IncomeController), injectionMembersType);
+            container.RegisterType(typeof(ReportController), injectionMembersType);
+            container.RegisterType(typeof(UserController), injectionMembersType);
+            container.RegisterType(typeof(AccountController), injectionMembersType);
+            container.RegisterType(typeof(CurrencyController), injectionMembersType);
+            container.RegisterType(typeof(ExpenditureCategoryController), injectionMembersType);
+            container.RegisterType(typeof(IncomeCategoryController), injectionMembersType);
 
             container.AddNewExtension<Interception>()
                 .Configure<Interception>()
