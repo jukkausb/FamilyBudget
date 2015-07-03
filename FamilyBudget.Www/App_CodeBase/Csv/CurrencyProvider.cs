@@ -46,14 +46,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
         {
             try
             {
-                CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
-
-                // Try get rates from latest successful session
-                if (rates == null)
-                {
-                    var engine = new FileHelperEngine<CurrencyRate>();
-                    rates = engine.ReadString(CurrencyRateFileWriter.ReadRatesFromFile(sellCurrencyCode, purchaseCurrencyCode));
-                }
+                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
 
                 if (rates == null)
                     return null;
@@ -69,11 +62,25 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
         }
 
+        private static CurrencyRate[] TryGetCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
+        {
+            CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
+            // Try get rates from latest successful session
+            if (rates == null)
+            {
+                var engine = new FileHelperEngine<CurrencyRate>();
+                rates = engine.ReadString(CurrencyRateFileWriter.ReadRatesFromFile(sellCurrencyCode, purchaseCurrencyCode));
+            }
+            return rates;
+        }
+
         public static decimal GetSellCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
         {
             try
             {
-                CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
                 if (rates != null && rates.Any())
                 {
                     return rates[0].SellRate;
@@ -91,7 +98,8 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
         {
             try
             {
-                CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
                 if (rates != null && rates.Any())
                 {
                     return rates[0].PurchaseRate;
@@ -109,7 +117,8 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
         {
             try
             {
-                CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
                 if (rates != null && rates.Any())
                 {
                     return rates[0].MainRate;
