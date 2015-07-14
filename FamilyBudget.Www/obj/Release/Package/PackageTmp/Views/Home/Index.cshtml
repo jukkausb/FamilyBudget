@@ -1,0 +1,44 @@
+﻿@using FamilyBudget.Www.App_CodeBase.Widgets
+@model FamilyBudget.Www.Models.DashboardModel
+
+@Scripts.Render("~/bundles/widget-engine")
+@Scripts.Render("~/bundles/ladda")
+@Scripts.Render("~/bundles/morris")
+<script src="~/Scripts/plugins/morris/raphael-2.1.0.min.js"></script>
+<div class="row">
+    @foreach (Widget widget in Model.Widgets)
+    {
+        @Html.Partial("_Widget", widget)
+    }
+</div>
+<script type="text/javascript">
+    var widgets;
+
+    function getWidgetDefinitions() {
+        $.get("/Home/GetWidgetDefinitions", function(data) {
+            widgets = data;
+            loadWidgets(data);
+        });
+    }
+
+    function getWidgetById(id) {
+        if (widgets) {
+            for (var i = 0; i < widgets.length; i++) {
+                if (widgets[i].id == id) {
+                    return widgets[i];
+                }
+            }
+        }
+        return null;
+    }
+
+    function refreshWidget(widget) {
+        var widgets = [];
+        widgets.push(widget);
+        loadWidgets(widgets);
+    }
+
+    $(function() {
+        getWidgetDefinitions();
+    });
+</script>

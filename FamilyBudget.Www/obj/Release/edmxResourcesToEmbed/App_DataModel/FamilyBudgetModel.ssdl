@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище FamilyBudgetModel" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CurrencyID" Type="int" Nullable="false" />
+    <Property Name="Balance" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="IsMain" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Currency">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="3" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Expenditure">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="varchar(max)" />
+    <Property Name="Summa" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="CategoryID" Type="int" Nullable="false" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="AccountID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ExpenditureCategory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Income">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Summa" Type="decimal" Precision="12" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="varchar(max)" />
+    <Property Name="CategoryID" Type="int" Nullable="false" />
+    <Property Name="Date" Type="date" Nullable="false" />
+    <Property Name="AccountID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="IncomeCategory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" />
+  </EntityType>
+  <Association Name="FK_Account_Currency">
+    <End Role="Currency" Type="Self.Currency" Multiplicity="1" />
+    <End Role="Account" Type="Self.Account" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Currency">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Account">
+        <PropertyRef Name="CurrencyID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Expenditure_Account">
+    <End Role="Account" Type="Self.Account" Multiplicity="1" />
+    <End Role="Expenditure" Type="Self.Expenditure" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Expenditure">
+        <PropertyRef Name="AccountID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Expenditure_ExpenditureCategory">
+    <End Role="ExpenditureCategory" Type="Self.ExpenditureCategory" Multiplicity="1" />
+    <End Role="Expenditure" Type="Self.Expenditure" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ExpenditureCategory">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Expenditure">
+        <PropertyRef Name="CategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Income_Account">
+    <End Role="Account" Type="Self.Account" Multiplicity="1" />
+    <End Role="Income" Type="Self.Income" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Income">
+        <PropertyRef Name="AccountID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Income_IncomeCategory">
+    <End Role="IncomeCategory" Type="Self.IncomeCategory" Multiplicity="1" />
+    <End Role="Income" Type="Self.Income" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="IncomeCategory">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Income">
+        <PropertyRef Name="CategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Хранилище FamilyBudgetModelContainer">
+    <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Currency" EntityType="Self.Currency" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Expenditure" EntityType="Self.Expenditure" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ExpenditureCategory" EntityType="Self.ExpenditureCategory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Income" EntityType="Self.Income" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="IncomeCategory" EntityType="Self.IncomeCategory" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Account_Currency" Association="Self.FK_Account_Currency">
+      <End Role="Currency" EntitySet="Currency" />
+      <End Role="Account" EntitySet="Account" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Expenditure_Account" Association="Self.FK_Expenditure_Account">
+      <End Role="Account" EntitySet="Account" />
+      <End Role="Expenditure" EntitySet="Expenditure" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Expenditure_ExpenditureCategory" Association="Self.FK_Expenditure_ExpenditureCategory">
+      <End Role="ExpenditureCategory" EntitySet="ExpenditureCategory" />
+      <End Role="Expenditure" EntitySet="Expenditure" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Income_Account" Association="Self.FK_Income_Account">
+      <End Role="Account" EntitySet="Account" />
+      <End Role="Income" EntitySet="Income" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Income_IncomeCategory" Association="Self.FK_Income_IncomeCategory">
+      <End Role="IncomeCategory" EntitySet="IncomeCategory" />
+      <End Role="Income" EntitySet="Income" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

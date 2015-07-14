@@ -6,6 +6,8 @@ namespace FamilyBudget.Www
     {
         public static void RegisterBundles(BundleCollection bundles)
         {
+            // Common JS libs
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                 "~/Scripts/jquery*"
                 ));
@@ -24,6 +26,8 @@ namespace FamilyBudget.Www
                 "~/Scripts/moment*",
                 "~/Scripts/bootstrap*"
                 ));
+
+            // Custom JS scripts
 
             bundles.Add(new ScriptBundle("~/bundles/initialize").Include(
                 "~/Scripts/initialize*"));
@@ -51,6 +55,8 @@ namespace FamilyBudget.Www
             bundles.Add(new ScriptBundle("~/bundles/morris").Include(
                 "~/Scripts/plugins/morris/morris*"
                 ));
+
+            // CSS
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                 "~/Content/bootstrap*",
