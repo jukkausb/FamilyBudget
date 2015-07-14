@@ -157,6 +157,7 @@
     <Content Include="Scripts\bootstrap-datetimepicker.ru.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\fb.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.ru.js" />
     <Content Include="Scripts\globalize\globalize.js" />
     <Content Include="Scripts\globalize\jquery.validate.globalize.js" />

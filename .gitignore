@@ -161,10 +161,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 bower_components/
-npm-debug.log
 node_modules/
-!/node_modules/
-!FamilyBudget.Spa/node_modules/
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -197,3 +194,5 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+/FamilyBudget.Spa/node_modules
+
