@@ -3,6 +3,6 @@
     public class AccountCircleEquivalentView
     {
         public string Label { get; set; }
-        public decimal Value { get; set; }
+        public string Value { get; set; }
     }
 }

@@ -76,31 +76,31 @@ namespace FamilyBudget.Www.Controllers
         {
             var incomesPerMonth =
                 (from income in _incomeRepository.GetAll()
-                    where income.AccountID == accountId
-                    where income.Date >= startDate.Date && income.Date <= endDate.Date
-                    group income by new {income.Date.Year, income.Date.Month}
-                    into g
-                    select new
-                    {
-                        Period = new Period {Year = g.Key.Year, Month = g.Key.Month},
-                        IncomeTotal = g.Sum(i => i.Summa)
-                    }).ToList();
+                 where income.AccountID == accountId
+                 where income.Date >= startDate.Date && income.Date <= endDate.Date
+                 group income by new { income.Date.Year, income.Date.Month }
+                     into g
+                     select new
+                     {
+                         Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
+                         IncomeTotal = g.Sum(i => i.Summa)
+                     }).ToList();
 
             var expendituresPerMonth =
                 (from expenditure in _expenditureRepository.GetAll()
-                    where expenditure.AccountID == accountId
-                    where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
-                    group expenditure by new {expenditure.Date.Month, expenditure.Date.Year}
-                    into g
-                    select new
-                    {
-                        Period = new Period {Year = g.Key.Year, Month = g.Key.Month},
-                        ExpenditureTotal = g.Sum(i => i.Summa)
-                    }).ToList();
+                 where expenditure.AccountID == accountId
+                 where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
+                 group expenditure by new { expenditure.Date.Month, expenditure.Date.Year }
+                     into g
+                     select new
+                     {
+                         Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
+                         ExpenditureTotal = g.Sum(i => i.Summa)
+                     }).ToList();
 
             List<ExpenditureIncomeItem> resultsPerMonth = incomesPerMonth.Outer().Join(expendituresPerMonth.Outer(),
-                k => new {k.Period.Year, k.Period.Month},
-                k => new {k.Period.Year, k.Period.Month},
+                k => new { k.Period.Year, k.Period.Month },
+                k => new { k.Period.Year, k.Period.Month },
                 (i, e) =>
                     new ExpenditureIncomeItem
                     {
@@ -123,11 +123,11 @@ namespace FamilyBudget.Www.Controllers
         {
             List<ExpenditureByCategoryItem> expendituresPerMonth =
                 (from expenditure in _expenditureRepository.GetAll()
-                    where expenditure.AccountID == accountId
-                    where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
-                    group expenditure by expenditure.ExpenditureCategory.Name
-                    into g
-                    select g).ToList().Select(g =>
+                 where expenditure.AccountID == accountId
+                 where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
+                 group expenditure by expenditure.ExpenditureCategory.Name
+                     into g
+                     select g).ToList().Select(g =>
                         new ExpenditureByCategoryItem
                         {
                             Category = g.Key,
@@ -147,7 +147,7 @@ namespace FamilyBudget.Www.Controllers
                 {
                     decimal rate = CurrencyProvider.GetSellCurrencyRate(a.Currency.Code, mainCurrencyCode);
                     Logger.Info(string.Format("Exchange rate ({0}-{1}): {2}", a.Currency.Code, mainCurrencyCode, rate));
-                    wealthValue += a.Balance*rate;
+                    wealthValue += a.Balance * rate;
                 }
                 else
                 {
@@ -181,22 +181,22 @@ namespace FamilyBudget.Www.Controllers
                 model.MainCurrency = mainCurrencyCode;
                 List<Account> accounts = GetAccountsData();
                 List<AccountRateView> accountRateViews = (from account in accounts
-                    let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
-                    select new AccountRateView
-                    {
-                        Account = account,
-                        RateView =
-                            !account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
-                                ? new CurrencyRateView
-                                {
-                                    Rate = accountCurrencyRate,
-                                    MainCurrency = mainCurrencyCode,
-                                    OriginCurrency = account.Currency.Code,
-                                    Equivalent =
-                                        accountCurrencyRate != null ? accountCurrencyRate.SellRate*account.Balance : 0
-                                }
-                                : null
-                    }).ToList();
+                                                          let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
+                                                          select new AccountRateView
+                                                          {
+                                                              Account = account,
+                                                              RateView =
+                                                                  !account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
+                                                                      ? new CurrencyRateView
+                                                                      {
+                                                                          Rate = accountCurrencyRate,
+                                                                          MainCurrency = mainCurrencyCode,
+                                                                          OriginCurrency = account.Currency.Code,
+                                                                          Equivalent =
+                                                                              accountCurrencyRate != null ? accountCurrencyRate.SellRate * account.Balance : 0
+                                                                      }
+                                                                      : null
+                                                          }).ToList();
 
                 model.Accounts = accountRateViews;
                 model.Wealth.Currency = mainCurrencyCode;
@@ -307,19 +307,18 @@ namespace FamilyBudget.Www.Controllers
             {
                 string mainCurrencyCode = mainAccount.Currency.Code;
                 accountEquivalentViews = (from account in accounts
-                    let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
-                    let isMainAccount =
-                        account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
-                    select new AccountCircleEquivalentView
-                    {
-                        Value =
-                            (!isMainAccount
-                                ? accountCurrencyRate != null
-                                    ? accountCurrencyRate.SellRate*account.Balance
-                                    : account.Balance
-                                : account.Balance),
-                        Label = account.DisplayName
-                    }).Where(a => a.Value > 0).ToList();
+                                          let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
+                                          let isMainAccount = account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
+                                          let value = !isMainAccount ? accountCurrencyRate != null
+                                          ? accountCurrencyRate.SellRate * account.Balance
+                                          : account.Balance
+                                          : account.Balance
+                                          where value > 0
+                                          select new AccountCircleEquivalentView
+                                          {
+                                              Value = string.Format("{0} ({1})", value.ToString("F"), account.Currency.Code),
+                                              Label = account.DisplayName
+                                          }).ToList();
             }
 
             return Json(accountEquivalentViews);
