@@ -1,8 +1,5 @@
-﻿using FileHelpers;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Web;
 
 namespace FamilyBudget.Www.App_CodeBase.Csv
@@ -13,31 +10,46 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
 
         public static void SaveRatesToFile(string sellCurrencyCode, string purchaseCurrencyCode, string ratesCsvText)
         {
-            string fileName = string.Format(FileNameFormat, sellCurrencyCode, purchaseCurrencyCode);
-
-            if (File.Exists(fileName))
+            try
             {
-                File.Delete(fileName);
+                string fileName = string.Format(FileNameFormat, sellCurrencyCode, purchaseCurrencyCode);
+
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+
+                // Create a file to write to.
+                using (StreamWriter sw = File.CreateText(string.Format(FileNameFormat, sellCurrencyCode, purchaseCurrencyCode)))
+                {
+                    sw.WriteLine(ratesCsvText);
+                }
             }
-
-            // Create a file to write to.
-            using (StreamWriter sw = File.CreateText(string.Format(FileNameFormat, sellCurrencyCode, purchaseCurrencyCode)))
+            catch (Exception ex)
             {
-                sw.WriteLine(ratesCsvText);
+                GlobalExceptionHandler.SetApplicationWarning(ex);
+                throw;
             }
         }
 
         public static string ReadRatesFromFile(string sellCurrencyCode, string purchaseCurrencyCode)
         {
-            string s = "";
-
-            // Open the file to read from.
-            using (StreamReader sr = File.OpenText(string.Format(FileNameFormat, sellCurrencyCode, purchaseCurrencyCode)))
+            try
             {
-                s = sr.ReadLine();
-            }
+                // Open the file to read from.
+                string s = "";
+                using (StreamReader sr = File.OpenText(string.Format(FileNameFormat, sellCurrencyCode, purchaseCurrencyCode)))
+                {
+                    s = sr.ReadLine();
+                }
 
-            return s;
+                return s;
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
+                throw;
+            }
         }
     }
 }

@@ -6,10 +6,6 @@ using FamilyBudget.Www.Repository.Interfaces;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.InterceptionExtension;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FamilyBudget.Www
@@ -39,6 +35,7 @@ namespace FamilyBudget.Www
             container.RegisterType(typeof(CurrencyController), injectionMembersType);
             container.RegisterType(typeof(ExpenditureCategoryController), injectionMembersType);
             container.RegisterType(typeof(IncomeCategoryController), injectionMembersType);
+            container.RegisterType(typeof(ErrorHandlerController), injectionMembersType);
 
             container.AddNewExtension<Interception>()
                 .Configure<Interception>()

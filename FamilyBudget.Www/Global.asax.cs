@@ -19,6 +19,8 @@ namespace FamilyBudget.Www
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             ContainerBootstrapper.Configure();
+
+            CurrencyRatePreloader.Preload();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
 {
     public static class CurrencyProvider
     {
-        private static CurrencyRate[] DownloadCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
+        public static CurrencyRate[] DownloadCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
         {
             try
             {
@@ -37,6 +37,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
             catch (Exception ex)
             {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
                 Logger.Error("Ошибка запроса курсов валют", ex);
                 return null;
             }
@@ -57,6 +58,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
             catch (Exception ex)
             {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
                 Logger.Error("Ошибка запроса курсов валют", ex);
                 return null;
             }
@@ -89,6 +91,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
             catch (Exception ex)
             {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
                 Logger.Error("Ошибка запроса курсов валют", ex);
                 return 0;
             }
@@ -108,6 +111,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
             catch (Exception ex)
             {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
                 Logger.Error("Ошибка запроса курсов валют", ex);
                 return 0;
             }
@@ -127,6 +131,7 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
             catch (Exception ex)
             {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
                 Logger.Error("Ошибка запроса курсов валют", ex);
                 return 0;
             }

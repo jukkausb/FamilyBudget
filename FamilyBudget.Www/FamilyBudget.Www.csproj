@@ -161,9 +161,11 @@
     <Compile Include="App_CodeBase\Csv\CurrencyProvider.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRate.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRateFileWriter.cs" />
+    <Compile Include="App_CodeBase\CurrencyRatePreloader.cs" />
     <Compile Include="App_CodeBase\DecimalFormatConverter.cs" />
     <Compile Include="App_CodeBase\DecimalModelBinder.cs" />
     <Compile Include="App_CodeBase\ExtendedSelectListItem.cs" />
+    <Compile Include="App_CodeBase\GlobalExceptionHandler.cs" />
     <Compile Include="App_CodeBase\HandleExceptionAttribute.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
@@ -229,6 +231,7 @@
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryModel.cs" />
     <Compile Include="CallHandlers\LoggingCallHandler.cs" />
     <Compile Include="ContainerBootstrapper.cs" />
+    <Compile Include="Controllers\ErrorHandlerController.cs" />
     <Compile Include="Controllers\MoneyControllerBase.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -455,6 +458,7 @@
     <Content Include="Views\Home\Widget_ExpenditureByCategory.cshtml" />
     <Content Include="Views\Shared\_TodayLink.cshtml" />
     <Content Include="Views\Home\Widget_AccountBalanceCircle.cshtml" />
+    <Content Include="Views\Shared\Warning.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />

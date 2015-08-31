@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Unity;
+﻿using FamilyBudget.Www.Controllers;
+using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,17 @@ namespace FamilyBudget.Www
             _container = container;
         }
 
+        protected override Type GetControllerType(RequestContext requestContext, string controllerName)
+        {
+            if (controllerName == "ErrorHandler")
+                return typeof (ErrorHandlerController);
+
+            return base.GetControllerType(requestContext, controllerName);
+        }
+
         protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
         {
-            if (controllerType == null)
-                throw new ArgumentNullException("controllerType");
+            if (controllerType == null) return null;
 
             if (!typeof(IController).IsAssignableFrom(controllerType))
                 throw new ArgumentException(string.Format(

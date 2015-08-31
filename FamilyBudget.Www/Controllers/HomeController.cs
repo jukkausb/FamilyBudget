@@ -328,8 +328,9 @@ namespace FamilyBudget.Www.Controllers
         {
             var model = new DashboardModel
             {
-                Widgets = GenerateWidgetDefinitions()
+                Widgets = GenerateWidgetDefinitions(),
             };
+
             return View(model);
         }
 

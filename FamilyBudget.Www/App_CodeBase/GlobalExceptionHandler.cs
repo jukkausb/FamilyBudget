@@ -1,0 +1,21 @@
+﻿
+using System;
+using System.Web;
+
+namespace FamilyBudget.Www.App_CodeBase
+{
+    public static class GlobalExceptionHandler
+    {
+        public const string GlobalExceptionKey = "GlobalExceptionKey";
+
+        public static void SetApplicationWarning(Exception exception)
+        {
+            HttpContext.Current.Application.Add(GlobalExceptionKey, exception);
+        }
+
+        public static Exception GetApplicationWarning()
+        {
+            return (Exception)HttpContext.Current.Application.Get(GlobalExceptionKey);
+        }
+    }
+}
