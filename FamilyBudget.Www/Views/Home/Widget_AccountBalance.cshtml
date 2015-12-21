@@ -25,17 +25,19 @@
                         {
                             string rateString = " - ";
                             string equivalent = " - ";
+                            string remaining = " - ";
                             if (accountView.RateView != null)
                             {
+                                remaining = string.Format("{0} {1}", accountView.Account.Balance.ToString("N"), accountView.Account.Currency.Code.ToCurrencySymbol());
+                                equivalent = string.Format("{0} {1}", accountView.RateView.Equivalent.ToString("N"), Model.MainCurrency);
                                 rateString = string.Format("1 x {0} = {1} {2}",
                                     accountView.RateView.OriginCurrency,
                                     accountView.RateView.Rate.MainRate.ToString("F"),
                                     accountView.RateView.MainCurrency);
-                                equivalent = string.Format("{0} {1}", accountView.RateView.Equivalent.ToString("F"), Model.MainCurrency);
                             }
                             <tr class="warning">
                                 <td>@accountView.Account.DisplayName</td>
-                                <td><b>@string.Format("{0} {1}", accountView.Account.Balance.ToString("F"), accountView.Account.Currency.Code.ToCurrencySymbol())</b></td>
+                                <td><b>@remaining</b></td>
                                 <td><b>@equivalent</b></td>
                                 <td>@rateString</td>
                             </tr>
