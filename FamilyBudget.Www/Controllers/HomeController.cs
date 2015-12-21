@@ -8,6 +8,7 @@ using FamilyBudget.Www.App_CodeBase;
 using FamilyBudget.Www.App_CodeBase.Csv;
 using FamilyBudget.Www.App_CodeBase.Widgets;
 using FamilyBudget.Www.App_DataModel;
+using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.App_Utils;
 using FamilyBudget.Www.Models;
 using FamilyBudget.Www.Models.Home;
@@ -49,17 +50,10 @@ namespace FamilyBudget.Www.Controllers
                 },
                 new Widget
                 {
-                    Id = "widget_account_balance_circle",
-                    Title = "Состояние счетов в сравнении по главной валюте",
-                    Url = "/Home/Widget_AccountBalanceCircle",
-                    Callback = "AccountEquivalentsCircleCallback"
-                },
-                new Widget
-                {
-                    Id = "widget_expenditure_income_compare",
-                    Title = "Соотношение доходов и расходов",
-                    Url = "/Home/Widget_ExpenditureIncomeCompare",
-                    Callback = "ExpenditureIncomeCompareCallback"
+                    Id = "widget_expenditure_by_category_current_month",
+                    Title = "Расходы по категориям в текущем месяце",
+                    Url = "/Home/Widget_ExpenditureByCategoryCurrentMonth",
+                    Callback = "ExpenditureByCategoryCurrentMonthCallback"
                 },
                 new Widget
                 {
@@ -67,6 +61,20 @@ namespace FamilyBudget.Www.Controllers
                     Title = "Расходы по категориям за период",
                     Url = "/Home/Widget_ExpenditureByCategory",
                     Callback = "ExpenditureByCategoryCallback"
+                },
+                //new Widget
+                //{
+                //    Id = "widget_account_balance_circle",
+                //    Title = "Состояние счетов в сравнении по главной валюте",
+                //    Url = "/Home/Widget_AccountBalanceCircle",
+                //    Callback = "AccountEquivalentsCircleCallback"
+                //},
+                new Widget
+                {
+                    Id = "widget_expenditure_income_compare",
+                    Title = "Соотношение доходов и расходов",
+                    Url = "/Home/Widget_ExpenditureIncomeCompare",
+                    Callback = "ExpenditureIncomeCompareCallback"
                 }
             };
         }
@@ -178,7 +186,7 @@ namespace FamilyBudget.Www.Controllers
             if (mainAccount != null)
             {
                 string mainCurrencyCode = mainAccount.Currency.Code;
-                model.MainCurrency = mainCurrencyCode;
+                model.MainCurrency = mainCurrencyCode.ToCurrencySymbol();
                 List<Account> accounts = GetAccountsData();
                 List<AccountRateView> accountRateViews = (from account in accounts
                                                           let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
@@ -190,8 +198,8 @@ namespace FamilyBudget.Www.Controllers
                                                                       ? new CurrencyRateView
                                                                       {
                                                                           Rate = accountCurrencyRate,
-                                                                          MainCurrency = mainCurrencyCode,
-                                                                          OriginCurrency = account.Currency.Code,
+                                                                          MainCurrency = mainCurrencyCode.ToCurrencySymbol(),
+                                                                          OriginCurrency = account.Currency.Code.ToCurrencySymbol(),
                                                                           Equivalent =
                                                                               accountCurrencyRate != null ? accountCurrencyRate.SellRate * account.Balance : 0
                                                                       }
@@ -199,7 +207,7 @@ namespace FamilyBudget.Www.Controllers
                                                           }).ToList();
 
                 model.Accounts = accountRateViews;
-                model.Wealth.Currency = mainCurrencyCode;
+                model.Wealth.Currency = mainCurrencyCode.ToCurrencySymbol();
                 model.Wealth.Value = CalculateWealth(mainCurrencyCode);
             }
 
@@ -272,6 +280,29 @@ namespace FamilyBudget.Www.Controllers
         }
 
         [HttpPost]
+        public ActionResult Widget_ExpenditureByCategoryCurrentMonth()
+        {
+            
+            var model = new ExpenditureByCategoryWidgetModel
+            {
+                Accounts = GetAccountsForDropDownExtended(),
+                
+                WidgetClientId = "widget_expenditure_by_category_current_month"
+            };
+
+            List<Account> accounts = GetAccountsData();
+            if (accounts != null && accounts.Count > 0)
+            {
+                Account mainAccount = accounts.Find(a => a.IsMain);
+                if (mainAccount != null)
+                {
+                    model.SelectedAccountId = mainAccount.ID.ToString(CultureInfo.CurrentCulture);
+                }
+            }
+            return PartialView(model);
+        }
+
+        [HttpPost]
         public ActionResult Widget_ExpenditureByCategoryData(int accountId, DateTime? startDate, DateTime? endDate)
         {
             if (!startDate.HasValue)
@@ -286,6 +317,16 @@ namespace FamilyBudget.Www.Controllers
             }
 
             return Json(GetWidget_ExpenditureByCategoryWidgetData(accountId, startDate.Value, endDate.Value));
+        }
+
+        [HttpPost]
+        public ActionResult Widget_ExpenditureByCategoryCurrentMonthData(int accountId)
+        {
+            DateTime now = DateTime.Now;
+            var startDate = new DateTime(now.Year, now.Month, 1);
+            var endDate = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month));
+
+            return Json(GetWidget_ExpenditureByCategoryWidgetData(accountId, startDate, endDate));
         }
 
         [HttpPost]

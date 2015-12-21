@@ -27,7 +27,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><b>Family Budget v2.0</b> (@AssemblyInfoHelper.GetAssemblyInfo())</a>
+                <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;<b>Family Budget v2.1</b> (@AssemblyInfoHelper.GetAssemblyInfo())</a>
             </div>
 
             @Html.Partial("_LoginPartial")
@@ -72,8 +72,10 @@
             </div>
         </nav>
         <div id="page-wrapper">
-            @{Html.RenderAction("Index", "ErrorHandler");}
-            @RenderBody()
+            <div class="container-fluid">
+                @{Html.RenderAction("Index", "ErrorHandler");}
+                @RenderBody()
+            </div>
         </div>
     </div>
 </body>

@@ -209,6 +209,7 @@
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\Metadata\FamilyBudgetMetadata.cs" />
+    <Compile Include="App_Helpers\CurrencyExtensions.cs" />
     <Compile Include="App_Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="App_Helpers\JsonUtils.cs" />
     <Compile Include="App_Helpers\QueryStringParser.cs" />
@@ -459,6 +460,7 @@
     <Content Include="Views\Shared\_TodayLink.cshtml" />
     <Content Include="Views\Home\Widget_AccountBalanceCircle.cshtml" />
     <Content Include="Views\Shared\Warning.cshtml" />
+    <Content Include="Views\Home\Widget_ExpenditureByCategoryCurrentMonth.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />
