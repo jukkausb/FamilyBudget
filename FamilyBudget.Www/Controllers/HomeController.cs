@@ -20,15 +20,17 @@ namespace FamilyBudget.Www.Controllers
 {
     public class HomeController : BaseController
     {
+        private ICurrencyProvider _currencyProvider;
         private IAccountRepository _accountRepository;
         private IIncomeRepository _incomeRepository;
         private IExpenditureRepository _expenditureRepository;
 
-        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository)
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
+            _currencyProvider = currencyProvider;
         }
 
         protected List<Account> GetAccountsData()
@@ -153,7 +155,7 @@ namespace FamilyBudget.Www.Controllers
             {
                 if (a.Currency.Code != mainCurrencyCode)
                 {
-                    decimal rate = CurrencyProvider.GetSellCurrencyRate(a.Currency.Code, mainCurrencyCode);
+                    decimal rate = _currencyProvider.GetSellCurrencyRate(a.Currency.Code, mainCurrencyCode);
                     Logger.Info(string.Format("Exchange rate ({0}-{1}): {2}", a.Currency.Code, mainCurrencyCode, rate));
                     wealthValue += a.Balance * rate;
                 }
@@ -189,7 +191,7 @@ namespace FamilyBudget.Www.Controllers
                 model.MainCurrency = mainCurrencyCode.ToCurrencySymbol();
                 List<Account> accounts = GetAccountsData();
                 List<AccountRateView> accountRateViews = (from account in accounts
-                                                          let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
+                                                          let accountCurrencyRate = _currencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
                                                           select new AccountRateView
                                                           {
                                                               Account = account,
@@ -348,7 +350,7 @@ namespace FamilyBudget.Www.Controllers
             {
                 string mainCurrencyCode = mainAccount.Currency.Code;
                 accountEquivalentViews = (from account in accounts
-                                          let accountCurrencyRate = CurrencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
+                                          let accountCurrencyRate = _currencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
                                           let isMainAccount = account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
                                           let value = !isMainAccount ? accountCurrencyRate != null
                                           ? accountCurrencyRate.SellRate * account.Balance

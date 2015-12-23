@@ -93,3 +93,4 @@ C:\Development\Git\FamilyBudget\FamilyBudget.Www\bin\System.Web.WebPages.Razor.x
 C:\Development\Git\FamilyBudget\FamilyBudget.Www\bin\EntityFramework.xml
 C:\Development\Git\FamilyBudget\FamilyBudget.Www\obj\Release\FamilyBudget.Www.dll
 C:\Development\Git\FamilyBudget\FamilyBudget.Www\obj\Release\FamilyBudget.Www.pdb
+C:\Development\Git\FamilyBudget\FamilyBudget.Www\obj\Release\FamilyBudget.Www.csprojResolveAssemblyReference.cache

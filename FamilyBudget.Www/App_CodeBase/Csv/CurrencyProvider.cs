@@ -3,13 +3,58 @@ using System.Linq;
 using System.Net;
 using FamilyBudget.Www.App_Utils;
 using FileHelpers;
-using System.IO;
 
 namespace FamilyBudget.Www.App_CodeBase.Csv
 {
-    public static class CurrencyProvider
+    public class CurrencyProvider : ICurrencyProvider
     {
-        public static CurrencyRate[] DownloadCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
+        public CurrencyRate[] DownloadCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
+        {
+            return DownloadCurrencyRatesInternal(sellCurrencyCode, purchaseCurrencyCode);
+        }
+
+        public CurrencyRate GetCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
+        {
+            try
+            {
+                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
+                if (rates == null)
+                    return null;
+
+                return
+                    rates.FirstOrDefault(
+                        r => r.ConversionPath.Contains(string.Format("{0}{1}", sellCurrencyCode, purchaseCurrencyCode)));
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
+                Logger.Error("Ошибка запроса курсов валют", ex);
+                return null;
+            }
+        }
+
+        public decimal GetSellCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
+        {
+            try
+            {
+                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+
+                if (rates != null && rates.Any())
+                {
+                    return rates[0].SellRate;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                GlobalExceptionHandler.SetApplicationWarning(ex);
+                Logger.Error("Ошибка запроса курсов валют", ex);
+                return 0;
+            }
+        }
+
+        private CurrencyRate[] DownloadCurrencyRatesInternal(string sellCurrencyCode, string purchaseCurrencyCode)
         {
             try
             {
@@ -43,30 +88,9 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             }
         }
 
-        public static CurrencyRate GetCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
+        private CurrencyRate[] TryGetCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
         {
-            try
-            {
-                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
-
-                if (rates == null)
-                    return null;
-
-                return
-                    rates.FirstOrDefault(
-                        r => r.ConversionPath.Contains(string.Format("{0}{1}", sellCurrencyCode, purchaseCurrencyCode)));
-            }
-            catch (Exception ex)
-            {
-                GlobalExceptionHandler.SetApplicationWarning(ex);
-                Logger.Error("Ошибка запроса курсов валют", ex);
-                return null;
-            }
-        }
-
-        private static CurrencyRate[] TryGetCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
-        {
-            CurrencyRate[] rates = DownloadCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
+            CurrencyRate[] rates = DownloadCurrencyRatesInternal(sellCurrencyCode, purchaseCurrencyCode);
 
             // Try get rates from latest successful session
             if (rates == null)
@@ -75,66 +99,6 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
                 rates = engine.ReadString(CurrencyRateFileWriter.ReadRatesFromFile(sellCurrencyCode, purchaseCurrencyCode));
             }
             return rates;
-        }
-
-        public static decimal GetSellCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
-        {
-            try
-            {
-                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
-
-                if (rates != null && rates.Any())
-                {
-                    return rates[0].SellRate;
-                }
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                GlobalExceptionHandler.SetApplicationWarning(ex);
-                Logger.Error("Ошибка запроса курсов валют", ex);
-                return 0;
-            }
-        }
-
-        public static decimal GetPurchaseCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
-        {
-            try
-            {
-                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
-
-                if (rates != null && rates.Any())
-                {
-                    return rates[0].PurchaseRate;
-                }
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                GlobalExceptionHandler.SetApplicationWarning(ex);
-                Logger.Error("Ошибка запроса курсов валют", ex);
-                return 0;
-            }
-        }
-
-        public static decimal GetMainCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
-        {
-            try
-            {
-                CurrencyRate[] rates = TryGetCurrencyRates(sellCurrencyCode, purchaseCurrencyCode);
-
-                if (rates != null && rates.Any())
-                {
-                    return rates[0].MainRate;
-                }
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                GlobalExceptionHandler.SetApplicationWarning(ex);
-                Logger.Error("Ошибка запроса курсов валют", ex);
-                return 0;
-            }
         }
     }
 }

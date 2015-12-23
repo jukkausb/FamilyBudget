@@ -102,6 +102,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -161,6 +162,7 @@
     <Compile Include="App_CodeBase\Csv\CurrencyProvider.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRate.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRateFileWriter.cs" />
+    <Compile Include="App_CodeBase\Csv\ICurrencyProvider.cs" />
     <Compile Include="App_CodeBase\CurrencyRatePreloader.cs" />
     <Compile Include="App_CodeBase\DecimalFormatConverter.cs" />
     <Compile Include="App_CodeBase\DecimalModelBinder.cs" />
@@ -293,6 +295,11 @@
     <Compile Include="Repository\Interfaces\IIncomeRepository.cs" />
     <Compile Include="Repository\Interfaces\IExpenditureRepository.cs" />
     <Compile Include="Repository\Interfaces\IIncomeCategoryRepository.cs" />
+    <Compile Include="Service References\CBRService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="UnityControllerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -335,6 +342,8 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <Content Include="Properties\DataSources\System.Xml.XmlNode.datasource" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
@@ -433,6 +442,13 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\widget-engine.js" />
+    <None Include="Service References\CBRService\DailyInfo.disco" />
+    <None Include="Service References\CBRService\configuration91.svcinfo" />
+    <None Include="Service References\CBRService\configuration.svcinfo" />
+    <None Include="Service References\CBRService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -465,6 +481,7 @@
     <Content Include="Views\Home\Widget_AccountBalanceCircle.cshtml" />
     <Content Include="Views\Shared\Warning.cshtml" />
     <Content Include="Views\Home\Widget_ExpenditureByCategoryCurrentMonth.cshtml" />
+    <None Include="Service References\CBRService\DailyInfo.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />
@@ -474,6 +491,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\CBRService\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -5,17 +5,32 @@
 @Scripts.Render("~/bundles/ladda")
 @Scripts.Render("~/bundles/morris")
 <script src="~/Scripts/plugins/morris/raphael-2.1.0.min.js"></script>
-<div class="row">
+<div class="container-fluid">
+    @{
+        int i = 0;
+    }
     @foreach (Widget widget in Model.Widgets)
     {
+        if (i % 2 == 0)
+        {
+            @Html.Raw("<div class=\"flex-row row\">")
+        }
+
         @Html.Partial("_Widget", widget)
+
+        if (i % 2 != 0)
+        {
+            @Html.Raw("</div>")
+        }
+
+        i++;
     }
 </div>
 <script type="text/javascript">
     var widgets;
 
     function getWidgetDefinitions() {
-        $.get("/Home/GetWidgetDefinitions", function(data) {
+        $.get("/Home/GetWidgetDefinitions", function (data) {
             widgets = data;
             loadWidgets(data);
         });
@@ -38,7 +53,7 @@
         loadWidgets(widgets);
     }
 
-    $(function() {
+    $(function () {
         getWidgetDefinitions();
     });
 </script>
