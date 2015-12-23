@@ -1,5 +1,6 @@
 ﻿
-using FamilyBudget.Www.App_CodeBase.Csv;
+using System;
+using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.Repository.Interfaces;
 using Microsoft.Practices.ServiceLocation;
 using System.Linq;
@@ -10,23 +11,23 @@ namespace FamilyBudget.Www.App_CodeBase
     {
         private static IAccountRepository _accountRepository;
         private static ICurrencyProvider _currencyProvider;
-        
+
         public static void Preload()
         {
             _accountRepository = ServiceLocator.Current.GetInstance<IAccountRepository>();
             _currencyProvider = ServiceLocator.Current.GetInstance<ICurrencyProvider>();
 
-            var currencyCodesFrom = _accountRepository.GetAll().Select(a => a.Currency.Code);
-            var currencyCodesTo = _accountRepository.GetAll().Select(a => a.Currency.Code);
+            Account mainAccount = _accountRepository.GetAll().FirstOrDefault(a => a.IsMain);
+            if (mainAccount == null)
+                throw new Exception("Unable to find main account");
 
+            var currencyCodesFrom = _accountRepository.GetAll().Select(a => a.Currency.Code);
+            string mainCurrency = mainAccount.Currency.Code;
             foreach (string currencyCodeFrom in currencyCodesFrom)
             {
-                foreach (var currencyCodeTo in currencyCodesTo)
+                if (currencyCodeFrom != mainCurrency)
                 {
-                    if (currencyCodeFrom != currencyCodeTo)
-                    {
-                        _currencyProvider.DownloadCurrencyRates(currencyCodeFrom, currencyCodeTo);
-                    }
+                    _currencyProvider.DownloadCurrencyRates(currencyCodeFrom, mainCurrency);
                 }
             }
         }

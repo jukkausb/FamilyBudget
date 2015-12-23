@@ -17,5 +17,10 @@ namespace FamilyBudget.Www.App_CodeBase
         {
             return (Exception)HttpContext.Current.Application.Get(GlobalExceptionKey);
         }
+
+        public static void RemoveApplicationWarning()
+        {
+            HttpContext.Current.Application.Remove(GlobalExceptionKey);
+        }
     }
 }

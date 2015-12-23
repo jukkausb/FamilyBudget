@@ -191,7 +191,10 @@ namespace FamilyBudget.Www.Controllers
                 model.MainCurrency = mainCurrencyCode.ToCurrencySymbol();
                 List<Account> accounts = GetAccountsData();
                 List<AccountRateView> accountRateViews = (from account in accounts
-                                                          let accountCurrencyRate = _currencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
+                                                          let accountCurrencyRate =
+                                                              account.Currency.Code != mainCurrencyCode
+                                                                  ? _currencyProvider.GetSellCurrencyRate(account.Currency.Code, mainCurrencyCode) : 1
+
                                                           select new AccountRateView
                                                           {
                                                               Account = account,
@@ -199,11 +202,10 @@ namespace FamilyBudget.Www.Controllers
                                                                   !account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
                                                                       ? new CurrencyRateView
                                                                       {
-                                                                          Rate = accountCurrencyRate,
+                                                                          SellRate = accountCurrencyRate,
                                                                           MainCurrency = mainCurrencyCode.ToCurrencySymbol(),
                                                                           OriginCurrency = account.Currency.Code.ToCurrencySymbol(),
-                                                                          Equivalent =
-                                                                              accountCurrencyRate != null ? accountCurrencyRate.SellRate * account.Balance : 0
+                                                                          Equivalent = accountCurrencyRate * account.Balance
                                                                       }
                                                                       : null
                                                           }).ToList();
@@ -284,11 +286,11 @@ namespace FamilyBudget.Www.Controllers
         [HttpPost]
         public ActionResult Widget_ExpenditureByCategoryCurrentMonth()
         {
-            
+
             var model = new ExpenditureByCategoryWidgetModel
             {
                 Accounts = GetAccountsForDropDownExtended(),
-                
+
                 WidgetClientId = "widget_expenditure_by_category_current_month"
             };
 
@@ -350,12 +352,9 @@ namespace FamilyBudget.Www.Controllers
             {
                 string mainCurrencyCode = mainAccount.Currency.Code;
                 accountEquivalentViews = (from account in accounts
-                                          let accountCurrencyRate = _currencyProvider.GetCurrencyRate(account.Currency.Code, mainCurrencyCode)
+                                          let accountCurrencyRate = _currencyProvider.GetSellCurrencyRate(account.Currency.Code, mainCurrencyCode)
                                           let isMainAccount = account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
-                                          let value = !isMainAccount ? accountCurrencyRate != null
-                                          ? accountCurrencyRate.SellRate * account.Balance
-                                          : account.Balance
-                                          : account.Balance
+                                          let value = !isMainAccount ? accountCurrencyRate * account.Balance : account.Balance
                                           where value > 0
                                           select new AccountCircleEquivalentView
                                           {

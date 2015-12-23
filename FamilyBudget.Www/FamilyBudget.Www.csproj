@@ -159,10 +159,12 @@
     <Compile Include="App_CodeBase\AccountRestoreOperation.cs" />
     <Compile Include="App_CodeBase\AssemblyInfoHelper.cs" />
     <Compile Include="App_CodeBase\CacheHelper.cs" />
-    <Compile Include="App_CodeBase\Csv\CurrencyProvider.cs" />
-    <Compile Include="App_CodeBase\Csv\CurrencyRate.cs" />
+    <Compile Include="App_CodeBase\CBRCurrencyProvider.cs" />
+    <Compile Include="App_CodeBase\Csv\YahooCurrencyProvider.cs" />
+    <Compile Include="App_CodeBase\Csv\YahooCurrencyRate.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRateFileWriter.cs" />
-    <Compile Include="App_CodeBase\Csv\ICurrencyProvider.cs" />
+    <Compile Include="App_CodeBase\CurrencyRate.cs" />
+    <Compile Include="App_CodeBase\ICurrencyProvider.cs" />
     <Compile Include="App_CodeBase\CurrencyRatePreloader.cs" />
     <Compile Include="App_CodeBase\DecimalFormatConverter.cs" />
     <Compile Include="App_CodeBase\DecimalModelBinder.cs" />
@@ -173,6 +175,7 @@
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
+    <Compile Include="App_CodeBase\Valuta.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureByCategoryItem.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureIncomeItem.cs" />
     <Compile Include="App_CodeBase\Widgets\Period.cs" />

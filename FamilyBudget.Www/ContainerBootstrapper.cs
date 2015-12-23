@@ -1,4 +1,5 @@
-﻿using FamilyBudget.Www.App_CodeBase.Csv;
+﻿using FamilyBudget.Www.App_CodeBase;
+using FamilyBudget.Www.App_CodeBase.Csv;
 using FamilyBudget.Www.Areas.Administration.Controllers;
 using FamilyBudget.Www.CallHandlers;
 using FamilyBudget.Www.Controllers;
@@ -20,7 +21,8 @@ namespace FamilyBudget.Www
             InjectionMember[] injectionMembers = { new InterceptionBehavior<PolicyInjectionBehavior>(), new Interceptor<InterfaceInterceptor>() };
             InjectionMember[] injectionMembersType = { new InterceptionBehavior<PolicyInjectionBehavior>(), new Interceptor<VirtualMethodInterceptor>() };
 
-            container.RegisterType(typeof(ICurrencyProvider), typeof(CurrencyProvider), injectionMembers);
+            container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider), injectionMembers);
+            //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider), injectionMembers);
 
             container.RegisterType(typeof(IAccountRepository), typeof(AccountRepository), injectionMembers);
             container.RegisterType(typeof(ICurrencyRepository), typeof(CurrencyRepository), injectionMembers);
