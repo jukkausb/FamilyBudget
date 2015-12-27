@@ -39,7 +39,7 @@ body {
 @media (min-width: 768px) {
     #page-wrapper {
         border-left: 1px solid #e7e7e7;
-        margin: 0 0 0 250px;
+        margin: 0 0 0 300px;
         padding: 10px;
         position: inherit;
     }
@@ -144,7 +144,7 @@ body {
     .navbar-static-side {
         margin-top: 51px;
         position: absolute;
-        width: 250px;
+        width: 300px;
         z-index: 1;
     }
 

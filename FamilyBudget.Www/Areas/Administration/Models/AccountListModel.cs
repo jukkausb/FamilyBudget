@@ -4,7 +4,7 @@ using FamilyBudget.Www.Models.Filter;
 
 namespace FamilyBudget.Www.Areas.Administration.Models
 {
-    public class AccountListModel : BaseListModel<Account, AccountFilterModel>
+    public class AccountListModel : BaseListAwareModel<Account, AccountFilterModel>
     {
     }
 }

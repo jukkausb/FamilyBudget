@@ -55,7 +55,7 @@
 
         <div class="panel-footer">
             @{
-                string queryParams = "/Expenditure" + QueryStringParser.DecodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+                string queryParams = "/Expenditure" + Model.DecodeModelParameters();
                 <a id="backToIncomes" href="@queryParams">Назад к списку расходов</a>
             }
         </div>

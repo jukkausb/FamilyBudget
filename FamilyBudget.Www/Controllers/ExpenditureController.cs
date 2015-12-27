@@ -1,23 +1,22 @@
-﻿using System;
-using System.Data.Common;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
+﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Models;
-using System.Collections.Generic;
 using FamilyBudget.Www.Repository.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Net;
 using System.Transactions;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class ExpenditureController : MoneyControllerBase<Expenditure>
     {
-        private IAccountRepository _accountRepository;
-        private IExpenditureRepository _expenditureRepository;
-        private IExpenditureCategoryRepository _expenditureCategoryRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IExpenditureRepository _expenditureRepository;
+        private readonly IExpenditureCategoryRepository _expenditureCategoryRepository;
 
         public ExpenditureController(IAccountRepository acountRepository, IExpenditureRepository expenditureRepository, IExpenditureCategoryRepository expenditureCategoryRepository)
         {
@@ -67,11 +66,11 @@ namespace FamilyBudget.Www.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ExpenditureModel expenditureModel)
+        public ActionResult Create(ExpenditureModel expenditureModel, int submit)
         {
             if (ModelState.IsValid)
             {
-                using (TransactionScope scope = new TransactionScope())
+                using (var scope = new TransactionScope())
                 {
                     try
                     {
@@ -83,7 +82,15 @@ namespace FamilyBudget.Www.Controllers
                         scope.Complete();
 
                         expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                        return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
+
+                        switch (submit)
+                        {
+                            case 1:
+                                return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
+                            case 2:
+                                return RedirectToAction("Create",
+                                    new { returnParams = Request[QueryStringParser.GridReturnParameters] });
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -134,7 +141,7 @@ namespace FamilyBudget.Www.Controllers
             {
                 try
                 {
-                    using (TransactionScope scope = new TransactionScope())
+                    using (var scope = new TransactionScope())
                     {
                         Expenditure expenditureToRestore = FindAndRestoreAccountBalance(_accountRepository, expenditureModel.Object);
                         Expenditure.Copy(expenditureToRestore, expenditureModel.Object);
@@ -192,7 +199,7 @@ namespace FamilyBudget.Www.Controllers
                 return HttpNotFound();
             }
 
-            using (TransactionScope scope = new TransactionScope())
+            using (var scope = new TransactionScope())
             {
                 try
                 {

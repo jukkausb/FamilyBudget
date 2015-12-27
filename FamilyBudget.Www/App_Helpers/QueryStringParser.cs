@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web;
 using FamilyBudget.Www.Models.Base;
 
@@ -36,19 +37,13 @@ namespace FamilyBudget.Www.App_Helpers
             return Int32.Parse(pageIndexString);
         }
 
-        public static ListSortDirection ParseSortDirection(HttpRequestBase request)
+        public static string ParseSortDirection(HttpRequestBase request)
         {
             if (request == null)
-                return ListSortDirection.Ascending;
+                return "ASC";
 
-            string directionString = request.QueryString[GridSortDirectionParameterName];
-            if (string.IsNullOrEmpty(directionString))
-                return ListSortDirection.Ascending;
-
-            if (directionString.ToLower() == "desc")
-                return ListSortDirection.Descending;
-
-            return ListSortDirection.Ascending;
+            var directionString = request.QueryString[GridSortDirectionParameterName];
+            return string.IsNullOrEmpty(directionString) ? "ASC" : directionString;
         }
 
         #endregion
@@ -62,13 +57,7 @@ namespace FamilyBudget.Www.App_Helpers
 
             string[] parameterSections = returnParams.Split(';');
 
-            foreach (string parameterSection in parameterSections)
-            {
-                if (parameterSection.StartsWith(parameterName))
-                    return parameterSection;
-            }
-
-            return null;
+            return parameterSections.FirstOrDefault(parameterSection => parameterSection.StartsWith(parameterName));
         }
 
         public static int RestorePageIndex(string returnParams)
@@ -94,40 +83,31 @@ namespace FamilyBudget.Www.App_Helpers
             return parameters[1];
         }
 
-        public static ListSortDirection RestoreSortDirection(string returnParams)
+        public static string RestoreSortDirection(string returnParams)
         {
             string parameterSection = GetReturnParamsSection(returnParams, GridSortDirectionParameterName);
             string[] parameters = parameterSection.Split('|');
 
             string directionString = parameters[1];
-            if (string.IsNullOrEmpty(directionString))
-                return ListSortDirection.Ascending;
-
-            int direction = 0;
-            int.TryParse(directionString, out direction);
-
-            if (direction == (int) ListSortDirection.Descending)
-                return ListSortDirection.Descending;
-
-            return ListSortDirection.Ascending;
+            return string.IsNullOrEmpty(directionString) ? "ASC" : directionString;
         }
 
         #endregion
 
-        public static string EncodeGridParameters(int pageIndex, string sortField, ListSortDirection sortDirection)
+        public static string EncodeGridParameters(int pageIndex, string sortField, string sortDirection)
         {
             return string.Format(GridParametersEncodeFormatString,
                 GridPageIndexParameterName, pageIndex,
                 GridSortFieldParameterName, sortField,
-                GridSortDirectionParameterName, (int) sortDirection);
+                GridSortDirectionParameterName, sortDirection);
         }
 
-        public static string DecodeGridParameters(int pageIndex, string sortField, ListSortDirection sortDirection)
+        public static string DecodeGridParameters(int pageIndex, string sortField, string sortDirection)
         {
             return string.Format(GridParametersDecodeFormatString,
                 GridPageIndexParameterName, pageIndex,
                 GridSortFieldParameterName, sortField,
-                GridSortDirectionParameterName, sortDirection == ListSortDirection.Ascending ? "asc" : "desc");
+                GridSortDirectionParameterName, sortDirection);
         }
     }
 }

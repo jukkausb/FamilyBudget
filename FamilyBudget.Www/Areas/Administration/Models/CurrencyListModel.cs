@@ -4,7 +4,7 @@ using FamilyBudget.Www.Models.Filter;
 
 namespace FamilyBudget.Www.Areas.Administration.Models
 {
-    public class CurrencyListModel : BaseListModel<Currency, CurrencyFilterModel>
+    public class CurrencyListModel : BaseListAwareModel<Currency, CurrencyFilterModel>
     {
     }
 }

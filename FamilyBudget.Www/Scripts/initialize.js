@@ -6,7 +6,12 @@ var AddAntiForgeryToken = function(data) {
 function updateSummaField(summaTitleField, accountSelect, summaInputField) {
     var currency = $('option:selected', accountSelect).attr('data-currency');
     if (currency) {
-        $(summaTitleField).html(currency);
+        $(summaTitleField).html('');
+        var valutaImg = document.createElement("img");
+        valutaImg.setAttribute('src', '/Content/flags/' + currency + '.png');
+        valutaImg.setAttribute('width', '20px');
+
+        $(summaTitleField).append(valutaImg);
         $(summaInputField).removeAttr('disabled');
     } else {
         $(summaInputField).attr('disabled', 'disabled');

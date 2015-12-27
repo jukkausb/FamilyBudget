@@ -1,23 +1,22 @@
-﻿using System;
-using System.Data.Common;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
+﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Models;
-using System.Collections.Generic;
 using FamilyBudget.Www.Repository.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Net;
 using System.Transactions;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class IncomeController : MoneyControllerBase<Income>
     {
-        private IAccountRepository _accountRepository;
-        private IIncomeRepository _incomeRepository;
-        private IIncomeCategoryRepository _incomeCategoryRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IIncomeRepository _incomeRepository;
+        private readonly IIncomeCategoryRepository _incomeCategoryRepository;
 
         public IncomeController(IAccountRepository acountRepository, IIncomeRepository incomeRepository, IIncomeCategoryRepository incomeCategoryRepository)
         {
@@ -71,7 +70,7 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (TransactionScope scope = new TransactionScope())
+                using (var scope = new TransactionScope())
                 {
                     try
                     {
@@ -138,7 +137,7 @@ namespace FamilyBudget.Www.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (TransactionScope scope = new TransactionScope())
+                using (var scope = new TransactionScope())
                 {
                     try
                     {
@@ -176,13 +175,13 @@ namespace FamilyBudget.Www.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Income Income = _incomeRepository.FindBy(i => i.ID == id.Value).FirstOrDefault();
-            if (Income == null)
+            Income income = _incomeRepository.FindBy(i => i.ID == id.Value).FirstOrDefault();
+            if (income == null)
             {
                 return HttpNotFound();
             }
 
-            var model = new IncomeModel { Categories = GetIncomeCategories(), Object = Income };
+            var model = new IncomeModel { Categories = GetIncomeCategories(), Object = income };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
             return View(model);
@@ -198,7 +197,7 @@ namespace FamilyBudget.Www.Controllers
                 return HttpNotFound();
             }
 
-            using (TransactionScope scope = new TransactionScope())
+            using (var scope = new TransactionScope())
             {
                 try
                 {

@@ -1,16 +1,15 @@
-﻿@using FamilyBudget.Www.App_Helpers
-@using FamilyBudget.Www.Mvc.Helpers
+﻿@using FamilyBudget.Www.Mvc.Helpers
 @model FamilyBudget.Www.Models.ExpenditureListModel
 
 @{
-    string returnParameters = QueryStringParser.EncodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+    string returnParameters = Model.EncodeModelParameters();
 }
 
 <div class="panel panel-default">
     <div class="panel-heading">
         <b class="page-header">Список затрат</b>
         <div class="pull-right">
-            @Html.ActionLink("Создать", "Create", new {returnParams = @returnParameters}, new {@class = "btn btn-primary"})
+            @Html.ActionLink("Создать", "Create", new { returnParams = @returnParameters }, new { @class = "btn btn-primary" })
         </div>
     </div>
     <!-- /.panel-heading -->
@@ -21,18 +20,21 @@
                 {
                     using (Html.BeginForm(null, null, FormMethod.Get))
                     {
+                        @Html.HiddenFor(e => e.PageIndex, new { @id = "page", @Name = "page" })
+                        @Html.HiddenFor(e => e.SortDirection, new { @id = "sortdir", @Name = "sortdir" })
+                        @Html.HiddenFor(e => e.SortField, new { @id = "sort", @Name = "sort" })
                         Html.EnableClientValidation(false);
                         <div class="well">
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon">@Html.DisplayNameFor(m => m.Filter.Description)</span>
-                                    @Html.TextBoxFor(m => m.Filter.Description, new {@class = "form-control", placeholder = "Описание ..."})
+                                    @Html.TextBoxFor(m => m.Filter.Description, new { @class = "form-control", placeholder = "Описание ..." })
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon">@Html.DisplayNameFor(m => m.Filter.AccountId)</span>
-                                    @Html.DropDownListFor(model => model.Filter.AccountId, Model.Filter.Accounts, null, new {@class = "form-control"})
+                                    @Html.DropDownListFor(model => model.Filter.AccountId, Model.Filter.Accounts, null, new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -50,10 +52,10 @@
                                 grid.Column("Date", "Дата", item => item.Date.ToString("D")),
                                 grid.Column("ExpenditureCategory.Name", "Категория", item => item.ExpenditureCategory.Name),
                                 grid.Column("Summa", "Сумма"),
-                                grid.Column("Account.Name", "Счет", item => string.Format("({0}) {1}", item.Account.Currency.Code, item.Account.Name)),
+                                grid.Column("Account.Currency.Code", "Валюта", item => Html.Raw(string.Format("<img src='/Content/flags/{0}.png'/>", item.Account.Currency.Code))),
                                 grid.Column("Description", "Описание"),
-                                grid.Column(style: "webgrid-editColumn", format: item => Html.ActionLink("Редактировать", "Edit", new {id = item.ID, returnParams = @returnParameters})),
-                                grid.Column(style: "webgrid-deleteColumn", format: item => Html.ActionLink("Удалить", "Delete", new {id = item.ID, returnParams = @returnParameters})
+                                grid.Column(style: "webgrid-editColumn", format: item => Html.ActionLink("Редактировать", "Edit", new { id = item.ID, returnParams = @returnParameters })),
+                                grid.Column(style: "webgrid-deleteColumn", format: item => Html.ActionLink("Удалить", "Delete", new { id = item.ID, returnParams = @returnParameters })
                                     )
                                 ))
                         ;

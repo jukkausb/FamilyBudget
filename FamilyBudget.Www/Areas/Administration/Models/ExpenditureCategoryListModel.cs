@@ -4,7 +4,7 @@ using FamilyBudget.Www.Models.Filter;
 
 namespace FamilyBudget.Www.Areas.Administration.Models
 {
-    public class ExpenditureCategoryListModel : BaseListModel<ExpenditureCategory, ExpenditureCategoryFilterModel>
+    public class ExpenditureCategoryListModel : BaseListAwareModel<ExpenditureCategory, ExpenditureCategoryFilterModel>
     {
     }
 }
