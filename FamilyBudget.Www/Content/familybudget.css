@@ -39,7 +39,7 @@ body {
 @media (min-width: 768px) {
     #page-wrapper {
         border-left: 1px solid #e7e7e7;
-        margin: 0 0 0 300px;
+        margin: 0 0 0 250px;
         padding: 10px;
         position: inherit;
     }
@@ -144,7 +144,7 @@ body {
     .navbar-static-side {
         margin-top: 51px;
         position: absolute;
-        width: 300px;
+        width: 250px;
         z-index: 1;
     }
 
@@ -157,7 +157,7 @@ body {
 
 @media (max-height: 600px) and (max-width: 767px) {
     .sidebar-collapse {
-        max-height: 300px;
+        max-height: 250px;
         overflow-y: scroll;
     }
 }
