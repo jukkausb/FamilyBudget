@@ -490,6 +490,7 @@
     <Content Include="Views\Shared\Warning.cshtml" />
     <Content Include="Views\Home\Widget_ExpenditureByCategoryCurrentMonth.cshtml" />
     <None Include="Service References\CBRService\DailyInfo.wsdl" />
+    <Content Include="Views\Shared\_LayoutLogin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />

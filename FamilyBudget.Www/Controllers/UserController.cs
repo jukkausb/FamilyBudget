@@ -1,22 +1,22 @@
-﻿using System;
-using System.Web.Http;
+﻿using FamilyBudget.Www.App_CodeBase;
+using FamilyBudget.Www.Models;
+using System;
 using System.Web.Mvc;
 using System.Web.Security;
-using FamilyBudget.Www.Models;
-using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Controllers
 {
+    [LayoutInjecter("_LayoutLogin")]
     public class UserController : BaseController
     {
-        [System.Web.Mvc.AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult Login()
         {
             return View();
         }
 
-        [System.Web.Mvc.AllowAnonymous]
-        [System.Web.Mvc.HttpPost]
+        [AllowAnonymous]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model, string returnUrl)
         {

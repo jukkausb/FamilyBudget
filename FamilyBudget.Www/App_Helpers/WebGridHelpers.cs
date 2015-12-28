@@ -30,7 +30,7 @@ namespace FamilyBudget.Www.Mvc.Helpers
         /// </summary>
         /// <returns>Web grid markup</returns>
         public static IHtmlString GetHtmlJqueryUiStyle(this WebGrid webGrid,
-            string tableStyle = "table table-hover",
+            string tableStyle = "table table-hover table-condensed table-striped",
             string selectedRowStyle = null,
             string caption = null,
             bool displayHeader = true,
