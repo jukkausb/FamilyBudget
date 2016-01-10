@@ -1,18 +1,18 @@
-﻿using System;
+﻿using FamilyBudget.Www.App_DataModel;
+using FamilyBudget.Www.Models.Repository.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
-using FamilyBudget.Www.Repository.Interfaces;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class ReportController : BaseController
     {
-        private IExpenditureCategoryRepository _expenditureCategoryRepository;
-        private IIncomeRepository _incomeRepository;
-        private IExpenditureRepository _expenditureRepository;
+        private readonly IExpenditureCategoryRepository _expenditureCategoryRepository;
+        private readonly IIncomeRepository _incomeRepository;
+        private readonly IExpenditureRepository _expenditureRepository;
 
         public ReportController(IExpenditureCategoryRepository expenditureCategoryRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository)
         {

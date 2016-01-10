@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Models.Base
 {
-    public abstract class BaseListModel<T, TK> : BaseListAwareModel<T, TK> where TK : BaseMoneyFilterModel, new()
+    public abstract class BaseListModel<T, TK> : BaseListAwareModel<T> where TK : BaseMoneyFilterModel, new()
     {
         public const string GridFilterDescriptionFieldParameterName = "Filter.Description";
         public const string GridFilterAccountIdFieldParameterName = "Filter.AccountId";
@@ -60,7 +60,7 @@ namespace FamilyBudget.Www.Models.Base
         {
             Filter.Description = RestoreFilterField(returnParameters, GridFilterDescriptionFieldParameterName);
 
-            int accountId = 0;
+            int accountId;
             int.TryParse(RestoreFilterField(returnParameters, GridFilterAccountIdFieldParameterName), out accountId);
             Filter.AccountId = accountId;
         }
@@ -80,15 +80,15 @@ namespace FamilyBudget.Www.Models.Base
 
         protected override string DecodeModelParametersCore()
         {
-            return string.Format("{0}={1}&{2}={3}", IncomeListModel.GridFilterDescriptionFieldParameterName,
+            return string.Format("{0}={1}&{2}={3}", GridFilterDescriptionFieldParameterName,
                 Filter.Description,
-                IncomeListModel.GridFilterAccountIdFieldParameterName, Filter.AccountId);
+                GridFilterAccountIdFieldParameterName, Filter.AccountId);
         }
 
         protected override void AddCustomRouteValues(IDictionary<string, object> dictionary)
         {
-            dictionary.Add(IncomeListModel.GridFilterDescriptionFieldParameterName, Filter.Description);
-            dictionary.Add(IncomeListModel.GridFilterAccountIdFieldParameterName, Filter.AccountId);
+            dictionary.Add(GridFilterDescriptionFieldParameterName, Filter.Description);
+            dictionary.Add(GridFilterAccountIdFieldParameterName, Filter.AccountId);
         }
     }
 }

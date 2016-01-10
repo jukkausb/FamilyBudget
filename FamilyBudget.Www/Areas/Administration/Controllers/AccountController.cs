@@ -1,22 +1,21 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
+﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
+using FamilyBudget.Www.Models.Repository.Interfaces;
+using System;
 using System.Collections.Generic;
-using FamilyBudget.Www.Repository.Interfaces;
 using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class AccountController : BaseController
     {
-        private IAccountRepository _accountRepository;
-        private ICurrencyRepository _currencyRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly ICurrencyRepository _currencyRepository;
 
         public AccountController(IAccountRepository accountRepository, ICurrencyRepository currencyRepository)
         {

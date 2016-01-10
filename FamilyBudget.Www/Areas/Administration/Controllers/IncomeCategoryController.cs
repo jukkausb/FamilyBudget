@@ -1,20 +1,19 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
+﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
-using FamilyBudget.Www.Repository.Interfaces;
+using FamilyBudget.Www.Models.Repository.Interfaces;
+using System;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class IncomeCategoryController : BaseController
     {
-        private IIncomeRepository _incomeRepository;
-        private IIncomeCategoryRepository _incomeCategoryRepository;
+        private readonly IIncomeRepository _incomeRepository;
+        private readonly IIncomeCategoryRepository _incomeCategoryRepository;
 
         public IncomeCategoryController(IIncomeRepository incomeRepository, IIncomeCategoryRepository incomeCategoryRepository)
         {

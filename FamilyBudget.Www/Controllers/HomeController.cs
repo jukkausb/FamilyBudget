@@ -1,29 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_CodeBase;
-using FamilyBudget.Www.App_CodeBase.Csv;
+﻿using FamilyBudget.Www.App_CodeBase;
 using FamilyBudget.Www.App_CodeBase.Widgets;
 using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.App_Utils;
 using FamilyBudget.Www.Models;
 using FamilyBudget.Www.Models.Home;
+using FamilyBudget.Www.Models.Repository.Interfaces;
 using FamilyBudget.Www.Models.Widgets;
-using Microsoft.Practices.Unity;
-using FamilyBudget.Www.Repository.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Controllers
 {
     public class HomeController : BaseController
     {
-        private ICurrencyProvider _currencyProvider;
-        private IAccountRepository _accountRepository;
-        private IIncomeRepository _incomeRepository;
-        private IExpenditureRepository _expenditureRepository;
+        private readonly ICurrencyProvider _currencyProvider;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IIncomeRepository _incomeRepository;
+        private readonly IExpenditureRepository _expenditureRepository;
 
         public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider)
         {

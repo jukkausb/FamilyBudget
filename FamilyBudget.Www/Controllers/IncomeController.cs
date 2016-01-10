@@ -1,7 +1,7 @@
 ﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Models;
-using FamilyBudget.Www.Repository.Interfaces;
+using FamilyBudget.Www.Models.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

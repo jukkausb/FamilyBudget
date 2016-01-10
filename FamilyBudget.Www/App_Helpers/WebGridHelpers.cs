@@ -3,7 +3,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 
-namespace FamilyBudget.Www.Mvc.Helpers
+namespace FamilyBudget.Www.App_Helpers
 {
     /// <summary>
     ///     Represents web grid helper class

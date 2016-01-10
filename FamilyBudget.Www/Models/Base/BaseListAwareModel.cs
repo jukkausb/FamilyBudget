@@ -5,7 +5,7 @@ using System.Web.Routing;
 
 namespace FamilyBudget.Www.Models.Base
 {
-    public abstract class BaseListAwareModel<T, TK> : BaseModel where TK : BaseFilterModel
+    public abstract class BaseListAwareModel<T> : BaseModel
     {
         public T Object { get; set; }
 

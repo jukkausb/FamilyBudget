@@ -8,7 +8,7 @@ namespace FamilyBudget.Www
 {
     public class UnityControllerFactory : DefaultControllerFactory
     {
-        IUnityContainer _container;
+        readonly IUnityContainer _container;
 
         public UnityControllerFactory(IUnityContainer container)
         {

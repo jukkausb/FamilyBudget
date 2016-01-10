@@ -62,7 +62,7 @@ namespace FamilyBudget.Www.Controllers
             base.OnException(filterContext);
             Logger.Error(filterContext.Exception);
             filterContext.ExceptionHandled = true;
-            filterContext.Result = new ViewResult() { ViewName = ErrorViewName, MasterName = "_Layout" };
+            filterContext.Result = new ViewResult { ViewName = ErrorViewName, MasterName = "_Layout" };
         }
     }
 }

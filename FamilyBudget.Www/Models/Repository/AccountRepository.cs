@@ -1,12 +1,10 @@
-﻿using FamilyBudget.Www.App_CodeBase;
-using FamilyBudget.Www.App_DataModel;
-using FamilyBudget.Www.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Web;
+using FamilyBudget.Www.App_CodeBase;
+using FamilyBudget.Www.App_DataModel;
+using FamilyBudget.Www.Models.Repository.Interfaces;
 
-namespace FamilyBudget.Www.Repository
+namespace FamilyBudget.Www.Models.Repository
 {
     public class AccountRepository : GenericRepository<FamilyBudgetEntities, Account>, IAccountRepository
     {

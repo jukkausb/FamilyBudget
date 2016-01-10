@@ -1,20 +1,19 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
+﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
-using FamilyBudget.Www.Repository.Interfaces;
+using FamilyBudget.Www.Models.Repository.Interfaces;
+using System;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class CurrencyController : BaseController
     {
-        private ICurrencyRepository _currencyRepository;
-        private IAccountRepository _accountRepository;
+        private readonly ICurrencyRepository _currencyRepository;
+        private readonly IAccountRepository _accountRepository;
 
         public CurrencyController(ICurrencyRepository currencyRepository, IAccountRepository accountRepository)
         {
@@ -46,9 +45,9 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CurrencyModel CurrencyModel)
+        public ActionResult Create(CurrencyModel currencyModel)
         {
-            if (_currencyRepository.FindBy(c => c.Code.Equals(CurrencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) && c.ID != CurrencyModel.Object.ID).Any())
+            if (_currencyRepository.FindBy(c => c.Code.Equals(currencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) && c.ID != currencyModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Валюта с таким кодом уже существует");
             }
@@ -57,10 +56,10 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    _currencyRepository.Add(CurrencyModel.Object);
+                    _currencyRepository.Add(currencyModel.Object);
                     _currencyRepository.SaveChanges();
-                    CurrencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                    return RedirectToAction("Index", CurrencyModel.ToRouteValueDictionary());
+                    currencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", currencyModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +67,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 }
             }
 
-            return View(CurrencyModel);
+            return View(currencyModel);
         }
 
         public ActionResult Edit(int? id)
@@ -141,7 +140,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int? id, CurrencyModel CurrencyModel)
+        public ActionResult Delete(int? id, CurrencyModel currencyModel)
         {
             if (id == null)
             {
@@ -165,8 +164,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 {
                     _currencyRepository.Delete(currency);
                     _currencyRepository.SaveChanges();
-                    CurrencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                    return RedirectToAction("Index", CurrencyModel.ToRouteValueDictionary());
+                    currencyModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", currencyModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
@@ -174,7 +173,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 }
             }
 
-            return View(CurrencyModel);
+            return View(currencyModel);
         }
     }
 }

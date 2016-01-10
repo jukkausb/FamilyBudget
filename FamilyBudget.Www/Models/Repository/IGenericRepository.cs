@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
-namespace FamilyBudget.Www.Repository
+namespace FamilyBudget.Www.Models.Repository
 {
-    public interface IGenericRepository<TContext, TEntity>
+    public interface IGenericRepository<out TContext, TEntity>
         where TEntity : class
         where TContext : DbContext
     {

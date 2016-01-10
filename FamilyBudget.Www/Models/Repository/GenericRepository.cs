@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 
-namespace FamilyBudget.Www.Repository
+namespace FamilyBudget.Www.Models.Repository
 {
     public abstract class GenericRepository<TContext, TEntity> : IGenericRepository<TContext, TEntity>
         where TEntity : class
         where TContext : DbContext, new()
     {
-        private TContext _entities = new TContext();
+        private readonly TContext _entities = new TContext();
         public TContext Context
         {
 

@@ -1,11 +1,7 @@
 ﻿using FamilyBudget.Www.App_DataModel;
-using FamilyBudget.Www.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using FamilyBudget.Www.Models.Repository.Interfaces;
 
-namespace FamilyBudget.Www.Repository
+namespace FamilyBudget.Www.Models.Repository
 {
     public class ExpenditureCategoryRepository : GenericRepository<FamilyBudgetEntities, ExpenditureCategory>, IExpenditureCategoryRepository
     {

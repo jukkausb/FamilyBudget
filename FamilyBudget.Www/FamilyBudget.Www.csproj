@@ -285,20 +285,20 @@
     <Compile Include="Models\Widgets\MoneyWidgetModelBase.cs" />
     <Compile Include="Models\Widgets\WidgetModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\AccountRepository.cs" />
-    <Compile Include="Repository\CurrencyRepository.cs" />
-    <Compile Include="Repository\ExpenditureCategoryRepository.cs" />
-    <Compile Include="Repository\ExpenditureRepository.cs" />
-    <Compile Include="Repository\GenericRepository.cs" />
-    <Compile Include="Repository\IGenericRepository.cs" />
-    <Compile Include="Repository\IncomeCategoryRepository.cs" />
-    <Compile Include="Repository\IncomeRepository.cs" />
-    <Compile Include="Repository\Interfaces\IAccountRepository.cs" />
-    <Compile Include="Repository\Interfaces\ICurrencyRepository.cs" />
-    <Compile Include="Repository\Interfaces\IExpenditureCategoryRepository.cs" />
-    <Compile Include="Repository\Interfaces\IIncomeRepository.cs" />
-    <Compile Include="Repository\Interfaces\IExpenditureRepository.cs" />
-    <Compile Include="Repository\Interfaces\IIncomeCategoryRepository.cs" />
+    <Compile Include="Models\Repository\AccountRepository.cs" />
+    <Compile Include="Models\Repository\CurrencyRepository.cs" />
+    <Compile Include="Models\Repository\ExpenditureCategoryRepository.cs" />
+    <Compile Include="Models\Repository\ExpenditureRepository.cs" />
+    <Compile Include="Models\Repository\GenericRepository.cs" />
+    <Compile Include="Models\Repository\IGenericRepository.cs" />
+    <Compile Include="Models\Repository\IncomeCategoryRepository.cs" />
+    <Compile Include="Models\Repository\IncomeRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IAccountRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\ICurrencyRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IExpenditureCategoryRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IIncomeRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IExpenditureRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IIncomeCategoryRepository.cs" />
     <Compile Include="Service References\CBRService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

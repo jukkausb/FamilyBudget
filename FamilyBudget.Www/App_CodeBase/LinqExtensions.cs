@@ -57,7 +57,7 @@ namespace FamilyBudget.Www.App_CodeBase
             if (resultSelector == null) throw new ArgumentNullException("resultSelector");
 
             bool leftOuter = outer.IsOuter;
-            bool rightOuter = (inner is JoinedEnumerable<TInner>) && ((JoinedEnumerable<TInner>) inner).IsOuter;
+            bool rightOuter = (inner is JoinedEnumerable<TInner>) && ((JoinedEnumerable<TInner>)inner).IsOuter;
 
             if (leftOuter && rightOuter)
                 return FullOuterJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
@@ -77,9 +77,7 @@ namespace FamilyBudget.Www.App_CodeBase
         {
             ILookup<TKey, TInner> innerLookup = inner.ToLookup(innerKeySelector, comparer);
 
-            foreach (TOuter outerItem in outer)
-                foreach (TInner innerItem in innerLookup[outerKeySelector(outerItem)].DefaultIfEmpty())
-                    yield return resultSelector(outerItem, innerItem);
+            return from outerItem in outer from innerItem in innerLookup[outerKeySelector(outerItem)].DefaultIfEmpty() select resultSelector(outerItem, innerItem);
         }
 
         public static IEnumerable<TResult> RightOuterJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer,
@@ -88,9 +86,7 @@ namespace FamilyBudget.Www.App_CodeBase
         {
             ILookup<TKey, TOuter> outerLookup = outer.ToLookup(outerKeySelector, comparer);
 
-            foreach (TInner innerItem in inner)
-                foreach (TOuter outerItem in outerLookup[innerKeySelector(innerItem)].DefaultIfEmpty())
-                    yield return resultSelector(outerItem, innerItem);
+            return from innerItem in inner from outerItem in outerLookup[innerKeySelector(innerItem)].DefaultIfEmpty() select resultSelector(outerItem, innerItem);
         }
 
         public static IEnumerable<TResult> FullOuterJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer,

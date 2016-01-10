@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
-using FamilyBudget.Www.Models.Base;
 
 namespace FamilyBudget.Www.App_Helpers
 {
@@ -69,7 +68,7 @@ namespace FamilyBudget.Www.App_Helpers
             if (string.IsNullOrEmpty(pageIndexString))
                 return 0;
 
-            int pageIndex = 0;
+            int pageIndex;
             int.TryParse(pageIndexString, out pageIndex);
 
             return pageIndex;

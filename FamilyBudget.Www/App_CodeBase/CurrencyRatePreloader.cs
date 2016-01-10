@@ -1,7 +1,7 @@
 ﻿
 using System;
 using FamilyBudget.Www.App_DataModel;
-using FamilyBudget.Www.Repository.Interfaces;
+using FamilyBudget.Www.Models.Repository.Interfaces;
 using Microsoft.Practices.ServiceLocation;
 using System.Linq;
 

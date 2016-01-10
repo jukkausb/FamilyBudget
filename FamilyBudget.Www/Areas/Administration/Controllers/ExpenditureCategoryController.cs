@@ -1,20 +1,19 @@
-﻿using System;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using FamilyBudget.Www.App_DataModel;
+﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.Areas.Administration.Models;
 using FamilyBudget.Www.Controllers;
-using FamilyBudget.Www.Repository.Interfaces;
+using FamilyBudget.Www.Models.Repository.Interfaces;
+using System;
+using System.Linq;
+using System.Net;
+using System.Web.Mvc;
 
 namespace FamilyBudget.Www.Areas.Administration.Controllers
 {
     public class ExpenditureCategoryController : BaseController
     {
-        private IExpenditureRepository _expenditureRepository;
-        private IExpenditureCategoryRepository _expenditureCategoryRepository;
+        private readonly IExpenditureRepository _expenditureRepository;
+        private readonly IExpenditureCategoryRepository _expenditureCategoryRepository;
 
         public ExpenditureCategoryController(IExpenditureRepository expenditureRepository, IExpenditureCategoryRepository expenditureCategoryRepository)
         {
@@ -46,13 +45,13 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ExpenditureCategoryModel ExpenditureCategoryModel)
+        public ActionResult Create(ExpenditureCategoryModel expenditureCategoryModel)
         {
             if (
                 _expenditureCategoryRepository.FindBy(
                     c =>
-                        c.Name.Equals(ExpenditureCategoryModel.Object.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                        c.ID != ExpenditureCategoryModel.Object.ID).Any())
+                        c.Name.Equals(expenditureCategoryModel.Object.Name, StringComparison.InvariantCultureIgnoreCase) &&
+                        c.ID != expenditureCategoryModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Категория с таким именем уже существует");
             }
@@ -61,10 +60,10 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    _expenditureCategoryRepository.Add(ExpenditureCategoryModel.Object);
+                    _expenditureCategoryRepository.Add(expenditureCategoryModel.Object);
                     _expenditureCategoryRepository.SaveChanges();
-                    ExpenditureCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                    return RedirectToAction("Index", ExpenditureCategoryModel.ToRouteValueDictionary());
+                    expenditureCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", expenditureCategoryModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +71,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 }
             }
 
-            return View(ExpenditureCategoryModel);
+            return View(expenditureCategoryModel);
         }
 
         public ActionResult Edit(int? id)
@@ -97,13 +96,13 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ExpenditureCategoryModel ExpenditureCategoryModel)
+        public ActionResult Edit(ExpenditureCategoryModel expenditureCategoryModel)
         {
             if (
                 _expenditureCategoryRepository.FindBy(
                     c =>
-                        c.Name.Equals(ExpenditureCategoryModel.Object.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                        c.ID != ExpenditureCategoryModel.Object.ID).Any())
+                        c.Name.Equals(expenditureCategoryModel.Object.Name, StringComparison.InvariantCultureIgnoreCase) &&
+                        c.ID != expenditureCategoryModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Категория с таким именем уже существует");
             }
@@ -112,11 +111,11 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
             {
                 try
                 {
-                    _expenditureCategoryRepository.Edit(ExpenditureCategoryModel.Object);
+                    _expenditureCategoryRepository.Edit(expenditureCategoryModel.Object);
                     _expenditureCategoryRepository.SaveChanges();
 
-                    ExpenditureCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                    return RedirectToAction("Index", ExpenditureCategoryModel.ToRouteValueDictionary());
+                    expenditureCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", expenditureCategoryModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
@@ -124,7 +123,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 }
             }
 
-            return View(ExpenditureCategoryModel);
+            return View(expenditureCategoryModel);
         }
 
         public ActionResult Delete(int? id)
@@ -148,7 +147,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int? id, ExpenditureCategoryModel ExpenditureCategoryModel)
+        public ActionResult Delete(int? id, ExpenditureCategoryModel expenditureCategoryModel)
         {
             if (id == null)
             {
@@ -173,8 +172,8 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 {
                     _expenditureCategoryRepository.Delete(expenditureCategory);
                     _expenditureCategoryRepository.SaveChanges();
-                    ExpenditureCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
-                    return RedirectToAction("Index", ExpenditureCategoryModel.ToRouteValueDictionary());
+                    expenditureCategoryModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                    return RedirectToAction("Index", expenditureCategoryModel.ToRouteValueDictionary());
                 }
                 catch (Exception ex)
                 {
@@ -182,7 +181,7 @@ namespace FamilyBudget.Www.Areas.Administration.Controllers
                 }
             }
 
-            return View(ExpenditureCategoryModel);
+            return View(expenditureCategoryModel);
         }
     }
 }

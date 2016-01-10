@@ -1,9 +1,6 @@
 ﻿using FamilyBudget.Www.App_Utils;
 using Microsoft.Practices.Unity.InterceptionExtension;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace FamilyBudget.Www.CallHandlers
 {
@@ -24,7 +21,7 @@ namespace FamilyBudget.Www.CallHandlers
             }
             else
             {
-                WriteInfo(String.Format("{0} OK - {2}", input.MethodBase, result.ReturnValue, DateTime.Now.ToLongTimeString()));
+                WriteInfo(String.Format("{0} OK - {1}", input.MethodBase, DateTime.Now.ToLongTimeString()));
             }
 
             return result;
