@@ -1,0 +1,23 @@
+﻿@model FamilyBudget.Www.Models.Widgets.WealthDynamicModel
+<div id="line-chart-wealth-dynamic"></div>
+<script type="text/javascript">
+    function WealthDynamicCallback() {
+        var containerId = 'line-chart-wealth-dynamic';
+        var lineChart = $(document.getElementById(containerId));
+        lineChart.html('');
+        $.ajax({
+                type: "POST",
+                url: "/Home/Widget_WealthDynamicData",
+            })
+            .done(function(reportData) {
+                Morris.Line({
+                    element: containerId,
+                    data: reportData,
+                    xkey: 'label',
+                    ykeys: ['value'],
+                    labels: ['Накопление'],
+                    lineColors: ['Green']
+                });
+            });
+    }
+</script>

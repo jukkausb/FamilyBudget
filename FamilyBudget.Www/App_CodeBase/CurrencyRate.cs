@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace FamilyBudget.Www.App_CodeBase
 {
     public class CurrencyRate
@@ -9,5 +11,6 @@ namespace FamilyBudget.Www.App_CodeBase
         public string ToValuta { get; set; }
         public decimal Rate { get; set; }
         public decimal Nominal { get; set; }
+        public DateTime Date { get; set; }
     }
 }

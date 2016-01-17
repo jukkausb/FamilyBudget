@@ -58,5 +58,10 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
                 return null;
             }
         }
+
+        public decimal GetSellCurrencyRateAverageForPeriod(string sellCurrencyCode, string purchaseCurrencyCode, int month, int year)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

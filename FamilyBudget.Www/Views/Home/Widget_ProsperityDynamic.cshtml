@@ -1,0 +1,23 @@
+﻿@model FamilyBudget.Www.Models.Widgets.ProsperityDynamicModel
+<div id="line-chart-prosperity-dynamic"></div>
+<script type="text/javascript">
+    function ProsperityDynamicCallback() {
+        var containerId = 'line-chart-prosperity-dynamic';
+        var lineChart = $(document.getElementById(containerId));
+        lineChart.html('');
+        $.ajax({
+                type: "POST",
+                url: "/Home/Widget_ProsperityDynamicData",
+            })
+            .done(function(reportData) {
+                Morris.Line({
+                    element: containerId,
+                    data: reportData,
+                    xkey: 'label',
+                    ykeys: ['value'],
+                    labels: ['Благосостояние'],
+                    lineColors: ['Green']
+                });
+            });
+    }
+</script>

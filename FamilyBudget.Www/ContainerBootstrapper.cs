@@ -22,7 +22,10 @@ namespace FamilyBudget.Www
             InjectionMember[] injectionMembersType = { new InterceptionBehavior<PolicyInjectionBehavior>(), new Interceptor<VirtualMethodInterceptor>() };
 
             container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider), injectionMembers);
+            container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider), injectionMembers);
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider), injectionMembers);
+
+            container.RegisterType(typeof(IProsperityProvider), typeof(ProsperityProvider), injectionMembers);
 
             container.RegisterType(typeof(IAccountRepository), typeof(AccountRepository), injectionMembers);
             container.RegisterType(typeof(ICurrencyRepository), typeof(CurrencyRepository), injectionMembers);

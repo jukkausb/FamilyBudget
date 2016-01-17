@@ -27,6 +27,20 @@ namespace FamilyBudget.Www.App_CodeBase
             return 0;
         }
 
+        public decimal GetSellCurrencyRateAverageForPeriod(string sellCurrencyCode, string purchaseCurrencyCode, int month, int year)
+        {
+            CurrencyRate[] rates = TryGetCurrencyRatesInternal(sellCurrencyCode, purchaseCurrencyCode);
+
+            var startDate = new DateTime(year, month, 1);
+            var endDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
+
+            if (rates != null && rates.Any())
+            {
+                return rates.Where(r => r.Date >= startDate && r.Date <= endDate).Average(r => r.Rate * r.Nominal);
+            }
+            return 0;
+        }
+
         private CurrencyRate[] TryGetCurrencyRatesInternal(string sellCurrencyCode, string purchaseCurrencyCode)
         {
             if (purchaseCurrencyCode != "RUB")
@@ -69,6 +83,7 @@ namespace FamilyBudget.Www.App_CodeBase
                     ToValuta = purchaseCurrencyCode,
                     Rate = row.Field<decimal>("Vcurs"),
                     Nominal = row.Field<decimal>("Vnom"),
+                    Date = row.Field<DateTime>("CursDate")
                 }).ToArray();
 
                 CacheHelper.Add(rates, string.Format(CurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));

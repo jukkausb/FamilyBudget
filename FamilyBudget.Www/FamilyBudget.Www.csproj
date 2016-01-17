@@ -160,10 +160,14 @@
     <Compile Include="App_CodeBase\AssemblyInfoHelper.cs" />
     <Compile Include="App_CodeBase\CacheHelper.cs" />
     <Compile Include="App_CodeBase\CBRCurrencyProvider.cs" />
+    <Compile Include="App_CodeBase\Csv\GoldOunceRateFileWriter.cs" />
+    <Compile Include="App_CodeBase\Csv\GoldOunceRateProvider.cs" />
     <Compile Include="App_CodeBase\Csv\YahooCurrencyProvider.cs" />
+    <Compile Include="App_CodeBase\Csv\GoldOunceRate.cs" />
     <Compile Include="App_CodeBase\Csv\YahooCurrencyRate.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRateFileWriter.cs" />
     <Compile Include="App_CodeBase\CurrencyRate.cs" />
+    <Compile Include="App_CodeBase\GoldOunceRatePreloader.cs" />
     <Compile Include="App_CodeBase\ICurrencyProvider.cs" />
     <Compile Include="App_CodeBase\CurrencyRatePreloader.cs" />
     <Compile Include="App_CodeBase\DecimalFormatConverter.cs" />
@@ -171,10 +175,13 @@
     <Compile Include="App_CodeBase\ExtendedSelectListItem.cs" />
     <Compile Include="App_CodeBase\GlobalExceptionHandler.cs" />
     <Compile Include="App_CodeBase\HandleExceptionAttribute.cs" />
+    <Compile Include="App_CodeBase\IProsperityProvider.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
+    <Compile Include="App_CodeBase\Prosperity.cs" />
+    <Compile Include="App_CodeBase\ProsperityProvider.cs" />
     <Compile Include="App_CodeBase\Valuta.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureByCategoryItem.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureIncomeItem.cs" />
@@ -249,6 +256,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IGoldOunceRateProvider.cs" />
     <Compile Include="Models\Base\BaseMoneyFilterModel.cs" />
     <Compile Include="Models\Base\BaseFilterModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
@@ -261,6 +269,7 @@
     <Compile Include="Models\Home\AccountCircleEquivalentView.cs" />
     <Compile Include="Models\Home\AccountRateView.cs" />
     <Compile Include="Models\Home\CurrencyRateView.cs" />
+    <Compile Include="Models\Home\LabelAndValue.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Base\BaseListAwareModel.cs" />
     <Compile Include="Models\Base\BaseListModel.cs" />
@@ -283,6 +292,8 @@
     <Compile Include="Models\Widgets\ExpenditureByCategoryWidgetModel.cs" />
     <Compile Include="Models\Widgets\ExpenditureIncomeCompareWidgetModel.cs" />
     <Compile Include="Models\Widgets\MoneyWidgetModelBase.cs" />
+    <Compile Include="Models\Widgets\ProsperityDynamicModel.cs" />
+    <Compile Include="Models\Widgets\WealthDynamicModel.cs" />
     <Compile Include="Models\Widgets\WidgetModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Repository\AccountRepository.cs" />
@@ -491,6 +502,8 @@
     <Content Include="Views\Home\Widget_ExpenditureByCategoryCurrentMonth.cshtml" />
     <None Include="Service References\CBRService\DailyInfo.wsdl" />
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
+    <Content Include="Views\Home\Widget_WealthDynamic.cshtml" />
+    <Content Include="Views\Home\Widget_ProsperityDynamic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />

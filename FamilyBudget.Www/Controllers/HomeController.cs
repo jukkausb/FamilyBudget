@@ -22,13 +22,15 @@ namespace FamilyBudget.Www.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
+        private readonly IProsperityProvider _prosperityProvider;
 
-        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider)
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider, IProsperityProvider prosperityProvider)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
             _currencyProvider = currencyProvider;
+            _prosperityProvider = prosperityProvider;
         }
 
         protected List<Account> GetAccountsData()
@@ -75,7 +77,24 @@ namespace FamilyBudget.Www.Controllers
                     Title = "Соотношение доходов и расходов",
                     Url = "/Home/Widget_ExpenditureIncomeCompare",
                     Callback = "ExpenditureIncomeCompareCallback"
+                },
+
+                new Widget
+                {
+                    Id = "widget_wealth_dynamic",
+                    Title = "Динамика накопления",
+                    Url = "/Home/Widget_WealthDynamic",
+                    Callback = "WealthDynamicCallback"
+                },
+
+                new Widget
+                {
+                    Id = "widget_prosperity_dynamic",
+                    Title = "Динамика благосостояния",
+                    Url = "/Home/Widget_ProsperityDynamic",
+                    Callback = "ProsperityDynamicCallback"
                 }
+
             };
         }
 
@@ -284,7 +303,6 @@ namespace FamilyBudget.Www.Controllers
         [HttpPost]
         public ActionResult Widget_ExpenditureByCategoryCurrentMonth()
         {
-
             var model = new ExpenditureByCategoryWidgetModel
             {
                 Accounts = GetAccountsForDropDownExtended(),
@@ -364,6 +382,77 @@ namespace FamilyBudget.Www.Controllers
             return Json(accountEquivalentViews);
         }
 
+        [HttpPost]
+        public ActionResult Widget_WealthDynamic()
+        {
+            return PartialView(new WealthDynamicModel
+            {
+                WidgetClientId = "widget_wealth_dynamic"
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Widget_WealthDynamicData()
+        {
+            var startDate = (new List<DateTime>
+            {
+                _incomeRepository.GetAll().Select(i =>i.Date).Min(),
+                _expenditureRepository.GetAll().Select(i =>i.Date).Min()
+            }).Min();
+
+            var monthRange = EachDay(startDate, DateTime.Now.Date).Select(d => new MonthDefinition
+            {
+                Month = d.Month,
+                Year = d.Year
+            }).Distinct(new MonthDefinitionComparer()).ToList();
+
+            var prosperityList = GetProsperityDynamic(monthRange).ToList();
+
+            return Json(prosperityList.Select(p =>
+                new LabelAndValue
+                {
+                    Label = string.Format("{1}-{0}", p.Month, p.Year),
+                    Value = p.Wealth.ToString("F")
+                }
+                ));
+        }
+
+
+        [HttpPost]
+        public ActionResult Widget_ProsperityDynamic()
+        {
+            return PartialView(new ProsperityDynamicModel
+            {
+                WidgetClientId = "widget_prosperity_dynamic"
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Widget_ProsperityDynamicData()
+        {
+            var startDate = (new List<DateTime>
+            {
+                _incomeRepository.GetAll().Select(i =>i.Date).Min(),
+                _expenditureRepository.GetAll().Select(i =>i.Date).Min()
+            }).Min();
+
+            var monthRange = EachDay(startDate, DateTime.Now.Date).Select(d => new MonthDefinition
+            {
+                Month = d.Month,
+                Year = d.Year
+            }).Distinct(new MonthDefinitionComparer()).ToList();
+
+            var prosperityList = GetProsperityDynamic(monthRange).ToList();
+
+            return Json(prosperityList.Select(p =>
+                new LabelAndValue
+                {
+                    Label = string.Format("{1}-{0}", p.Month, p.Year),
+                    Value = p.ProsperityValue.ToString("F")
+                }
+                ));
+        }
+
         public ActionResult Index()
         {
             var model = new DashboardModel
@@ -387,6 +476,40 @@ namespace FamilyBudget.Www.Controllers
 
             accounts.Insert(0, new ExtendedSelectListItem { Text = " - Выберите счет - ", Value = "" });
             return accounts;
+        }
+
+        private IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+        {
+            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+                yield return day;
+        }
+
+        private IEnumerable<Prosperity> GetProsperityDynamic(IEnumerable<MonthDefinition> monthRange)
+        {
+            return monthRange.Select(m => _prosperityProvider.GetProsperity(m.Month, m.Year));
+        }
+    }
+
+    class MonthDefinition
+    {
+        public int Month { get; set; }
+        public int Year { get; set; }
+    }
+
+    class MonthDefinitionComparer : IEqualityComparer<MonthDefinition>
+    {
+        public bool Equals(MonthDefinition b1, MonthDefinition b2)
+        {
+            if (b2 == null || b1 == null)
+                return false;
+
+            return b1.Month == b2.Month && b1.Year == b2.Year;
+        }
+
+        public int GetHashCode(MonthDefinition bx)
+        {
+            int hCode = bx.Year ^ bx.Month;
+            return hCode.GetHashCode();
         }
     }
 }

@@ -21,6 +21,7 @@ namespace FamilyBudget.Www
             ContainerBootstrapper.Configure();
 
             CurrencyRatePreloader.Preload();
+            GoldOunceRatePreloader.Preload();
         }
     }
 }
