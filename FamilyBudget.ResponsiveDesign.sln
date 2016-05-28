@@ -12,27 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E98978
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "fallone", "http://localhost:32370", "{E6258099-B123-4700-A228-D65FB4118989}"
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_32370"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\..\Users\Artem\Desktop\fallone\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_32370\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_32370"
-		Release.AspNetCompiler.PhysicalPath = "..\..\..\Users\Artem\Desktop\fallone\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_32370\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "..\..\..\Users\Artem\Desktop\fallone\"
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +22,6 @@ Global
 		{8651AA17-B872-48BF-97D1-C8C03511C29B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8651AA17-B872-48BF-97D1-C8C03511C29B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8651AA17-B872-48BF-97D1-C8C03511C29B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6258099-B123-4700-A228-D65FB4118989}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6258099-B123-4700-A228-D65FB4118989}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6258099-B123-4700-A228-D65FB4118989}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6258099-B123-4700-A228-D65FB4118989}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
