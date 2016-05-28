@@ -40,7 +40,7 @@ namespace FamilyBudget.Www.Models.Repository
 
         public virtual void Edit(TEntity entity)
         {
-            _entities.Entry(entity).State = System.Data.EntityState.Modified;
+            _entities.Entry(entity).State = EntityState.Modified;
         }
 
         public virtual void SaveChanges()

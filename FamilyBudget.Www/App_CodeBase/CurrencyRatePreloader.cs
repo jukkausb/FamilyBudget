@@ -1,22 +1,24 @@
 ﻿
-using System;
 using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.Models.Repository.Interfaces;
-using Microsoft.Practices.ServiceLocation;
+using System;
 using System.Linq;
 
 namespace FamilyBudget.Www.App_CodeBase
 {
-    public static class CurrencyRatePreloader
+    public class CurrencyRatePreloader
     {
-        private static IAccountRepository _accountRepository;
-        private static ICurrencyProvider _currencyProvider;
+        private readonly IAccountRepository _accountRepository;
+        private readonly ICurrencyProvider _currencyProvider;
 
-        public static void Preload()
+        public CurrencyRatePreloader(IAccountRepository accountRepository, ICurrencyProvider currencyProvider)
         {
-            _accountRepository = ServiceLocator.Current.GetInstance<IAccountRepository>();
-            _currencyProvider = ServiceLocator.Current.GetInstance<ICurrencyProvider>();
+            _accountRepository = accountRepository;
+            _currencyProvider = currencyProvider;
+        }
 
+        public void Preload()
+        {
             Account mainAccount = _accountRepository.GetAll().FirstOrDefault(a => a.IsMain);
             if (mainAccount == null)
                 throw new Exception("Unable to find main account");

@@ -1,16 +1,18 @@
 ﻿
-using Microsoft.Practices.ServiceLocation;
 
 namespace FamilyBudget.Www.App_CodeBase
 {
-    public static class GoldOunceRatePreloader
+    public class GoldOunceRatePreloader
     {
-        private static IGoldOunceRateProvider _goldOunceRateProvider;
+        private readonly IGoldOunceRateProvider _goldOunceRateProvider;
 
-        public static void Preload()
+        public GoldOunceRatePreloader(IGoldOunceRateProvider goldOunceRateProvider)
         {
-            _goldOunceRateProvider = ServiceLocator.Current.GetInstance<IGoldOunceRateProvider>();
+            _goldOunceRateProvider = goldOunceRateProvider;
+        }
 
+        public void Preload()
+        {
             _goldOunceRateProvider.DownloadGoldOunceRates("USD");
         }
     }

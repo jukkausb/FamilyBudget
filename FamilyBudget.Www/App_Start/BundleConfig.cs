@@ -68,6 +68,36 @@ namespace FamilyBudget.Www
                 "~/Content/familybudget*",
                 "~/Content/ladda*"
                 ));
+
+            AddMobileSpaBundles(bundles);
+        }
+
+        private static void AddMobileSpaBundles(BundleCollection bundles)
+        {
+            bundles.Add(new Bundle("~/Scripts/lib-spa.js")
+                .Include("~/Scripts/moment.js")
+                .Include("~/Scripts/angular.js")
+                .Include("~/Scripts/angular-animate.js")
+                .Include("~/Scripts/angular-loader.js")
+                .Include("~/Scripts/angular-resource.js")
+                .Include("~/Scripts/angular-sanitize.js")
+                .Include("~/Scripts/angular-touch.js")
+                .Include("~/Scripts/angular-route.js")
+                .Include("~/Scripts/angular-ui-router.js")
+                .Include("~/Scripts/angular-messages.js")
+                .Include("~/Scripts/modernizr-2.6.2.js",
+                "~/Scripts/lodash.js"));
+
+            var coreJs = new Bundle("~/Scripts/core.js")
+                .Include("~/Scripts/app/core/core.module.js")
+                .IncludeDirectory("~/Scripts/app/core", "*.js", true);
+            bundles.Add(coreJs);
+
+            var homeJs = new Bundle("~/Scripts/home.js")
+                .Include("~/Scripts/app/home/home.module.js")
+                .IncludeDirectory("~/Scripts/app/home", "*.js", true);
+
+            bundles.Add(homeJs);
         }
     }
 }
