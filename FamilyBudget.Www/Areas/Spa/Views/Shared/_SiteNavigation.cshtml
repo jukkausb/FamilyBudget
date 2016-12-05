@@ -1,0 +1,38 @@
+﻿@using FamilyBudget.Www.Models.Spa.Shared
+@model SiteNavigationViewModel
+
+<div class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            @foreach (LinkContainerModel linkContainer in Model.LinkContainers)
+            {
+                <li>
+                    <a href="@(string.IsNullOrEmpty(linkContainer.Href) ? "" : linkContainer.Href)">
+                        <i class="fa fa-@linkContainer.CssModifier fa-fw"></i> @linkContainer.Title
+                        @if (linkContainer.Links.Any())
+                        {
+                            <span class="fa arrow"></span>
+                        }
+                    </a>
+                    @if (linkContainer.Links.Any())
+                    {
+                        <ul class="nav nav-second-level">
+                            @foreach (var link in linkContainer.Links)
+                            {
+                                <li>
+                                    <a href="@link.Href">@link.Text</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+        @*<form class="navbar-form">
+                <div class="form-group">
+                    <a class="btn btn-success navbar-btn" href="/Income/Create">Новый доход</a>
+                    <a class="btn btn-warning navbar-btn" href="/Expenditure/Create">Новый расход</a>
+                </div>
+            </form>*@
+    </div>
+</div>

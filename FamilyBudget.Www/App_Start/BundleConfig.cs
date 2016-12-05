@@ -74,7 +74,7 @@ namespace FamilyBudget.Www
 
         private static void AddMobileSpaBundles(BundleCollection bundles)
         {
-            bundles.Add(new Bundle("~/Scripts/lib-spa.js")
+            bundles.Add(new Bundle("~/bundles/lib-spa.js")
                 .Include("~/Scripts/moment.js")
                 .Include("~/Scripts/angular.js")
                 .Include("~/Scripts/angular-animate.js")
@@ -88,16 +88,13 @@ namespace FamilyBudget.Www
                 .Include("~/Scripts/modernizr-2.6.2.js",
                 "~/Scripts/lodash.js"));
 
-            var coreJs = new Bundle("~/Scripts/core.js")
+            var dashboardJs = new Bundle("~/bundles/dashboard.js")
                 .Include("~/Scripts/app/core/core.module.js")
-                .IncludeDirectory("~/Scripts/app/core", "*.js", true);
-            bundles.Add(coreJs);
+                .IncludeDirectory("~/Scripts/app/core", "*.js", true)
+                .Include("~/Scripts/app/dashboard/dashboard.module.js")
+                .IncludeDirectory("~/Scripts/app/dashboard", "*.js", true);
 
-            var homeJs = new Bundle("~/Scripts/home.js")
-                .Include("~/Scripts/app/home/home.module.js")
-                .IncludeDirectory("~/Scripts/app/home", "*.js", true);
-
-            bundles.Add(homeJs);
+            bundles.Add(dashboardJs);
         }
     }
 }

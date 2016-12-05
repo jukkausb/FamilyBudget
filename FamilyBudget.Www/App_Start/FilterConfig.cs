@@ -8,6 +8,7 @@ namespace FamilyBudget.Www
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleExceptionAttribute());
+            filters.Add(DependencyResolver.Current.GetService<PageContextActionFilter>());
         }
     }
 }

@@ -28,6 +28,7 @@
     <RestorePackages>true</RestorePackages>
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -241,12 +242,16 @@
     <Compile Include="App_CodeBase\GlobalExceptionHandler.cs" />
     <Compile Include="App_CodeBase\HandleExceptionAttribute.cs" />
     <Compile Include="App_CodeBase\IProsperityProvider.cs" />
+    <Compile Include="App_CodeBase\ISiteMapProvider.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
+    <Compile Include="App_CodeBase\PageContextActionFilter.cs" />
     <Compile Include="App_CodeBase\Prosperity.cs" />
     <Compile Include="App_CodeBase\ProsperityProvider.cs" />
+    <Compile Include="App_CodeBase\SiteMap.cs" />
+    <Compile Include="App_CodeBase\SpaSiteMapProvider.cs" />
     <Compile Include="App_CodeBase\Valuta.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureByCategoryItem.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureIncomeItem.cs" />
@@ -293,6 +298,7 @@
     <Compile Include="App_Helpers\WebGridHelpers.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\JsonConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -309,7 +315,11 @@
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryListModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryModel.cs" />
+    <Compile Include="Areas\Spa\Controllers\Base\BaseSpaController.cs" />
+    <Compile Include="Areas\Spa\Controllers\DefaultController.cs" />
+    <Compile Include="Areas\Spa\SpaAreaRegistration.cs" />
     <Compile Include="CallHandlers\LoggingCallHandler.cs" />
+    <Compile Include="Controllers\Api\AccountBalanceController.cs" />
     <Compile Include="Controllers\Api\IncomeController.cs" />
     <Compile Include="Controllers\ErrorHandlerController.cs" />
     <Compile Include="Controllers\MoneyControllerBase.cs" />
@@ -368,7 +378,14 @@
     <Compile Include="Models\Repository\Interfaces\IExpenditureRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IIncomeCategoryRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IIncomeRepository.cs" />
+    <Compile Include="Models\Spa\AccountModel.cs" />
+    <Compile Include="Models\Spa\DashboardViewModel.cs" />
     <Compile Include="Models\Spa\IncomeModel.cs" />
+    <Compile Include="Models\Spa\Shared\LinkContainerModel.cs" />
+    <Compile Include="Models\Spa\Shared\LinkModel.cs" />
+    <Compile Include="Models\Spa\Shared\PageHeaderViewModel.cs" />
+    <Compile Include="Models\Spa\Shared\PageViewModel.cs" />
+    <Compile Include="Models\Spa\Shared\SiteNavigationViewModel.cs" />
     <Compile Include="Models\WealthModel.cs" />
     <Compile Include="Models\Widgets\AccountBalanceCircleWidgetModel.cs" />
     <Compile Include="Models\Widgets\AccountBalanceWidgetModel.cs" />
@@ -545,20 +562,15 @@
     <Content Include="Scripts\angular-ui\ui-bootstrap.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
-    <Content Include="Scripts\app\core\global-error-handling.js" />
-    <Content Include="Scripts\app\home\controllers\AbcCtrl.js" />
-    <Content Include="Scripts\app\home\controllers\TestCtrl.js" />
-    <Content Include="Scripts\app\home\controllers\DashboardCtrl.js" />
-    <Content Include="Scripts\app\home\controllers\HomeCtrl.js" />
-    <Content Include="Scripts\app\core\CoreCtrl.js" />
-    <Content Include="Scripts\app\core\progress-spinner.js" />
-    <Content Include="Scripts\app\home\home.module.js" />
-    <Content Include="Scripts\app\home\resources\tempRes.js" />
-    <Content Include="Scripts\app\home\templates\abc.tpl.html" />
-    <Content Include="Scripts\app\home\templates\test.tpl.html" />
-    <Content Include="Scripts\app\home\templates\dashboard.tpl.html" />
-    <Content Include="Scripts\app\home\templates\home.tpl.html" />
-    <Content Include="Scripts\app\templates\progress-spinner.tpl.html" />
+    <Content Include="Scripts\app\core\core.module.js" />
+    <Content Include="Scripts\app\dashboard\dashboard.module.js" />
+    <Content Include="Scripts\app\dashboard\overview\accountBalance\account.balance.resource.js" />
+    <Content Include="Scripts\app\dashboard\overview\accountBalance\account.balance.directive.js" />
+    <Content Include="Scripts\app\dashboard\overview\accountBalance\account.balance.tpl.html" />
+    <Content Include="Scripts\app\dashboard\overview\dashboard.overview.controller.js" />
+    <Content Include="Scripts\app\dashboard\overview\dashboard.overview.tpl.html" />
+    <Content Include="Scripts\app\dashboard\dashboard.tpl.html" />
+    <Content Include="Scripts\app\core\filters\filters.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.ru.js" />
@@ -607,7 +619,6 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular-resource.min.js.map" />
     <Content Include="Scripts\angular-sanitize.min.js.map" />
-    <Content Include="Scripts\app\core\core.module.js" />
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\angular-loader.min.js.map" />
     <Content Include="Scripts\errors.json" />
@@ -615,6 +626,9 @@
     <Content Include="Scripts\angular-message-format.min.js.map" />
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-aria.min.js.map" />
+    <Content Include="Areas\Spa\Views\web.config" />
+    <Content Include="Areas\Spa\Views\Default\Index.cshtml" />
+    <Content Include="Areas\Spa\Views\Shared\_SiteNavigation.cshtml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
@@ -1507,11 +1521,12 @@
     <Content Include="Views\Shared\_LayoutLogin.cshtml" />
     <Content Include="Views\Home\Widget_WealthDynamic.cshtml" />
     <Content Include="Views\Home\Widget_ProsperityDynamic.cshtml" />
-    <Content Include="Views\Shared\_Layout.Mobile.cshtml" />
     <Content Include="Views\Home\Index.Mobile.cshtml" />
+    <Content Include="Areas\Spa\Views\Shared\_LayoutSpa.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />
+    <Folder Include="Areas\Spa\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

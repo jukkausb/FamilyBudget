@@ -157,7 +157,7 @@ body {
 
 @media (max-height: 600px) and (max-width: 767px) {
     .sidebar-collapse {
-        max-height: 300px;
+        max-height: 250px;
         overflow-y: scroll;
     }
 }

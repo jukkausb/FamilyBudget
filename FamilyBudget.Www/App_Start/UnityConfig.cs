@@ -36,6 +36,9 @@ namespace FamilyBudget.Www
 
         private static void RegisterControllers(IUnityContainer container)
         {
+            container.RegisterType(typeof(ISiteMapProvider), typeof(SpaSiteMapProvider));
+            container.RegisterType(typeof(PageContextActionFilter), typeof(PageContextActionFilter));
+
             container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider));
             container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider));
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider));

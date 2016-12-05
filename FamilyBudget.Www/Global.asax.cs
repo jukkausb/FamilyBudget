@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using FamilyBudget.Www.App_Start;
 using FamilyBudget.Www.Models.Repository.Interfaces;
 using Microsoft.Practices.Unity;
 
@@ -24,6 +25,8 @@ namespace FamilyBudget.Www
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            JsonConfig.SetSerializerSettings(GlobalConfiguration.Configuration);
 
             PreloadRates(container);
         }

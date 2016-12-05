@@ -4,10 +4,7 @@ namespace FamilyBudget.Www.Areas.Administration
 {
     public class AdministrationAreaRegistration : AreaRegistration
     {
-        public override string AreaName
-        {
-            get { return "Administration"; }
-        }
+        public override string AreaName => "Administration";
 
         public override void RegisterArea(AreaRegistrationContext context)
         {
