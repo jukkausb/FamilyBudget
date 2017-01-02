@@ -43,7 +43,7 @@ namespace FamilyBudget.Www.App_CodeBase
             decimal USDTORUBrate = _currencyProvider.GetSellCurrencyRate("USD", "RUB");
             var goldOunceRate = _goldOunceRateProvider.GetAverageGoldOunceRate("USD", year, month) * USDTORUBrate;
 
-            decimal prosperityValue = wealth / goldOunceRate;
+            decimal prosperityValue = goldOunceRate != 0 ? wealth / goldOunceRate : 0;
 
             return new Prosperity()
             {

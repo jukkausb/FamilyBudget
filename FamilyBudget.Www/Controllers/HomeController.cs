@@ -417,7 +417,6 @@ namespace FamilyBudget.Www.Controllers
                 ));
         }
 
-
         [HttpPost]
         public ActionResult Widget_ProsperityDynamic()
         {

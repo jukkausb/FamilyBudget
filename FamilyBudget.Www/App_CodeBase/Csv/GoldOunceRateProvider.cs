@@ -19,7 +19,11 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
 
             if (rates != null && rates.Any())
             {
-                return rates.Where(r => r.Date.Year == year && r.Date.Month == month).Average(r => r.Rate);
+                var ratesForPeriod = rates.Where(r => r.Date.Year == year && r.Date.Month == month).ToList();
+                if (ratesForPeriod.Any())
+                {
+                    return ratesForPeriod.Average(r => r.Rate);
+                }
             }
 
             return 0;
