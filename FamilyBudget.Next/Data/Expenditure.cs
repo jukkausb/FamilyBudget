@@ -19,5 +19,8 @@ namespace FamilyBudget.Next.Data
 
         public virtual Account Account { get; set; }
         public virtual ExpenditureCategory Category { get; set; }
+
+        public AccountRestoreOperation AccountRestoreOperationType { get; set; }
+        public AccountTransactionOperation AccountTransactionOperationType { get; set; }
     }
 }
