@@ -1,0 +1,1 @@
+﻿This dummy file is needed to force Publish routines copy/create App_Data folder on destination application server
