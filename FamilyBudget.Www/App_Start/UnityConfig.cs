@@ -44,6 +44,7 @@ namespace FamilyBudget.Www
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider));
 
             container.RegisterType(typeof(IProsperityProvider), typeof(ProsperityProvider));
+            container.RegisterType(typeof(INetProfitProvider), typeof(NetProfitProvider));
 
             container.RegisterType(typeof(IAccountRepository), typeof(AccountRepository));
             container.RegisterType(typeof(ICurrencyRepository), typeof(CurrencyRepository));

@@ -23,14 +23,17 @@ namespace FamilyBudget.Www.Controllers
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
         private readonly IProsperityProvider _prosperityProvider;
+        private readonly INetProfitProvider _netProfitProvider;
 
-        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider, IProsperityProvider prosperityProvider)
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, 
+            ICurrencyProvider currencyProvider, IProsperityProvider prosperityProvider, INetProfitProvider netProfitProvider)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
             _currencyProvider = currencyProvider;
             _prosperityProvider = prosperityProvider;
+            _netProfitProvider = netProfitProvider;
         }
 
         protected List<Account> GetAccountsData()
@@ -87,14 +90,21 @@ namespace FamilyBudget.Www.Controllers
                     Callback = "WealthDynamicCallback"
                 },
 
+                //new Widget
+                //{
+                //    Id = "widget_prosperity_dynamic",
+                //    Title = "Динамика благосостояния",
+                //    Url = "/Home/Widget_ProsperityDynamic",
+                //    Callback = "ProsperityDynamicCallback"
+                //},
+
                 new Widget
                 {
-                    Id = "widget_prosperity_dynamic",
-                    Title = "Динамика благосостояния",
-                    Url = "/Home/Widget_ProsperityDynamic",
-                    Callback = "ProsperityDynamicCallback"
+                    Id = "widget_netprofit_dynamic",
+                    Title = "Динамика чистой прибыли",
+                    Url = "/Home/Widget_NetProfitDynamic",
+                    Callback = "NetProfitDynamicCallback"
                 }
-
             };
         }
 
@@ -107,11 +117,11 @@ namespace FamilyBudget.Www.Controllers
                  where income.Date >= startDate.Date && income.Date <= endDate.Date
                  group income by new { income.Date.Year, income.Date.Month }
                      into g
-                     select new
-                     {
-                         Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
-                         IncomeTotal = g.Sum(i => i.Summa)
-                     }).ToList();
+                 select new
+                 {
+                     Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
+                     IncomeTotal = g.Sum(i => i.Summa)
+                 }).ToList();
 
             var expendituresPerMonth =
                 (from expenditure in _expenditureRepository.GetAll()
@@ -119,11 +129,11 @@ namespace FamilyBudget.Www.Controllers
                  where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
                  group expenditure by new { expenditure.Date.Month, expenditure.Date.Year }
                      into g
-                     select new
-                     {
-                         Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
-                         ExpenditureTotal = g.Sum(i => i.Summa)
-                     }).ToList();
+                 select new
+                 {
+                     Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
+                     ExpenditureTotal = g.Sum(i => i.Summa)
+                 }).ToList();
 
             List<ExpenditureIncomeItem> resultsPerMonth = incomesPerMonth.Outer().Join(expendituresPerMonth.Outer(),
                 k => new { k.Period.Year, k.Period.Month },
@@ -154,12 +164,12 @@ namespace FamilyBudget.Www.Controllers
                  where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
                  group expenditure by expenditure.ExpenditureCategory.Name
                      into g
-                     select g).ToList().Select(g =>
-                        new ExpenditureByCategoryItem
-                        {
-                            Category = g.Key,
-                            Total = g.Sum(e => e.Summa).ToString(CultureInfo.CurrentCulture),
-                        }).ToList();
+                 select g).ToList().Select(g =>
+                    new ExpenditureByCategoryItem
+                    {
+                        Category = g.Key,
+                        Total = g.Sum(e => e.Summa).ToString(CultureInfo.CurrentCulture),
+                    }).ToList();
 
             return expendituresPerMonth;
         }
@@ -450,6 +460,50 @@ namespace FamilyBudget.Www.Controllers
                     Value = p.ProsperityValue.ToString("F")
                 }
                 ));
+        }
+
+        [HttpPost]
+        public ActionResult Widget_NetProfitDynamic()
+        {
+            return PartialView(new NetProfitDynamicModel
+            {
+                WidgetClientId = "widget_netprofit_dynamic"
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Widget_NetProfitDynamicData()
+        {
+            var startDate = (new List<DateTime>
+            {
+                _incomeRepository.GetAll().Select(i =>i.Date).Min(),
+                _expenditureRepository.GetAll().Select(i =>i.Date).Min()
+            }).Min();
+
+            var monthRange = EachDay(startDate, DateTime.Now.Date).Select(d => new MonthDefinition
+            {
+                Month = d.Month,
+                Year = d.Year
+            }).Distinct(new MonthDefinitionComparer()).ToList();
+
+            return Json(monthRange.Select(m =>
+                new LabelAndValue
+                {
+                    Label = string.Format("{1}-{0}", m.Month, m.Year),
+                    Value = GetMonthNetProfit(m).ToString("F")
+                }
+                ));
+        }
+
+        private decimal GetMonthNetProfit(MonthDefinition m)
+        {
+            List<Account> accounts = _accountRepository.GetAll().ToList();
+            Account mainAccount = accounts.FirstOrDefault(a => a.IsMain);
+            string mainCurrencyCode = mainAccount?.Currency.Code ?? "RUB";
+
+            var allIncomesInMonth = _incomeRepository.GetAll().Where(i => i.Date.Month == m.Month && i.Date.Year == m.Year).ToList();
+            var allExpenditresInMonth = _expenditureRepository.GetAll().Where(i => i.Date.Month == m.Month && i.Date.Year == m.Year).ToList();
+            return _netProfitProvider.CalculateNetProfit(accounts, allIncomesInMonth, allExpenditresInMonth, mainCurrencyCode);
         }
 
         public ActionResult Index()

@@ -241,12 +241,14 @@
     <Compile Include="App_CodeBase\ExtendedSelectListItem.cs" />
     <Compile Include="App_CodeBase\GlobalExceptionHandler.cs" />
     <Compile Include="App_CodeBase\HandleExceptionAttribute.cs" />
+    <Compile Include="App_CodeBase\INetProfitProvider.cs" />
     <Compile Include="App_CodeBase\IProsperityProvider.cs" />
     <Compile Include="App_CodeBase\ISiteMapProvider.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
+    <Compile Include="App_CodeBase\NetProfitProvider.cs" />
     <Compile Include="App_CodeBase\PageContextActionFilter.cs" />
     <Compile Include="App_CodeBase\Prosperity.cs" />
     <Compile Include="App_CodeBase\ProsperityProvider.cs" />
@@ -392,6 +394,7 @@
     <Compile Include="Models\Widgets\ExpenditureByCategoryWidgetModel.cs" />
     <Compile Include="Models\Widgets\ExpenditureIncomeCompareWidgetModel.cs" />
     <Compile Include="Models\Widgets\MoneyWidgetModelBase.cs" />
+    <Compile Include="Models\Widgets\NetProfitDynamicModel.cs" />
     <Compile Include="Models\Widgets\ProsperityDynamicModel.cs" />
     <Compile Include="Models\Widgets\WealthDynamicModel.cs" />
     <Compile Include="Models\Widgets\WidgetModelBase.cs" />
@@ -1523,6 +1526,7 @@
     <Content Include="Views\Home\Widget_ProsperityDynamic.cshtml" />
     <Content Include="Views\Home\Index.Mobile.cshtml" />
     <Content Include="Areas\Spa\Views\Shared\_LayoutSpa.cshtml" />
+    <Content Include="Views\Home\Widget_NetProfitDynamic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />

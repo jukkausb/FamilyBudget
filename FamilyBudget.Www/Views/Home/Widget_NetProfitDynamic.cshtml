@@ -1,0 +1,23 @@
+﻿@model FamilyBudget.Www.Models.Widgets.NetProfitDynamicModel
+<div id="line-chart-netprofit-dynamic"></div>
+<script type="text/javascript">
+    function NetProfitDynamicCallback() {
+        var containerId = 'line-chart-netprofit-dynamic';
+        var lineChart = $(document.getElementById(containerId));
+        lineChart.html('');
+        $.ajax({
+                type: "POST",
+                url: "/Home/Widget_NetProfitDynamicData",
+            })
+            .done(function(reportData) {
+                Morris.Line({
+                    element: containerId,
+                    data: reportData,
+                    xkey: 'label',
+                    ykeys: ['value'],
+                    labels: ['Чистая прибыль'],
+                    lineColors: ['Green']
+                });
+            });
+    }
+</script>
