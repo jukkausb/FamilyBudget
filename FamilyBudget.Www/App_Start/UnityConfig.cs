@@ -43,6 +43,8 @@ namespace FamilyBudget.Www
             container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider));
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider));
 
+            container.RegisterType(typeof(ITrendCalculator), typeof(TrendCalculator));
+
             container.RegisterType(typeof(IProsperityProvider), typeof(ProsperityProvider));
             container.RegisterType(typeof(INetProfitProvider), typeof(NetProfitProvider));
 

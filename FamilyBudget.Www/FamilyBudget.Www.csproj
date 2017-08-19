@@ -244,6 +244,7 @@
     <Compile Include="App_CodeBase\INetProfitProvider.cs" />
     <Compile Include="App_CodeBase\IProsperityProvider.cs" />
     <Compile Include="App_CodeBase\ISiteMapProvider.cs" />
+    <Compile Include="App_CodeBase\ITrendCalculator.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="App_CodeBase\ProsperityProvider.cs" />
     <Compile Include="App_CodeBase\SiteMap.cs" />
     <Compile Include="App_CodeBase\SpaSiteMapProvider.cs" />
+    <Compile Include="App_CodeBase\TrendCalculator.cs" />
     <Compile Include="App_CodeBase\Valuta.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureByCategoryItem.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureIncomeItem.cs" />
@@ -356,6 +358,7 @@
     <Compile Include="Models\Home\AccountRateView.cs" />
     <Compile Include="Models\Home\CurrencyRateView.cs" />
     <Compile Include="Models\Home\LabelAndValue.cs" />
+    <Compile Include="Models\Home\LabelAndValueWithTrend.cs" />
     <Compile Include="Models\IncomeListModel.cs" />
     <Compile Include="Models\IncomeModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -583,10 +586,6 @@
     <Content Include="Scripts\globalize\globalize.js" />
     <Content Include="Scripts\globalize\jquery.validate.globalize.js" />
     <Content Include="Scripts\globalize\jquery.validate.globalize.min.js" />
-    <Content Include="App_Data\currency-rates-EUR-RUB.csv" />
-    <Content Include="App_Data\currency-rates-RUB-RUB.csv" />
-    <Content Include="App_Data\currency-rates-UAH-RUB.csv" />
-    <Content Include="App_Data\currency-rates-USD-RUB.csv" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -1529,6 +1528,7 @@
     <Content Include="Views\Home\Widget_NetProfitDynamic.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Views\Shared\" />
     <Folder Include="Areas\Spa\Models\" />
   </ItemGroup>

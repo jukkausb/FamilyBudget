@@ -18,15 +18,18 @@ namespace FamilyBudget.Www.Controllers
 {
     public class HomeController : BaseController
     {
+        private readonly DateTime _startDate = new DateTime(2014, 5, 1);
+
         private readonly ICurrencyProvider _currencyProvider;
         private readonly IAccountRepository _accountRepository;
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
         private readonly IProsperityProvider _prosperityProvider;
         private readonly INetProfitProvider _netProfitProvider;
+        private readonly ITrendCalculator _trendCalculator;
 
-        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository, 
-            ICurrencyProvider currencyProvider, IProsperityProvider prosperityProvider, INetProfitProvider netProfitProvider)
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository,
+            ICurrencyProvider currencyProvider, IProsperityProvider prosperityProvider, INetProfitProvider netProfitProvider, ITrendCalculator trendCalculator)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
@@ -34,6 +37,7 @@ namespace FamilyBudget.Www.Controllers
             _currencyProvider = currencyProvider;
             _prosperityProvider = prosperityProvider;
             _netProfitProvider = netProfitProvider;
+            _trendCalculator = trendCalculator;
         }
 
         protected List<Account> GetAccountsData()
@@ -404,13 +408,7 @@ namespace FamilyBudget.Www.Controllers
         [HttpPost]
         public ActionResult Widget_WealthDynamicData()
         {
-            var startDate = (new List<DateTime>
-            {
-                _incomeRepository.GetAll().Select(i =>i.Date).Min(),
-                _expenditureRepository.GetAll().Select(i =>i.Date).Min()
-            }).Min();
-
-            var monthRange = EachDay(startDate, DateTime.Now.Date).Select(d => new MonthDefinition
+            var monthRange = EachDay(_startDate, DateTime.Now.Date).Select(d => new MonthDefinition
             {
                 Month = d.Month,
                 Year = d.Year
@@ -418,13 +416,22 @@ namespace FamilyBudget.Www.Controllers
 
             var prosperityList = GetProsperityDynamic(monthRange).ToList();
 
-            return Json(prosperityList.Select(p =>
-                new LabelAndValue
+            var prosperityWithTrend = prosperityList.Select(p => new TrendLineMonthDefinition()
+            {
+                Month = p.Month,
+                Year = p.Year,
+                Value = p.Wealth
+            }).ToList();
+
+            prosperityWithTrend = _trendCalculator.CalculateTrend(prosperityWithTrend);
+
+            return Json(prosperityWithTrend.Select(p =>
+                new LabelAndValueWithTrend
                 {
                     Label = string.Format("{1}-{0}", p.Month, p.Year),
-                    Value = p.Wealth.ToString("F")
-                }
-                ));
+                    Value = p.Value.ToString("F"),
+                    TrendValue = p.TrendValue.ToString("F"),
+                }));
         }
 
         [HttpPost]
@@ -439,13 +446,7 @@ namespace FamilyBudget.Www.Controllers
         [HttpPost]
         public ActionResult Widget_ProsperityDynamicData()
         {
-            var startDate = (new List<DateTime>
-            {
-                _incomeRepository.GetAll().Select(i =>i.Date).Min(),
-                _expenditureRepository.GetAll().Select(i =>i.Date).Min()
-            }).Min();
-
-            var monthRange = EachDay(startDate, DateTime.Now.Date).Select(d => new MonthDefinition
+            var monthRange = EachDay(_startDate, DateTime.Now.Date).Select(d => new MonthDefinition
             {
                 Month = d.Month,
                 Year = d.Year
@@ -474,23 +475,27 @@ namespace FamilyBudget.Www.Controllers
         [HttpPost]
         public ActionResult Widget_NetProfitDynamicData()
         {
-            var startDate = (new List<DateTime>
-            {
-                _incomeRepository.GetAll().Select(i =>i.Date).Min(),
-                _expenditureRepository.GetAll().Select(i =>i.Date).Min()
-            }).Min();
-
-            var monthRange = EachDay(startDate, DateTime.Now.Date).Select(d => new MonthDefinition
+            var monthRange = EachDay(_startDate, DateTime.Now.Date).Select(d => new MonthDefinition
             {
                 Month = d.Month,
                 Year = d.Year
             }).Distinct(new MonthDefinitionComparer()).ToList();
 
-            return Json(monthRange.Select(m =>
-                new LabelAndValue
+            var wealthWithTrend = monthRange.Select(p => new TrendLineMonthDefinition()
+            {
+                Month = p.Month,
+                Year = p.Year,
+                Value = GetMonthNetProfit(new MonthDefinition() { Month = p.Month, Year = p.Year })
+            }).ToList();
+
+            wealthWithTrend = _trendCalculator.CalculateTrend(wealthWithTrend);
+
+            return Json(wealthWithTrend.Select(m =>
+                new LabelAndValueWithTrend
                 {
                     Label = string.Format("{1}-{0}", m.Month, m.Year),
-                    Value = GetMonthNetProfit(m).ToString("F")
+                    Value = m.Value.ToString("F"),
+                    TrendValue = m.TrendValue.ToString("F"),
                 }
                 ));
         }
@@ -543,10 +548,16 @@ namespace FamilyBudget.Www.Controllers
         }
     }
 
-    class MonthDefinition
+    public class MonthDefinition
     {
         public int Month { get; set; }
         public int Year { get; set; }
+    }
+
+    public class TrendLineMonthDefinition : MonthDefinition
+    {
+        public decimal Value { get; set; }
+        public decimal TrendValue { get; set; }
     }
 
     class MonthDefinitionComparer : IEqualityComparer<MonthDefinition>
