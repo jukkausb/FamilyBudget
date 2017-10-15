@@ -11,31 +11,34 @@
         @using (Html.BeginForm())
         {
             <div class="panel-body">
-                @Html.ValidationSummary(false, "", new {@class = "alert alert-warning alert-dismissable"})
+                @Html.ValidationSummary(false, "", new { @class = "alert alert-warning alert-dismissable" })
                 @Html.AntiForgeryToken()
                 <div class="form-group">
                     @Html.LabelFor(model => model.Object.AccountID)
-                    @Html.ExtendedDropDownListFor(model => model.Object.AccountID, Model.Accounts, null, new {@class = "form-control"})
+                    @Html.ExtendedDropDownListFor(model => model.Object.AccountID, Model.Accounts, null, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(model => model.Object.Date)
                     <div id="datetimepicker" class="input-group date">
-                        @Html.TextBoxFor(model => model.Object.Date, new {@class = "form-control"})
+                        @Html.TextBoxFor(model => model.Object.Date, new { @class = "form-control" })
                         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>@Html.Partial("_TodayLink")</span>
                     </div>
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(model => model.Object.CategoryID)
-                    @Html.DropDownListFor(model => model.Object.CategoryID, Model.Categories, new {@class = "form-control"})
+                    @Html.DropDownListFor(model => model.Object.CategoryID, Model.Categories, new { @class = "form-control" })
                 </div>
                 @Html.LabelFor(model => model.Object.Summa)
                 <div class="form-group input-group">
                     <span class="input-group-addon" id="income_summa_title"></span>
-                    @Html.TextBoxFor(model => model.Object.Summa, new {@class = "form-control"})
+                    @Html.TextBoxFor(model => model.Object.Summa, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(model => model.Object.Description)
-                    @Html.TextAreaFor(model => model.Object.Description, new {@class = "form-control"})
+                    @Html.TextAreaFor(model => model.Object.Description, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.Partial("~/Views/Shared/DisplayTemplates/_Suggestions.cshtml", Model.DescriptionSuggestions)
                 </div>
                 <div class="form-group">
                     <div>
@@ -57,15 +60,15 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         updateSummaField($('#income_summa_title'), $('#Object_AccountID'), $('#Object_Summa'));
 
-        $('#Object_AccountID').change(function() {
+        $('#Object_AccountID').change(function () {
             updateSummaField($('#income_summa_title'), this, $('#Object_Summa'));
         });
 
         initializeDateTimePicker('#datetimepicker');
-        $('.todaySetter').click(function() {
+        $('.todaySetter').click(function () {
             setDate('#datetimepicker');
             return false;
         });

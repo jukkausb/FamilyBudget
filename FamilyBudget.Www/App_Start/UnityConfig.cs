@@ -2,6 +2,7 @@
 using FamilyBudget.Www.App_CodeBase.Csv;
 using FamilyBudget.Www.Areas.Administration.Controllers;
 using FamilyBudget.Www.Controllers;
+using FamilyBudget.Www.Controllers.Services;
 using FamilyBudget.Www.Models.Repository;
 using FamilyBudget.Www.Models.Repository.Interfaces;
 using Microsoft.Practices.Unity;
@@ -54,6 +55,9 @@ namespace FamilyBudget.Www
             container.RegisterType(typeof(IExpenditureRepository), typeof(ExpenditureRepository));
             container.RegisterType(typeof(IIncomeCategoryRepository), typeof(IncomeCategoryRepository));
             container.RegisterType(typeof(IIncomeRepository), typeof(IncomeRepository));
+
+            container.RegisterType(typeof(IIncomeSuggestionService), typeof(IncomeSuggestionService));
+            container.RegisterType(typeof(IExpenditureSuggestionService), typeof(ExpenditureSuggestionService));
 
             container.RegisterType(typeof(HomeController));
             container.RegisterType(typeof(ExpenditureController));

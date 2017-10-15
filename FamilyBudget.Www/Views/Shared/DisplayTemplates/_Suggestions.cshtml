@@ -1,0 +1,13 @@
+﻿@model List<string>
+    <blockquote style="line-height: 40px">
+        @foreach (var suggestion in Model)
+        {
+            <button name="submit" type="button" class="btn" onclick="setDescription(this)">@suggestion</button>
+        }
+    </blockquote>
+    <script type="text/javascript">
+        function setDescription(button) {
+            // Hard-code
+            $('#Object_Description').text(button.innerText);
+        }
+    </script>

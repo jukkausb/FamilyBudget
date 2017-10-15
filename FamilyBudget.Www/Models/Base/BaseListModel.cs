@@ -11,6 +11,8 @@ namespace FamilyBudget.Www.Models.Base
         public const string GridFilterDescriptionFieldParameterName = "Filter.Description";
         public const string GridFilterAccountIdFieldParameterName = "Filter.AccountId";
 
+        public List<string> DescriptionSuggestions { get; set; }
+
         public TK Filter { get; set; }
 
         public IEnumerable<ExtendedSelectListItem> Accounts { get; set; }

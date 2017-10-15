@@ -1,5 +1,6 @@
 ﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
+using FamilyBudget.Www.Controllers.Services;
 using FamilyBudget.Www.Models;
 using FamilyBudget.Www.Models.Repository.Interfaces;
 using System;
@@ -17,12 +18,15 @@ namespace FamilyBudget.Www.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IExpenditureRepository _expenditureRepository;
         private readonly IExpenditureCategoryRepository _expenditureCategoryRepository;
+        private readonly IExpenditureSuggestionService _expenditureSuggestionService;
 
-        public ExpenditureController(IAccountRepository acountRepository, IExpenditureRepository expenditureRepository, IExpenditureCategoryRepository expenditureCategoryRepository)
+        public ExpenditureController(IAccountRepository acountRepository, IExpenditureRepository expenditureRepository, 
+            IExpenditureCategoryRepository expenditureCategoryRepository, IExpenditureSuggestionService expenditureSuggestionService)
         {
             _accountRepository = acountRepository;
             _expenditureRepository = expenditureRepository;
             _expenditureCategoryRepository = expenditureCategoryRepository;
+            _expenditureSuggestionService = expenditureSuggestionService;
         }
 
         public ViewResult Index(int? page, ExpenditureListModel listModel)
@@ -57,7 +61,8 @@ namespace FamilyBudget.Www.Controllers
             var model = new ExpenditureModel
             {
                 Categories = GetExpenditureCategories(),
-                Accounts = GetAccountsForDropDownExtended(_accountRepository)
+                Accounts = GetAccountsForDropDownExtended(_accountRepository),
+                DescriptionSuggestions = _expenditureSuggestionService.GetTopNSuggestions()
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
@@ -126,6 +131,7 @@ namespace FamilyBudget.Www.Controllers
             {
                 Categories = GetExpenditureCategories(),
                 Accounts = GetAccountsForDropDownExtended(_accountRepository),
+                DescriptionSuggestions = _expenditureSuggestionService.GetTopNSuggestions(),
                 Object = expenditure
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);

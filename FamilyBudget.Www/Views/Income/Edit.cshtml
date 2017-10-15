@@ -43,7 +43,9 @@
                     @Html.LabelFor(model => model.Object.Description)
                     @Html.TextAreaFor(model => model.Object.Description, new {@class = "form-control"})
                 </div>
-
+                <div class="form-group">
+                    @Html.Partial("~/Views/Shared/DisplayTemplates/_Suggestions.cshtml", Model.DescriptionSuggestions)
+                </div>
                 <div class="form-group">
                     <div>
                         <button type="submit" class="btn btn-primary">Сохранить</button>

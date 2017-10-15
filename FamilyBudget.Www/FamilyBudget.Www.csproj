@@ -328,6 +328,9 @@
     <Compile Include="Controllers\ErrorHandlerController.cs" />
     <Compile Include="Controllers\MoneyControllerBase.cs" />
     <Compile Include="Controllers\OData\IncomeODataController.cs" />
+    <Compile Include="Controllers\Services\ExpenditureSuggestionService.cs" />
+    <Compile Include="Controllers\Services\IncomeSuggestionService.cs" />
+    <Compile Include="Controllers\Services\SuggestionServiceBase.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Areas\Administration\Controllers\ExpenditureCategoryController.cs" />
@@ -1527,6 +1530,7 @@
     <Content Include="Views\Home\Index.Mobile.cshtml" />
     <Content Include="Areas\Spa\Views\Shared\_LayoutSpa.cshtml" />
     <Content Include="Views\Home\Widget_NetProfitDynamic.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\_Suggestions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />

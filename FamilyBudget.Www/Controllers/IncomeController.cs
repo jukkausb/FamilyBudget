@@ -1,5 +1,6 @@
 ﻿using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
+using FamilyBudget.Www.Controllers.Services;
 using FamilyBudget.Www.Models;
 using FamilyBudget.Www.Models.Repository.Interfaces;
 using System;
@@ -17,12 +18,15 @@ namespace FamilyBudget.Www.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IIncomeRepository _incomeRepository;
         private readonly IIncomeCategoryRepository _incomeCategoryRepository;
+        private readonly IIncomeSuggestionService _incomeSuggestionService;
+        
 
-        public IncomeController(IAccountRepository acountRepository, IIncomeRepository incomeRepository, IIncomeCategoryRepository incomeCategoryRepository)
+        public IncomeController(IAccountRepository acountRepository, IIncomeRepository incomeRepository, IIncomeCategoryRepository incomeCategoryRepository, IIncomeSuggestionService incomeSuggestionService)
         {
             _accountRepository = acountRepository;
             _incomeRepository = incomeRepository;
             _incomeCategoryRepository = incomeCategoryRepository;
+            _incomeSuggestionService = incomeSuggestionService;
         }
 
         public ViewResult Index(int? page, IncomeListModel listModel)
@@ -57,7 +61,8 @@ namespace FamilyBudget.Www.Controllers
             var model = new IncomeModel
             {
                 Categories = GetIncomeCategories(),
-                Accounts = GetAccountsForDropDownExtended(_accountRepository)
+                Accounts = GetAccountsForDropDownExtended(_accountRepository),
+                DescriptionSuggestions = _incomeSuggestionService.GetTopNSuggestions()
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
@@ -124,6 +129,7 @@ namespace FamilyBudget.Www.Controllers
             {
                 Categories = GetIncomeCategories(),
                 Accounts = GetAccountsForDropDownExtended(_accountRepository),
+                DescriptionSuggestions = _incomeSuggestionService.GetTopNSuggestions(),
                 Object = income
             };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
