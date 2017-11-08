@@ -26,28 +26,26 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
 
         private YahooCurrencyRate[] TryGetCurrencyRatesInternal(string sellCurrencyCode, string purchaseCurrencyCode)
         {
+            var engine = new FileHelperEngine<YahooCurrencyRate>();
+            var rates = CacheHelper.Get<YahooCurrencyRate[]>(string.Format(YahooCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
+            if (rates != null)
+            {
+                return rates;
+            }
+
             try
             {
-                var rates =
-                    CacheHelper.Get<YahooCurrencyRate[]>(string.Format(YahooCurrencyRate.CurrencyRateCacheKeyFormat,
-                        sellCurrencyCode, purchaseCurrencyCode));
-                if (rates != null)
-                {
-                    return rates;
-                }
-
                 string csvData;
                 using (var web = new WebClient())
                 {
                     csvData =
                         web.DownloadString(string.Format(YahooCurrencyRate.RateSourceFormatString, sellCurrencyCode,
                             purchaseCurrencyCode));
-                    CurrencyRateFileWriter.SaveRatesToFile(sellCurrencyCode, purchaseCurrencyCode, csvData);
+                    CurrencyRateFileWriter.SaveRatesToCsvFile(sellCurrencyCode, purchaseCurrencyCode, csvData);
                 }
-                var engine = new FileHelperEngine<YahooCurrencyRate>();
+
                 rates = engine.ReadString(csvData);
-                CacheHelper.Add(rates,
-                    string.Format(YahooCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
+                CacheHelper.Add(rates, string.Format(YahooCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
                 GlobalExceptionHandler.RemoveApplicationWarning();
                 return rates;
             }
@@ -55,6 +53,21 @@ namespace FamilyBudget.Www.App_CodeBase.Csv
             {
                 GlobalExceptionHandler.SetApplicationWarning(ex);
                 Logger.Error("Ошибка запроса курсов валют (YahooCurrencyProvider)", ex);
+                Logger.Error("Попытка запроса курсов валют из последних файлов ... (YahooCurrencyProvider)", ex);
+
+                try
+                {
+                    string csvData = CurrencyRateFileWriter.ReadRatesFromCsvFile(sellCurrencyCode, purchaseCurrencyCode);
+                    rates = engine.ReadString(csvData);
+                    CacheHelper.Add(rates, string.Format(YahooCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
+                    GlobalExceptionHandler.RemoveApplicationWarning();
+                }
+                catch (Exception exFiles)
+                {
+                    Logger.Error("Ошибка запроса курсов валют из последних файлов ... (YahooCurrencyProvider)", exFiles);
+                    return null;
+                }
+
                 return null;
             }
         }

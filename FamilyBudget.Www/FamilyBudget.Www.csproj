@@ -29,6 +29,7 @@
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <TargetFrameworkProfile />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -246,6 +247,8 @@
     <Compile Include="App_CodeBase\ISiteMapProvider.cs" />
     <Compile Include="App_CodeBase\ITrendCalculator.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
+    <Compile Include="App_CodeBase\Json\FreeCurrencyConverter.cs" />
+    <Compile Include="App_CodeBase\Json\FreeCurrencyRate.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />

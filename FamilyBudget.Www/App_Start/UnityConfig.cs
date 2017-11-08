@@ -1,5 +1,6 @@
 ﻿using FamilyBudget.Www.App_CodeBase;
 using FamilyBudget.Www.App_CodeBase.Csv;
+using FamilyBudget.Www.App_CodeBase.Json;
 using FamilyBudget.Www.Areas.Administration.Controllers;
 using FamilyBudget.Www.Controllers;
 using FamilyBudget.Www.Controllers.Services;
@@ -40,7 +41,8 @@ namespace FamilyBudget.Www
             container.RegisterType(typeof(ISiteMapProvider), typeof(SpaSiteMapProvider));
             container.RegisterType(typeof(PageContextActionFilter), typeof(PageContextActionFilter));
 
-            container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider));
+            //container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider));
+            container.RegisterType(typeof(ICurrencyProvider), typeof(FreeCurrencyConverter));
             container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider));
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider));
 
