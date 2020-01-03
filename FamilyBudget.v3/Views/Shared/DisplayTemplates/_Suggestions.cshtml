@@ -1,0 +1,15 @@
+﻿@model List<string>
+    <div class="card border-left-success">
+        <div class="card-body">
+            @foreach (var suggestion in Model)
+            {
+                <button name="submit" type="button" class="btn btn-light mb-1 py-1" onclick="setDescription(this)">@suggestion</button>
+            }
+        </div>
+    </div>
+    <script type="text/javascript">
+        function setDescription(button) {
+            // Hard-code
+            $('#Object_Description').val(button.innerText);
+        }
+    </script>

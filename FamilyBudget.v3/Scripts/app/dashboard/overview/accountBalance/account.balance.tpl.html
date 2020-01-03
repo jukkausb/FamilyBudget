@@ -1,0 +1,26 @@
+﻿<div class="col-md-12" data-ng-if="vm.model">
+    <blockquote class="bg-success" data-ng-if="vm.model.wealth">
+        <h2 style="font-family: Verdana">{{vm.model.wealth.value | numberSpaces}} ({{vm.model.wealth.currency}})</h2>
+        <footer>Суммарный эквивалент в основной валюте</footer>
+    </blockquote>
+    <div class="table-responsive" data-ng-if="vm.model.accounts && vm.model.accounts.length > 0">
+        <table class="table table-bordered table-hover" style="font-family: Verdana; font-size: 12px;">
+            <thead>
+                <tr>
+                    <th class="col-md-4">Счет</th>
+                    <th class="col-md-2">Остаток</th>
+                    <th class="col-md-2">Эквивалент</th>
+                    <th class="col-md-2">Курс</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="warning" data-ng-repeat="accountView in vm.model.accounts">
+                    <td>{{accountView.accountModel.displayName}}</td>
+                    <td>{{accountView.accountModel.balance | numberSpaces}} ({{accountView.accountModel.currencySymbol}})</td>
+                    <td>{{accountView.rateView.equivalent | numberSpaces}} ({{vm.model.mainCurrency}})</td>
+                    <td>1 x {{accountView.rateView.originCurrency}} = {{accountView.rateView.sellRate}} ({{vm.model.mainCurrency}})</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

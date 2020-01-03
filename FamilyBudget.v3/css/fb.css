@@ -1,0 +1,41 @@
+﻿body, table td {
+    color: #000000;
+}
+
+.btn-table-action {
+    width: 120px;
+}
+
+.card-body label {
+    font-weight: bold;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 2px solid #b94a48;
+}
+
+
+select.input-validation-error {
+    border: 2px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}

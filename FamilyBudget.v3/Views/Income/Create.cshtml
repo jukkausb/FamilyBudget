@@ -1,0 +1,92 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Models.IncomeModel
+@Scripts.Render("~/bundles/jqueryvalglobalize")
+@Scripts.Render("~/bundles/jqueryval")
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="card">
+            <div class="card-header text-center py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Новый доход</h4>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                <div class="card-body">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.AccountID)
+                            @Html.ExtendedDropDownListFor(model => model.Object.AccountID, Model.Accounts, null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.CategoryID)
+                            @Html.DropDownListFor(model => model.Object.CategoryID, Model.Categories, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Date)
+                            <div class="input-group date mb-3" id="dtDate" data-target-input="nearest">
+                                @Html.TextBoxFor(model => model.Object.Date, new { @class = "form-control datetimepicker-input", data_target = "#dtDate" })
+                                <div class="input-group-append" data-target="#dtDate" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Summa)
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="income_summa_title"></span>
+                                </div>
+                                @Html.TextBoxFor(model => model.Object.Summa, new { @class = "form-control", placeholder = "0.00", pattern = @"^\d*(\.\d{0,2})?$" })
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            @Html.LabelFor(model => model.Object.Description)
+                            @Html.TextAreaFor(model => model.Object.Description, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            @Html.Partial("~/Views/Shared/DisplayTemplates/_Suggestions.cshtml", Model.DescriptionSuggestions)
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="row justify-content-between">
+                                <div class="col-6">
+                                    @{
+                                        string queryParams = "/Income" + Model.DecodeModelParameters();
+                                        <a id="backToIncomes" class="btn btn-primary" href="@queryParams">Назад к списку доходов</a>
+                                    }
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div>
+                                        <button name="submit" type="submit" class="btn btn-secondary" value="2">Сохранить и создать новый доход</button>
+                                        <button name="submit" type="submit" class="btn btn-success" value="1">Сохранить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var summaField = $('#Object_Summa');
+
+        updateSummaField($('#income_summa_title'), $('#Object_AccountID'), summaField);
+        $('#Object_AccountID').change(function () {
+            updateSummaField($('#income_summa_title'), this, summaField);
+        });
+
+        summaField.on('keypress', function (e) {
+            return isDecimalInput(this, event);
+        })
+
+        initializeDateTimePicker('#dtDate', new Date());
+    });
+
+</script>

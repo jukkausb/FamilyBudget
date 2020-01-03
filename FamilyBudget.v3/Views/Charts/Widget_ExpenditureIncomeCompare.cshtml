@@ -1,0 +1,57 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Models.Widgets.ExpenditureIncomeCompareWidgetModel
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.StartDate, Model.StartDate.ToShortDateString(), new { id = "StartDate", name = "StartDate", @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.EndDate, Model.EndDate.ToShortDateString(), new { id = "EndDate", name = "EndDate", @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <button class="btn btn-info" onclick=" ExpenditureIncomeCompareCallback() "><span class="glyphicon glyphicon-refresh"></span> Обновить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div id="morris-bar-chart-expenditure-income-compare"></div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#StartDate, #EndDate').datetimepicker({
+            locale: 'ru',
+            format: 'L'
+        });
+    });
+
+    function ExpenditureIncomeCompareCallback() {
+        var containerId = 'morris-bar-chart-expenditure-income-compare';
+        $(document.getElementById(containerId)).html('');
+        var selectedStartDate = $('#@Model.WidgetClientId').find('#StartDate').val();
+        var selectedEndDate = $('#@Model.WidgetClientId').find('#EndDate').val();
+
+        $.ajax({
+            type: "POST",
+            data: { startDate: selectedStartDate, endDate: selectedEndDate },
+            url: "/Charts/Widget_ExpenditureIncomeCompareData",
+        })
+            .done(function (reportData) {
+                Morris.Bar({
+                    element: containerId,
+                    data: reportData,
+                    xkey: 'period',
+                    ykeys: ['expenditure', 'income'],
+                    labels: ['Расходы', 'Доходы'],
+                    hideHover: 'auto',
+                    resize: true
+                });
+            });
+    }
+</script>

@@ -1,0 +1,51 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Areas.Administration.Models.AccountModel
+
+@{
+    ViewBag.Title = "Новый счет";
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <b class="page-header">Новый счет</b>
+        </div>
+
+        @using (Html.BeginForm())
+        {
+            <div class="panel-body">
+                @Html.ValidationSummary(false, "", new {@class = "alert alert-warning alert-dismissable"})
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Object.CurrencyID)
+                    @Html.DropDownListFor(model => model.Object.CurrencyID, Model.Currencies, new {@class = "form-control"})
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Object.Name)
+                    @Html.TextBoxFor(model => model.Object.Name, new {@class = "form-control"})
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Object.Balance)
+                    @Html.Raw("0,00")
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Object.IsMain)
+                    @Html.CheckBoxFor(model => model.Object.IsMain)
+                </div>
+                <div class="form-group">
+                    <div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="panel-footer">
+            @{
+                string queryParams = "/Administration/Account" + QueryStringParser.DecodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+                <a id="backToIncomes" href="@queryParams">Назад к списку счетов</a>
+            }
+        </div>
+    </div>
+</div>

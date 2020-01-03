@@ -1,0 +1,78 @@
+﻿@model FamilyBudget.v3.Models.IncomeModel
+
+@{
+    ViewBag.Title = "Удаление дохода";
+}
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="card">
+            <div class="card-header text-center py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Удалить доход?</h4>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                <div class="card-body">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.Object.ID)
+                    @Html.HiddenFor(model => model.Object.Date)
+                    @Html.HiddenFor(model => model.Object.IncomeCategory.Name)
+                    @Html.HiddenFor(model => model.Object.OldAccountID)
+                    @Html.HiddenFor(model => model.Object.AccountID)
+                    @Html.HiddenFor(model => model.Object.Summa)
+                    @Html.HiddenFor(model => model.Object.Description)
+
+                    <input type="hidden" id="hdnAccountId" name="hdnAccountId" value="@Model.Object.AccountID" />
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.AccountID)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.Account.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.CategoryID)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.IncomeCategory.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Date)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.Date)
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Summa)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.Summa)
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            @Html.LabelFor(model => model.Object.Description)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.Description)
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="row justify-content-between">
+                                <div class="col-6">
+                                    @{
+                                        string queryParams = "/Income" + Model.DecodeModelParameters();
+                                        <a id="backToIncomes" class="btn btn-primary" href="@queryParams">Назад к списку доходов</a>
+                                    }
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div>
+                                        <button name="submit" type="submit" class="btn btn-danger" value="1">Удалить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

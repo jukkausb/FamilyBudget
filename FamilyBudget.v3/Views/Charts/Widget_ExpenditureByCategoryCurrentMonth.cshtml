@@ -1,0 +1,34 @@
+﻿@model FamilyBudget.v3.Models.Widgets.ExpenditureByCategoryWidgetModel
+<div class="col-md-12">
+    <div class="col-md-6">
+        <div class="form-group">
+            <button class="btn btn-info" onclick=" ExpenditureByCategoryCurrentMonthCallback() "><span class="glyphicon glyphicon-refresh"></span> Обновить</button>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div id="morris-bar-chart-expenditure-by-category-current-month"></div>
+</div>
+
+<script type="text/javascript">
+    function ExpenditureByCategoryCurrentMonthCallback() {
+        var containerId = 'morris-bar-chart-expenditure-by-category-current-month';
+        $(document.getElementById(containerId)).html('');
+
+        $.ajax({
+            type: "POST",
+            url: "/Charts/Widget_ExpenditureByCategoryCurrentMonthData",
+        })
+            .done(function (reportData) {
+                Morris.Bar({
+                    element: containerId,
+                    data: reportData,
+                    xkey: 'category',
+                    ykeys: ['total'],
+                    labels: ['Категория'],
+                    hideHover: 'auto',
+                    resize: true
+                });
+            });
+    }
+</script>
