@@ -25,19 +25,25 @@
                         @Html.HiddenFor(e => e.SortField, new { @id = "sort", @Name = "sort" })
                         Html.EnableClientValidation(false);
                         <div class="well">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-addon">@Html.DisplayNameFor(m => m.Filter.CategoryId)</span>
+                                    @Html.DropDownListFor(model => model.Filter.CategoryId, Model.Filter.Categories, null, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="input-group">
                                     <span class="input-group-addon">@Html.DisplayNameFor(m => m.Filter.Description)</span>
                                     @Html.TextBoxFor(m => m.Filter.Description, new { @class = "form-control", placeholder = "Описание ..." })
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="input-group">
                                     <span class="input-group-addon">@Html.DisplayNameFor(m => m.Filter.AccountId)</span>
                                     @Html.DropDownListFor(model => model.Filter.AccountId, Model.Filter.Accounts, null, new { @class = "form-control" })
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <button type="submit" class="btn btn-default">
                                     <i class="fa fa-search">&nbsp;Фильтр</i>
                                 </button>
@@ -48,16 +54,16 @@
                         </div>
                         WebGrid grid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.Entities, rowsPerPage: Model.PageSize, canPage: true, canSort: true, defaultSort: "Date");
                         @grid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
-                            columns: grid.Columns(
-                                grid.Column("Date", "Дата", item => item.Date.ToString("D")),
-                                grid.Column("ExpenditureCategory.Name", "Категория", item => item.ExpenditureCategory.Name),
-                                grid.Column("Summa", "Сумма"),
-                                grid.Column("Account.Currency.Code", "Валюта", item => Html.Raw(string.Format("<img src='/Content/flags/{0}.png'/>", item.Account.Currency.Code))),
-                                grid.Column("Description", "Описание"),
-                                grid.Column(style: "webgrid-editColumn", format: item => Html.ActionLink("Редактировать", "Edit", new { id = item.ID, returnParams = @returnParameters })),
-                                grid.Column(style: "webgrid-deleteColumn", format: item => Html.ActionLink("Удалить", "Delete", new { id = item.ID, returnParams = @returnParameters })
-                                    )
-                                ))
+                                 columns: grid.Columns(
+                                     grid.Column("Date", "Дата", item => item.Date.ToString("D")),
+                                     grid.Column("ExpenditureCategory.Name", "Категория", item => item.ExpenditureCategory.Name),
+                                     grid.Column("Summa", "Сумма"),
+                                     grid.Column("Account.Currency.Code", "Валюта", item => Html.Raw(string.Format("<img src='/Content/flags/{0}.png'/>", item.Account.Currency.Code))),
+                                     grid.Column("Description", "Описание"),
+                                     grid.Column(style: "webgrid-editColumn", format: item => Html.ActionLink("Редактировать", "Edit", new { id = item.ID, returnParams = @returnParameters })),
+                                     grid.Column(style: "webgrid-deleteColumn", format: item => Html.ActionLink("Удалить", "Delete", new { id = item.ID, returnParams = @returnParameters })
+                                         )
+                                     ))
                         ;
                     }
                 }

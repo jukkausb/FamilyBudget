@@ -35,6 +35,7 @@ namespace FamilyBudget.Www.Controllers
             {
                 listModel.ParseModelState(Request);
                 listModel.InitializeFilter(GetAccountsForDropDownExtended(_accountRepository));
+                listModel.InitializeCategories(GetExpenditureCategories());
                 IQueryable<Expenditure> query = _expenditureRepository.Context.Expenditure.AsQueryable();
 
                 if (!string.IsNullOrEmpty(listModel.Filter.Description))
@@ -45,6 +46,11 @@ namespace FamilyBudget.Www.Controllers
                 if (listModel.Filter.AccountId > 0)
                 {
                     query = query.Where(i => i.AccountID == listModel.Filter.AccountId);
+                }
+
+                if (listModel.Filter.CategoryId > 0)
+                {
+                    query = query.Where(i => i.CategoryID == listModel.Filter.CategoryId);
                 }
 
                 listModel.Entities = query.ToList();

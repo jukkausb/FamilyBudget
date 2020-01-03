@@ -19,12 +19,16 @@ namespace FamilyBudget.Www.Controllers.Api
     public class AccountBalanceController : ApiController
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IExpenditureRepository _expenditureRepository;
+        private readonly IIncomeRepository _incomeRepository;
         private readonly ICurrencyProvider _currencyProvider;
 
-        public AccountBalanceController(IAccountRepository accountRepository, ICurrencyProvider currencyProvider)
+        public AccountBalanceController(IAccountRepository accountRepository, ICurrencyProvider currencyProvider, IExpenditureRepository expenditureRepository, IIncomeRepository incomeRepository)
         {
             _accountRepository = accountRepository;
             _currencyProvider = currencyProvider;
+            _expenditureRepository = expenditureRepository;
+            _incomeRepository = incomeRepository;
         }
 
         public HttpResponseMessage Get()
@@ -48,9 +52,11 @@ namespace FamilyBudget.Www.Controllers.Api
 
                                                           select new AccountRateView
                                                           {
+                                                              Account = account,
                                                               AccountModel = new AccountModel()
                                                               {
                                                                   Balance = account.Balance,
+                                                                  BalanceReal = GetRealAccountBalance(account),
                                                                   CurrencySymbol = account.Currency.Code.ToCurrencySymbol(),
                                                                   DisplayName = account.DisplayName
                                                               },
@@ -72,6 +78,31 @@ namespace FamilyBudget.Www.Controllers.Api
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, model);
+        }
+
+        private decimal GetRealAccountBalance(Account account)
+        {
+            if (account == null)
+            {
+                return 0;
+            }
+
+            decimal incomeValue = 0;
+            decimal expenditureValue = 0;
+
+            bool anyIncome = _incomeRepository.GetAll().Where(i => i.AccountID == account.ID).Any();
+            if (anyIncome)
+            {
+                incomeValue = _incomeRepository.GetAll().Where(i => i.AccountID == account.ID).Sum(i => i.Summa);
+            }
+
+            bool anyExpenditure = _expenditureRepository.GetAll().Where(i => i.AccountID == account.ID).Any();
+            if (anyExpenditure)
+            {
+                expenditureValue = _expenditureRepository.GetAll().Where(i => i.AccountID == account.ID).Sum(i => i.Summa);
+            }
+
+            return incomeValue - expenditureValue;
         }
 
         private decimal CalculateWealth(string mainCurrencyCode)

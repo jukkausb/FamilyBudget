@@ -7,6 +7,7 @@ using System.Web.Routing;
 using FamilyBudget.Www.App_Start;
 using FamilyBudget.Www.Models.Repository.Interfaces;
 using Microsoft.Practices.Unity;
+using System.Net;
 
 namespace FamilyBudget.Www
 {
@@ -14,6 +15,8 @@ namespace FamilyBudget.Www
     {
         protected void Application_Start()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             IUnityContainer container = UnityConfig.RegisterComponents();
 
             AreaRegistration.RegisterAllAreas();

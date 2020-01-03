@@ -3,6 +3,7 @@ using FamilyBudget.Www.App_CodeBase.Widgets;
 using FamilyBudget.Www.App_DataModel;
 using FamilyBudget.Www.App_Helpers;
 using FamilyBudget.Www.App_Utils;
+using FamilyBudget.Www.Models.Spa;
 using FamilyBudget.Www.Models;
 using FamilyBudget.Www.Models.Home;
 using FamilyBudget.Www.Models.Repository.Interfaces;
@@ -199,6 +200,7 @@ namespace FamilyBudget.Www.Controllers
             return wealthValue;
         }
 
+
         #endregion
 
         public ActionResult GetWidgetDefinitions()
@@ -229,6 +231,13 @@ namespace FamilyBudget.Www.Controllers
                                                           select new AccountRateView
                                                           {
                                                               Account = account,
+                                                              AccountModel = new AccountModel()
+                                                              {
+                                                                  Balance = account.Balance,
+                                                                  BalanceReal = GetRealAccountBalance(account),
+                                                                  CurrencySymbol = account.Currency.Code.ToCurrencySymbol(),
+                                                                  DisplayName = account.DisplayName
+                                                              },
                                                               RateView =
                                                                   !account.Currency.Code.Equals(mainCurrencyCode, StringComparison.InvariantCultureIgnoreCase)
                                                                       ? new CurrencyRateView
@@ -498,6 +507,31 @@ namespace FamilyBudget.Www.Controllers
                     TrendValue = m.TrendValue.ToString("F"),
                 }
                 ));
+        }
+
+        private decimal GetRealAccountBalance(Account account)
+        {
+            if (account == null)
+            {
+                return 0;
+            }
+
+            decimal incomeValue = 0;
+            decimal expenditureValue = 0;
+
+            bool anyIncome = _incomeRepository.GetAll().Where(i => i.AccountID == account.ID).Any();
+            if (anyIncome)
+            {
+                incomeValue = _incomeRepository.GetAll().Where(i => i.AccountID == account.ID).Sum(i => i.Summa);
+            }
+
+            bool anyExpenditure = _expenditureRepository.GetAll().Where(i => i.AccountID == account.ID).Any();
+            if (anyExpenditure)
+            {
+                expenditureValue = _expenditureRepository.GetAll().Where(i => i.AccountID == account.ID).Sum(i => i.Summa);
+            }
+
+            return incomeValue - expenditureValue;
         }
 
         private decimal GetMonthNetProfit(MonthDefinition m)

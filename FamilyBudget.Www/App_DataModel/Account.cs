@@ -24,6 +24,7 @@ namespace FamilyBudget.Www.App_DataModel
         public string Name { get; set; }
         public int CurrencyID { get; set; }
         public decimal Balance { get; set; }
+        public decimal BalanceReal { get; set; }
         public bool IsMain { get; set; }
     
         public virtual Currency Currency { get; set; }
