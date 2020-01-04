@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 using FamilyBudget.v3.App_CodeBase;
 
 namespace FamilyBudget.v3.App_Helpers
@@ -20,6 +21,8 @@ namespace FamilyBudget.v3.App_Helpers
                 helper.ViewContext.FormContext = new FormContext();
             }
         }
+
+
     }
 
     public static class SelectExtensions
@@ -192,11 +195,11 @@ namespace FamilyBudget.v3.App_Helpers
             }
             else
             {
-                defaultValues = new[] {defaultValue};
+                defaultValues = new[] { defaultValue };
             }
 
             IEnumerable<string> values = from object value in defaultValues
-                select Convert.ToString(value, CultureInfo.CurrentCulture);
+                                         select Convert.ToString(value, CultureInfo.CurrentCulture);
             var selectedValues = new HashSet<string>(values, StringComparer.OrdinalIgnoreCase);
             var newSelectList = new List<ExtendedSelectListItem>();
 
@@ -243,8 +246,8 @@ namespace FamilyBudget.v3.App_Helpers
             }
 
             object defaultValue = (allowMultiple)
-                ? htmlHelper.GetModelStateValue(fullName, typeof (string[]))
-                : htmlHelper.GetModelStateValue(fullName, typeof (string));
+                ? htmlHelper.GetModelStateValue(fullName, typeof(string[]))
+                : htmlHelper.GetModelStateValue(fullName, typeof(string));
 
             // If we haven't already used ViewData to get the entire list of items then we need to
             // use the ViewData-supplied value before using the parameter-supplied value.
@@ -303,6 +306,23 @@ namespace FamilyBudget.v3.App_Helpers
             tagBuilder.MergeAttributes(htmlHelper.GetUnobtrusiveValidationAttributes(name, metadata));
 
             return new MvcHtmlString(tagBuilder.ToString(TagRenderMode.Normal));
+        }
+    }
+}
+
+namespace System.Web.Mvc
+{
+    public static class HtmlHelperExtentions
+    {
+        public static string FamilyBudgetValidationSummary(this HtmlHelper html)
+        {
+            if (!html.ViewData.ModelState.IsValid)
+            {
+                return "<div class=\"card card-validation mb-4 pt-3 border-left-danger\"><div class=\"card-body\">"
+                  + html.ValidationSummary(false) + "</div></div>";
+            }
+
+            return "";
         }
     }
 }

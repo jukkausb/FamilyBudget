@@ -1517,7 +1517,6 @@
     <Content Include="Views\Income\Delete.cshtml" />
     <Content Include="Views\Income\Edit.cshtml" />
     <Content Include="Views\Income\Index.cshtml" />
-    <Content Include="Views\Home\Widget_AccountBalance.cshtml" />
     <Content Include="Views\Shared\_LoadingIndicator.cshtml" />
     <Content Include="Views\Shared\_Widget.cshtml" />
     <Content Include="Views\Home\Widget_ExpenditureIncomeCompare.cshtml" />

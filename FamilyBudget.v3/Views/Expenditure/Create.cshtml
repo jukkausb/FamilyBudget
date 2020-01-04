@@ -5,63 +5,77 @@
     ViewBag.Title = "Новый расход";
 }
 
+@Scripts.Render("~/bundles/jqueryvalglobalize")
 @Scripts.Render("~/bundles/jqueryval")
 
-<div class="col-md-6 col-md-offset-3">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <b class="page-header">Новый расход</b>
-        </div>
-
-        @using (Html.BeginForm())
-        {
-            <div class="panel-body">
-
-                @Html.ValidationSummary(false, "", new {@class = "alert alert-warning alert-dismissable"})
-                @Html.AntiForgeryToken()
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Object.AccountID)
-                    @Html.ExtendedDropDownListFor(model => model.Object.AccountID, Model.Accounts, null, new {@class = "form-control"})
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Object.Date)
-                    <div id="datetimepicker" class="input-group date">
-                        @Html.TextBoxFor(model => model.Object.Date, new {@class = "form-control"})
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                            @Html.Partial("_TodayLink")
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Object.CategoryID)
-                    @Html.DropDownListFor(model => model.Object.CategoryID, Model.Categories, new {@class = "form-control"})
-                </div>
-                @Html.LabelFor(model => model.Object.Summa)
-                <div class="form-group input-group">
-                    <span class="input-group-addon" id="expenditure_summa_title"></span>
-                    @Html.TextBoxFor(model => model.Object.Summa, new {@class = "form-control"})
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Object.Description)
-                    @Html.TextAreaFor(model => model.Object.Description, new {@class = "form-control"})
-                </div>
-                <div class="form-group">
-                    @Html.Partial("~/Views/Shared/DisplayTemplates/_Suggestions.cshtml", Model.DescriptionSuggestions)
-                </div>
-                <div class="form-group">
-                    <div>
-                        <button name="submit" type="submit" class="btn btn-primary" value="1">Сохранить</button>
-                        <button name="submit" type="submit" class="btn btn-primary" value="2">Сохранить и создать новый расход</button>
-                    </div>
-                </div>
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="card">
+            <div class="card-header text-center py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Новый расход</h4>
             </div>
-        }
 
-        <div class="panel-footer">
-            @{
-                string queryParams = "/Expenditure" + Model.DecodeModelParameters();
-                <a id="backToIncomes" href="@queryParams">Назад к списку расходов</a>
+            @using (Html.BeginForm())
+            {
+                <div class="card-body">
+                    @Html.AntiForgeryToken()
+                    @Html.Raw(Html.FamilyBudgetValidationSummary())
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.AccountID)
+                            @Html.ExtendedDropDownListFor(model => model.Object.AccountID, Model.Accounts, null, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Object.AccountID)
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.CategoryID)
+                            @Html.DropDownListFor(model => model.Object.CategoryID, Model.Categories, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Object.CategoryID)
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Date)
+                            <div class="input-group date" id="dtDate" data-target-input="nearest">
+                                @Html.TextBoxFor(model => model.Object.Date, new { @class = "form-control datetimepicker-input", data_target = "#dtDate" })
+                                <div class="input-group-append" data-target="#dtDate" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(x => x.Object.Date)
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Summa)
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="expenditure_summa_title"></span>
+                                </div>
+                                @Html.TextBoxFor(model => model.Object.Summa, new { @class = "form-control", placeholder = "0.00", pattern = @"^\d*(\.\d{0,2})?$" })
+                            </div>
+                            @Html.ValidationMessageFor(x => x.Object.Summa)
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            @Html.LabelFor(model => model.Object.Description)
+                            @Html.TextAreaFor(model => model.Object.Description, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            @Html.Partial("~/Views/Shared/DisplayTemplates/_Suggestions.cshtml", Model.DescriptionSuggestions)
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row justify-content-between">
+                                <div class="col-6">
+                                    @{
+                                        string queryParams = "/Expenditure" + Model.DecodeModelParameters();
+                                        <a id="backToExpenditures" class="btn btn-primary" href="@queryParams">Назад к списку расходов</a>
+                                    }
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div>
+                                        <button name="submit" type="submit" class="btn btn-secondary" value="2">Сохранить и создать новый расход</button>
+                                        <button name="submit" type="submit" class="btn btn-success" value="1">Сохранить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
     </div>
@@ -69,18 +83,19 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function() {
-        updateSummaField($('#expenditure_summa_title'), $('#Object_AccountID'), $('#Object_Summa'));
+    $(document).ready(function () {
+        var summaField = $('#Object_Summa');
 
-        $('#Object_AccountID').change(function() {
-            updateSummaField($('#expenditure_summa_title'), this, $('#Object_Summa'));
+        updateSummaField($('#expenditure_summa_title'), $('#Object_AccountID'), summaField);
+        $('#Object_AccountID').change(function () {
+            updateSummaField($('#expenditure_summa_title'), this, summaField);
         });
 
-        initializeDateTimePicker('#datetimepicker');
-        $('.todaySetter').click(function() {
-            setDate('#datetimepicker');
-            return false;
-        });
+        summaField.on('keypress', function (e) {
+            return isDecimalInput(this, event);
+        })
+
+        initializeDateTimePicker('#dtDate', new Date());
     });
 
 </script>

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using FamilyBudget.v3.App_DataModel;
+using System;
 
 namespace FamilyBudget.v3.Controllers.Services
 {
@@ -23,50 +24,17 @@ namespace FamilyBudget.v3.Controllers.Services
 
         public List<string> GetTopNSuggestions(int topN = 10)
         {
-            Account mainAccount = _accountRepository.GetAll().FirstOrDefault(a => a.IsMain);
-
-            var allExpenditures = _expenditureRepository.Context.Expenditure.Where(i => i.AccountID == mainAccount.ID).ToList(); // TOO EXPENSIVE!
-
-            Dictionary<string, int> wordWeights = new Dictionary<string, int>();
-            Dictionary<string, int> expenditureDescriptionWeights = new Dictionary<string, int>();
-
-            foreach (var expenditure in allExpenditures)
+            return new List<string>
             {
-                if (string.IsNullOrEmpty(expenditure.Description))
-                    continue;
-
-                List<string> desciptionWords = GetWords(expenditure.Description);
-                AddToWordWeights(wordWeights, desciptionWords);
-            }
-
-            foreach (var expenditure in allExpenditures)
-            {
-                if (string.IsNullOrEmpty(expenditure.Description))
-                    continue;
-
-                int ExpenditureDesctiptionWeight = 0;
-                List<string> desciptionWords = GetWords(expenditure.Description);
-                foreach (var desciptionWord in desciptionWords)
-                {
-                    if (string.IsNullOrEmpty(desciptionWord))
-                        continue;
-
-                    ExpenditureDesctiptionWeight += wordWeights[desciptionWord];
-                }
-
-                // Handle equal descriptions
-                if (expenditureDescriptionWeights.ContainsKey(expenditure.Description))
-                {
-                    expenditureDescriptionWeights[expenditure.Description] += ExpenditureDesctiptionWeight;
-                }
-                else
-                {
-                    expenditureDescriptionWeights.Add(expenditure.Description, ExpenditureDesctiptionWeight);
-                }
-
-            }
-
-            return expenditureDescriptionWeights.OrderByDescending(g => g.Value).Take(topN).Select(s => s.Key).OrderBy(s => s).ToList();
+                "АШАН",
+                "Привоз",
+                "Бензин",
+                "Кофе",
+                "Еда",
+                $"Налоги за * квартал {DateTime.Now.Year}",
+                "Квартплата, Коммуналка + Кап.ремонт",
+                "Инвестирование"
+            };
         }
     }
 }

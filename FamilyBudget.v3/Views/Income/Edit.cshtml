@@ -17,6 +17,7 @@
             {
                 <div class="card-body">
                     @Html.AntiForgeryToken()
+                    @Html.Raw(Html.FamilyBudgetValidationSummary())
                     @Html.HiddenFor(model => model.Object.ID)
                     @Html.HiddenFor(model => model.Object.OldAccountID)
                     <input type="hidden" id="hdnAccountId" name="hdnAccountId" value="@Model.Object.AccountID" />
@@ -24,28 +25,32 @@
                         <div class="col-md-6 mb-3">
                             @Html.LabelFor(model => model.Object.AccountID)
                             @Html.ExtendedDropDownListFor(model => model.Object.AccountID, Model.Accounts, null, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Object.AccountID)
                         </div>
                         <div class="col-md-6 mb-3">
                             @Html.LabelFor(model => model.Object.CategoryID)
                             @Html.DropDownListFor(model => model.Object.CategoryID, Model.Categories, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Object.CategoryID)
                         </div>
                         <div class="col-md-6 mb-3">
                             @Html.LabelFor(model => model.Object.Date)
-                            <div class="input-group date mb-3" id="dtDate" data-target-input="nearest">
+                            <div class="input-group" id="dtDate" data-target-input="nearest">
                                 @Html.TextBoxFor(model => model.Object.Date, new { @Value = Model.Object.Date.ToShortDateString(), @class = "form-control datetimepicker-input", data_target = "#dtDate" })
                                 <div class="input-group-append" data-target="#dtDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
+                            @Html.ValidationMessageFor(x => x.Object.Date)
                         </div>
                         <div class="col-md-6 mb-3">
                             @Html.LabelFor(model => model.Object.Summa)
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="income_summa_title"></span>
                                 </div>
                                 @Html.TextBoxFor(model => model.Object.Summa, new { @class = "form-control", placeholder = "0.00", pattern = @"^\d*(\.\d{0,2})?$" })
                             </div>
+                            @Html.ValidationMessageFor(x => x.Object.Summa)
                         </div>
                         <div class="col-md-12 mb-3">
                             @Html.LabelFor(model => model.Object.Description)
@@ -54,7 +59,7 @@
                         <div class="col-md-12 mb-3">
                             @Html.Partial("~/Views/Shared/DisplayTemplates/_Suggestions.cshtml", Model.DescriptionSuggestions)
                         </div>
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-12">
                             <div class="row justify-content-between">
                                 <div class="col-6">
                                     @{

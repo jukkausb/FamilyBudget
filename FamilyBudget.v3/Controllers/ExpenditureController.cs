@@ -46,12 +46,20 @@ namespace FamilyBudget.v3.Controllers
                     query = query.Where(i => i.Description.Contains(listModel.Filter.Description));
                 }
 
+                if (listModel.Filter.CategoryId > 0)
+                {
+                    query = query.Where(i => i.CategoryID == listModel.Filter.CategoryId);
+                }
+
                 if (listModel.Filter.AccountId > 0)
                 {
                     query = query.Where(i => i.AccountID == listModel.Filter.AccountId);
                 }
 
                 listModel.Entities = query.ToList();
+
+                ModelState.Clear();
+
                 return View(listModel);
             }
             catch (Exception ex)
@@ -131,6 +139,8 @@ namespace FamilyBudget.v3.Controllers
                 return HttpNotFound();
             }
 
+            expenditure.OldAccountID = expenditure.AccountID;
+
             var model = new ExpenditureModel
             {
                 Categories = GetExpenditureCategories(),
@@ -193,6 +203,8 @@ namespace FamilyBudget.v3.Controllers
                 return HttpNotFound();
             }
 
+            expenditure.OldAccountID = expenditure.AccountID;
+
             var model = new ExpenditureModel { Categories = GetExpenditureCategories(), Object = expenditure };
             model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
 
@@ -213,7 +225,7 @@ namespace FamilyBudget.v3.Controllers
             {
                 try
                 {
-                    FindAndRestoreAccountBalance(_accountRepository, expenditure);
+                    FindAndRestoreAccountBalance(_accountRepository, expenditureModel.Object);
                     _expenditureRepository.Delete(expenditure);
                     _expenditureRepository.SaveChanges();
                     _accountRepository.SaveChanges();

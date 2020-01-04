@@ -109,23 +109,15 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item">
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-clipboard-list text-gray-300"></i> Создать
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right animated--fade-in" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="/Income/Create">
-                                        <i class="fas fa-money fa-lg fa-fw mr-2 text-gray-400"></i>
-                                        <span class="h6 font-weight-bold">Доход</span>
-                                    </a>
-                                    <a class="dropdown-item" href="/Expenditure/Create">
-                                        <i class="fas fa-money fa-lg fa-fw mr-2 text-gray-400"></i>
-                                        <span class="h6 font-weight-bold">Расход</span>
-                                    </a>
-                                </div>
-                            </div>
+                            <a class="btn btn-danger pull-right" href="/Expenditure/Create">
+                                <i class="fas fa-money fa-fw mr-2 text-gray-400"></i>
+                                Создать расход
+                            </a>
+                            <a class="btn btn-success pull-right mr-3" href="/Income/Create">
+                                <i class="fas fa-money fa-fw mr-2 text-gray-400"></i>
+                                Создать доход
+                            </a>
                         </li>
-
                     </ul>
 
                 </nav>
@@ -136,13 +128,13 @@
             </div>
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2019</span>
+            @*<footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2019</span>
+                        </div>
                     </div>
-                </div>
-            </footer>
+                </footer>*@
             <!-- End of Footer -->
 
         </div>

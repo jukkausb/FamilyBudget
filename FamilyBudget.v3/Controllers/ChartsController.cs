@@ -1,8 +1,6 @@
 ﻿using FamilyBudget.v3.App_CodeBase;
 using FamilyBudget.v3.App_CodeBase.Widgets;
 using FamilyBudget.v3.App_DataModel;
-using FamilyBudget.v3.App_Helpers;
-using FamilyBudget.v3.App_Utils;
 using FamilyBudget.v3.Models;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using FamilyBudget.v3.Models.Widgets;
@@ -20,16 +18,14 @@ namespace FamilyBudget.v3.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
-        private readonly ITrendCalculator _trendCalculator;
 
         public ChartsController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository,
-            ICurrencyProvider currencyProvider, ITrendCalculator trendCalculator)
+            ICurrencyProvider currencyProvider)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
             _currencyProvider = currencyProvider;
-            _trendCalculator = trendCalculator;
         }
 
         public ActionResult Index()

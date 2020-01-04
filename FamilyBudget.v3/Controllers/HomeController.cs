@@ -1,5 +1,4 @@
 ﻿using FamilyBudget.v3.App_CodeBase;
-using FamilyBudget.v3.App_CodeBase.Widgets;
 using FamilyBudget.v3.App_DataModel;
 using FamilyBudget.v3.App_Helpers;
 using FamilyBudget.v3.App_Utils;
@@ -19,16 +18,14 @@ namespace FamilyBudget.v3.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
-        private readonly ITrendCalculator _trendCalculator;
 
-        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository,
-            ICurrencyProvider currencyProvider, ITrendCalculator trendCalculator)
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, 
+            IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
             _currencyProvider = currencyProvider;
-            _trendCalculator = trendCalculator;
         }
 
         public ActionResult Index()
@@ -84,6 +81,8 @@ namespace FamilyBudget.v3.Controllers
                 Rate = _currencyProvider.GetSellCurrencyRate(euroAccount.Currency.Code, mainCurrencyCode)
             });
 
+            model.AccountRateViews = accountRateViews;
+
             // Average month income
             DateTime endDate = DateTime.Now;
             int lastMonthCount = 6;
@@ -92,44 +91,15 @@ namespace FamilyBudget.v3.Controllers
             model.AverageLastMonthCount = lastMonthCount;
 
             var realImcomes = BusinessHelper.GetRealIncomes(_incomeRepository);
-            var averageMonthIncome = (from income in realImcomes
-                                           where income.AccountID == accountRub.ID
-                                           where income.Date >= startDate.Date && income.Date <= endDate.Date
-                                           group income by new { income.Date.Month, income.Date.Year } into g
-                                           select new
-                                           {
-                                               Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
-                                               IncomeTotal = g.Sum(i => i.Summa)
-                                           }).Average(e => e.IncomeTotal);
-
-            model.AverageIncomePerMonth = new MoneyModel
-            {
-                Value = averageMonthIncome
-            };
-
-            model.AccountRateViews = accountRateViews;
-
-            // Average month expenditure
+            var allIncomesInPeriod = realImcomes.Where(i => i.Date >= startDate.Date && i.Date <= endDate.Date).ToList();
             var realExpenditures = BusinessHelper.GetRealExpenditures(_expenditureRepository);
-            var averageMonthExpenditure = (from expenditure in realExpenditures
-                                           where expenditure.AccountID == accountRub.ID
-                    where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
-                    group expenditure by new { expenditure.Date.Month, expenditure.Date.Year } into g
-                    select new
-                    {
-                        Period = new Period { Year = g.Key.Year, Month = g.Key.Month },
-                        ExpenditureTotal = g.Sum(i => i.Summa)
-                    }).Average(e => e.ExpenditureTotal);
+            var allExpendituresInPeriod = realExpenditures.Where(i => i.Date >= startDate.Date && i.Date <= endDate.Date).ToList();
 
-            model.AverageExpenditurePerMonth = new MoneyModel
-            {
-                Value = averageMonthExpenditure
-            };
+            var averageMonthModel = CalculateNetProfit(accounts, allIncomesInPeriod, allExpendituresInPeriod, mainCurrencyCode, lastMonthCount);
 
-            model.AverageProfitPerMonth = new MoneyModel
-            {
-                Value = averageMonthIncome - averageMonthExpenditure
-            };
+            model.AverageIncomePerMonth = averageMonthModel.AverageIncome;
+            model.AverageExpenditurePerMonth = averageMonthModel.AverageExpenditure;
+            model.AverageProfitPerMonth = averageMonthModel.AverageNetProfit;
 
             decimal allToIIS = BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
             model.AllIISExpenditureTotal = new MoneyModel
@@ -145,6 +115,49 @@ namespace FamilyBudget.v3.Controllers
 
 
             return View(model);
+        }
+
+        private AverageMoneyModel CalculateNetProfit(List<Account> accounts,
+            List<Income> allIncomesInMonth,
+            List<Expenditure> allExpenditresInMonth,
+            string mainCurrencyCode,
+            int monthCount)
+        {
+            AverageMoneyModel model = new AverageMoneyModel();
+            decimal totalMonthIncome = 0;
+            decimal totalMonthExpenditure = 0;
+
+            accounts.ForEach(a =>
+            {
+                var accountCurrencyCode = a.Currency.Code;
+                var accountId = a.ID;
+
+                decimal rate = accountCurrencyCode != mainCurrencyCode ? _currencyProvider.GetSellCurrencyRate(accountCurrencyCode, mainCurrencyCode) : 1;
+                Logger.Info(string.Format("Exchange rate ({0}-{1}): {2}", a.Currency.Code, mainCurrencyCode, rate));
+
+                totalMonthIncome += (from income in allIncomesInMonth
+                                     where income.AccountID == a.ID
+                                     group income by new { income.Date.Month, income.Date.Year } into g
+                                     select new
+                                     {
+                                         IncomeTotal = accountCurrencyCode != mainCurrencyCode ? g.Sum(i => i.Summa * rate) : g.Sum(i => i.Summa)
+                                     }).Sum(e => e.IncomeTotal);
+
+                totalMonthExpenditure += (from expenditure in allExpenditresInMonth
+                                          where expenditure.AccountID == a.ID
+                                          group expenditure by new { expenditure.Date.Month, expenditure.Date.Year } into g
+                                          select new
+                                          {
+                                              ExpenditureTotal = accountCurrencyCode != mainCurrencyCode ? g.Sum(i => i.Summa * rate) : g.Sum(i => i.Summa)
+                                          }).Sum(e => e.ExpenditureTotal); ;
+            }
+            );
+
+            model.AverageExpenditure = new MoneyModel { Value = totalMonthExpenditure / monthCount };
+            model.AverageIncome = new MoneyModel { Value = totalMonthIncome / monthCount };
+            model.AverageNetProfit = new MoneyModel { Value = (totalMonthIncome - totalMonthExpenditure) / monthCount };
+
+            return model;
         }
 
         private decimal CalculateWealth(string mainCurrencyCode)
@@ -166,35 +179,6 @@ namespace FamilyBudget.v3.Controllers
             });
 
             return wealthValue;
-        }
-    }
-
-    public class MonthDefinition
-    {
-        public int Month { get; set; }
-        public int Year { get; set; }
-    }
-
-    public class TrendLineMonthDefinition : MonthDefinition
-    {
-        public decimal Value { get; set; }
-        public decimal TrendValue { get; set; }
-    }
-
-    class MonthDefinitionComparer : IEqualityComparer<MonthDefinition>
-    {
-        public bool Equals(MonthDefinition b1, MonthDefinition b2)
-        {
-            if (b2 == null || b1 == null)
-                return false;
-
-            return b1.Month == b2.Month && b1.Year == b2.Year;
-        }
-
-        public int GetHashCode(MonthDefinition bx)
-        {
-            int hCode = bx.Year ^ bx.Month;
-            return hCode.GetHashCode();
         }
     }
 }

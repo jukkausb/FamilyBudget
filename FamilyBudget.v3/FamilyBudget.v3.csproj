@@ -3161,18 +3161,13 @@
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\ICategoryInfo.cs" />
     <Compile Include="App_CodeBase\ICurrencyProvider.cs" />
-    <Compile Include="App_CodeBase\ISiteMapProvider.cs" />
-    <Compile Include="App_CodeBase\ITrendCalculator.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\Json\FreeCurrencyConverter.cs" />
     <Compile Include="App_CodeBase\Json\FreeCurrencyRate.cs" />
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
-    <Compile Include="App_CodeBase\PageContextActionFilter.cs" />
     <Compile Include="App_CodeBase\Prosperity.cs" />
     <Compile Include="App_CodeBase\SiteMap.cs" />
-    <Compile Include="App_CodeBase\SpaSiteMapProvider.cs" />
-    <Compile Include="App_CodeBase\TrendCalculator.cs" />
     <Compile Include="App_CodeBase\Valuta.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureByCategoryItem.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureIncomeItem.cs" />
@@ -3255,6 +3250,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IGoldOunceRateProvider.cs" />
+    <Compile Include="Models\AverageMoneyModel.cs" />
     <Compile Include="Models\Base\BaseFilterModel.cs" />
     <Compile Include="Models\Base\BaseListAwareModel.cs" />
     <Compile Include="Models\Base\BaseListModel.cs" />
@@ -3300,17 +3296,8 @@
     <Compile Include="Models\Repository\Interfaces\IExpenditureRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IIncomeCategoryRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IIncomeRepository.cs" />
-    <Compile Include="Models\Spa\AccountModel.cs" />
-    <Compile Include="Models\Spa\DashboardViewModel.cs" />
-    <Compile Include="Models\Spa\IncomeModel.cs" />
-    <Compile Include="Models\Spa\Shared\LinkContainerModel.cs" />
-    <Compile Include="Models\Spa\Shared\LinkModel.cs" />
-    <Compile Include="Models\Spa\Shared\PageHeaderViewModel.cs" />
-    <Compile Include="Models\Spa\Shared\PageViewModel.cs" />
-    <Compile Include="Models\Spa\Shared\SiteNavigationViewModel.cs" />
     <Compile Include="Models\MoneyModel.cs" />
     <Compile Include="Models\Widgets\AccountBalanceCircleWidgetModel.cs" />
-    <Compile Include="Models\Widgets\AccountBalanceWidgetModel.cs" />
     <Compile Include="Models\Widgets\ExpenditureByCategoryWidgetModel.cs" />
     <Compile Include="Models\Widgets\ExpenditureIncomeCompareWidgetModel.cs" />
     <Compile Include="Models\Widgets\MoneyWidgetModelBase.cs" />

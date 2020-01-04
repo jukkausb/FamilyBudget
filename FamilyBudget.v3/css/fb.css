@@ -6,8 +6,20 @@
     width: 120px;
 }
 
+.webgrid-editColumn, .webgrid-deleteColumn {
+    width: 120px;
+}
+
+.card {
+    border-color: #acaaaa;
+}
+
 .card-body label {
     font-weight: bold;
+}
+
+.card-validation .card-body {
+    padding: 0px;
 }
 
 /* styles for validation helpers */

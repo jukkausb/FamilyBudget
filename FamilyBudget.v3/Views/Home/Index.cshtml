@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
+                            <div class="h3 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
                             <div class="h1 mb-0 text-xl-center font-weight-bold @getStyle(Model.Wealth.Value)">@Model.Wealth.Value.ToString("N")</div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Среднемесячный доход</div>
-                            <div class="text-sm-center font-weight-bold text-gray-800 mb-1">(за последние @Model.AverageLastMonthCount месяцев)</div>
+                            <div class="text-xl-center font-weight-bold text-gray-800 mb-1">(за последние @Model.AverageLastMonthCount месяцев)</div>
                             <div class="h4 mb-0 text-xl-center font-weight-bold @getStyle(Model.AverageIncomePerMonth.Value)">@Model.AverageIncomePerMonth.Value.ToString("N")</div>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Среднемесячный расход</div>
-                            <div class="text-sm-center font-weight-bold text-gray-800 mb-1">(за последние @Model.AverageLastMonthCount месяцев)</div>
+                            <div class="text-xl-center font-weight-bold text-gray-800 mb-1">(за последние @Model.AverageLastMonthCount месяцев)</div>
                             <div class="h4 mb-0 text-xl-center font-weight-bold text-danger">@Model.AverageExpenditurePerMonth.Value.ToString("N")</div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Среднемесячная чистая прибыль</div>
-                            <div class="text-sm-center font-weight-bold text-gray-800 mb-1">(за последние @Model.AverageLastMonthCount месяцев)</div>
+                            <div class="text-xl-center font-weight-bold text-gray-800 mb-1">(за последние @Model.AverageLastMonthCount месяцев)</div>
                             <div class="h4 mb-0 text-xl-center font-weight-bold @getStyle(Model.AverageProfitPerMonth.Value)">@Model.AverageProfitPerMonth.Value.ToString("N")</div>
                         </div>
                     </div>

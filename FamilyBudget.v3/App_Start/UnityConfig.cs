@@ -31,15 +31,10 @@ namespace FamilyBudget.v3
 
         private static void RegisterControllers(IUnityContainer container)
         {
-            container.RegisterType(typeof(ISiteMapProvider), typeof(SpaSiteMapProvider));
-            container.RegisterType(typeof(PageContextActionFilter), typeof(PageContextActionFilter));
-
             //container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider));
             container.RegisterType(typeof(ICurrencyProvider), typeof(FreeCurrencyConverter));
             container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider));
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider));
-
-            container.RegisterType(typeof(ITrendCalculator), typeof(TrendCalculator));
 
             container.RegisterType(typeof(IAccountRepository), typeof(AccountRepository));
             container.RegisterType(typeof(ICurrencyRepository), typeof(CurrencyRepository));
