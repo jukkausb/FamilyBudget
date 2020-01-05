@@ -10,8 +10,8 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="h3 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
-                            <div class="h1 mb-0 text-xl-center font-weight-bold @getStyle(Model.Wealth.Value)">@Model.Wealth.Value.ToString("N")</div>
+                            <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
+                            <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(Model.Wealth.Value)">@Model.Wealth.Value.ToString("N")</div>
                         </div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Отправлено на ИИС</div>
-                            <div class="h3 mb-0 text-xl-center font-weight-bold @getStyle(Model.AllIISExpenditureTotal.Value)">@Model.AllIISExpenditureTotal.Value.ToString("N")</div>
+                            <div class="h3 mb-0 text-xl-center font-weight-bold text-primary">@Model.AllIISExpenditureTotal.Value.ToString("N")</div>
                         </div>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Отправлено на Брокерский счет</div>
-                            <div class="h3 mb-0 text-xl-center font-weight-bold @getStyle(Model.AllBrokerAccountExpenditureTotal.Value)">@Model.AllBrokerAccountExpenditureTotal.Value.ToString("N")</div>
+                            <div class="h3 mb-0 text-xl-center font-weight-bold text-primary">@Model.AllBrokerAccountExpenditureTotal.Value.ToString("N")</div>
                         </div>
                     </div>
                 </div>

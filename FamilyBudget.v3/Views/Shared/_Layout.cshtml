@@ -109,12 +109,18 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item">
-                            <a class="btn btn-danger pull-right" href="/Expenditure/Create">
-                                <i class="fas fa-money fa-fw mr-2 text-gray-400"></i>
+                            <a href="/Expenditure/Create" class="btn btn-danger btn-circle mr-2 d-block d-md-none pull-right">
+                                <i class="fa fa-arrow-circle-down align-center"></i>
+                            </a>
+                            <a href="/Income/Create" class="btn btn-success btn-circle mr-2 d-block d-md-none pull-right">
+                                <i class="fa fa-arrow-circle-up mr-3"></i>
+                            </a>
+                            <a class="btn btn-danger pull-right d-none d-md-block d-lg-block d-xl-block" href="/Expenditure/Create">
+                                <i class="fas fa-clipboard-list fa-fw text-gray-400"></i>
                                 Создать расход
                             </a>
-                            <a class="btn btn-success pull-right mr-3" href="/Income/Create">
-                                <i class="fas fa-money fa-fw mr-2 text-gray-400"></i>
+                            <a class="btn btn-success pull-right mr-3 d-none d-md-block d-lg-block d-xl-block" href="/Income/Create">
+                                <i class="fas fa-clipboard-list fa-fw text-gray-400"></i>
                                 Создать доход
                             </a>
                         </li>
