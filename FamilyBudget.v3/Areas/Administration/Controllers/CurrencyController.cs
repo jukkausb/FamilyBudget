@@ -94,8 +94,7 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(CurrencyModel currencyModel)
         {
-            if (
-                _currencyRepository.FindBy(c => c.Code.Equals(currencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) && c.ID != currencyModel.Object.ID).Any())
+            if (_currencyRepository.FindBy(c => c.Code.Equals(currencyModel.Object.Code, StringComparison.InvariantCultureIgnoreCase) && c.ID != currencyModel.Object.ID).Any())
             {
                 ModelState.AddModelError("", "Валюта с таким кодом уже существует");
             }
@@ -172,6 +171,8 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
                     HandleException(ex);
                 }
             }
+
+            currencyModel.Object = currency;
 
             return View(currencyModel);
         }

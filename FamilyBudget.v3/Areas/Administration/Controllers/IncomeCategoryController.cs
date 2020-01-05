@@ -25,6 +25,7 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
         {
             try
             {
+                listModel.PageSize = 100;
                 listModel.ParseModelState(Request);
                 listModel.Entities = _incomeCategoryRepository.GetAll().ToList();
                 return View(listModel);

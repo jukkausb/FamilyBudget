@@ -75,10 +75,10 @@ namespace FamilyBudget.v3.App_DataModel
         [Key]
         public int ID { get; set; }
 
+        [Required]
         [Display(Name = "Имя категории")]
         public string Name { get; set; }
 
-        [Required]
         [Display(Name = "Описание")]
         public string Description { get; set; }
     }
@@ -97,10 +97,10 @@ namespace FamilyBudget.v3.App_DataModel
         [Key]
         public int ID { get; set; }
 
+        [Required]
         [Display(Name = "Имя категории")]
         public string Name { get; set; }
 
-        [Required]
         [Display(Name = "Описание")]
         public string Description { get; set; }
     }

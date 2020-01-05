@@ -187,6 +187,11 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
                 return HttpNotFound();
             }
 
+            if (account.IsMain)
+            {
+                ModelState.AddModelError("", "Нельзя удалить основной счет");
+            }
+
             if (account.Balance != 0)
             {
                 ModelState.AddModelError("", "Этот счет имеет ненулевой остаток. Сначала обнулите остаток");
@@ -217,10 +222,9 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
                     HandleException(ex);
                 }
             }
-            else
-            {
-                accountModel.Currencies = GetCurrencies();
-            }
+
+            accountModel.Object = account;
+            accountModel.Currencies = GetCurrencies();
 
             return View(accountModel);
         }

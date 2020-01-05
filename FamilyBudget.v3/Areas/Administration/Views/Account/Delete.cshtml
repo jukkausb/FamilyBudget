@@ -36,9 +36,11 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             @Html.LabelFor(model => model.Object.IsMain)
-                            <div class="form-control">
-                                @Html.DisplayNameFor(model => model.Object.IsMain)
-                            </div>
+                            @Html.Raw(Model.Object.IsMain ? "Да" : "Нет")
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Balance)
+                            @Html.Raw(Model.Object.Balance)
                         </div>
                         <div class="col-md-12">
                             <div class="row justify-content-between">

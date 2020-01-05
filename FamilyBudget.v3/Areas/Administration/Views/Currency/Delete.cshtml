@@ -5,48 +5,52 @@
     ViewBag.Title = "Удаление валюты";
 }
 
-<div class="col-md-6 col-md-offset-3">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <b class="page-header">Удалить валюту?</b>
-        </div>
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="card">
+            <div class="card-header text-center py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Удалить валюту?</h4>
+            </div>
 
-        @using (Html.BeginForm())
-        {
-            <div class="panel-body">
-                @Html.ValidationSummary(false, "", new {@class = "alert alert-warning alert-dismissable"})
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(model => model.Object.ID)
-                @Html.HiddenFor(model => model.Object.Code)
-                @Html.HiddenFor(model => model.Object.Name)
+            @using (Html.BeginForm())
+            {
+                <div class="card-body">
+                    @Html.Raw(Html.FamilyBudgetValidationSummary())
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.Object.ID)
+                    @Html.HiddenFor(model => model.Object.Code)
+                    @Html.HiddenFor(model => model.Object.Name)
 
-                <dl class="dl-horizontal">
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Object.Code)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.Object.Code)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Object.Name)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.Object.Name)
-                    </dd>
-                </dl>
-
-                <div class="form-group">
-                    <div>
-                        <button type="submit" class="btn btn-primary">Удалить</button>
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Code)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.Code)
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.LabelFor(model => model.Object.Name)
+                            <div class="form-control">
+                                @Html.DisplayFor(model => model.Object.Name)
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row justify-content-between">
+                                <div class="col-6">
+                                    @{
+                                        string queryParams = "/Administration/Currency" + QueryStringParser.DecodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+                                        <a class="btn btn-primary" href="@queryParams">Назад к списку валют</a>
+                                    }
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div>
+                                        <button name="submit" type="submit" class="btn btn-danger" value="1">Удалить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-
-        <div class="panel-footer">
-            @{
-                string queryParams = "/Administration/Currency" + QueryStringParser.DecodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
-                <a id="backToIncomes" href="@queryParams">Назад к списку валют</a>
             }
         </div>
     </div>
