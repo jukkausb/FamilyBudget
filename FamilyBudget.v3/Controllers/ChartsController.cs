@@ -1,7 +1,9 @@
 ﻿using FamilyBudget.v3.App_CodeBase;
 using FamilyBudget.v3.App_CodeBase.Widgets;
 using FamilyBudget.v3.App_DataModel;
+using FamilyBudget.v3.Controllers.Services;
 using FamilyBudget.v3.Models;
+using FamilyBudget.v3.Models.Home;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using FamilyBudget.v3.Models.Widgets;
 using System;
@@ -18,14 +20,17 @@ namespace FamilyBudget.v3.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
+        private readonly ICalculationService _calculationService;
 
-        public ChartsController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, IExpenditureRepository expenditureRepository,
-            ICurrencyProvider currencyProvider)
+        public ChartsController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, 
+            IExpenditureRepository expenditureRepository, ICurrencyProvider currencyProvider,
+            ICalculationService calculationService)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
             _currencyProvider = currencyProvider;
+            _calculationService = calculationService;
         }
 
         public ActionResult Index()
@@ -55,16 +60,23 @@ namespace FamilyBudget.v3.Controllers
                     Id = "widget_expenditure_by_category",
                     Title = "Расходы по категориям за период",
                     Url = "/Charts/Widget_ExpenditureByCategory",
-                    Callback = "ExpenditureByCategoryCallback"
+                    Callback = "ExpenditureByCategoryCallback",
+                    ColumnCssClass = "col-lg-12"
+                },
+                new Widget
+                {
+                    Id = "widget_account_balance_circle",
+                    Title = "Баланс по валютам",
+                    Url = "/Charts/Widget_AccountBalanceCircle",
+                    Callback = "AccountBalanceCircleCallback",
+                    ColumnCssClass = "col-lg-6"
                 }
-                //new Widget
-                //{
-                //    Id = "widget_expenditure_income_compare",
-                //    Title = "Соотношение доходов и расходов",
-                //    Url = "/Charts/Widget_ExpenditureIncomeCompare",
-                //    Callback = "ExpenditureIncomeCompareCallback"
-                //}
             };
+        }
+
+        private List<AccountRateView> GetWidget_AccountBalanceCircleData()
+        {
+            return _calculationService.GetAccountBalanceWithRatesViews();
         }
 
         private List<ExpenditureIncomeItem> GetWidget_ExpenditureIncomeCompareWidgetData(int accountId,
@@ -156,13 +168,28 @@ namespace FamilyBudget.v3.Controllers
             }).ToList();
         }
 
-        
-
         #endregion
 
         public ActionResult GetWidgetDefinitions()
         {
             return Json(GenerateWidgetDefinitions(), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Widget_AccountBalanceCircle()
+        {
+            var model = new AccountBalanceCircleWidgetModel
+            {
+                WidgetClientId = "widget_account_balance_circle"
+            };
+
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        public ActionResult Widget_AccountBalanceCircleData()
+        {
+            return Json(GetWidget_AccountBalanceCircleData());
         }
 
         [HttpPost]
@@ -225,27 +252,6 @@ namespace FamilyBudget.v3.Controllers
             }
 
             return Json(GetWidget_ExpenditureByCategoryWidgetData(GetMainCurrencyCode(), startDate.Value, endDate.Value));
-        }
-
-        [HttpPost]
-        public ActionResult Widget_ExpenditureByCategoryCurrentMonth()
-        {
-            var model = new ExpenditureByCategoryWidgetModel
-            {
-                WidgetClientId = "widget_expenditure_by_category_current_month"
-            };
-
-            return PartialView(model);
-        }
-
-        [HttpPost]
-        public ActionResult Widget_ExpenditureByCategoryCurrentMonthData()
-        {
-            DateTime now = DateTime.Now;
-            var startDate = new DateTime(now.Year, now.Month, 1);
-            var endDate = new DateTime(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month));
-
-            return Json(GetWidget_ExpenditureByCategoryWidgetData(GetMainCurrencyCode(), startDate, endDate));
         }
 
         private string GetMainCurrencyCode()

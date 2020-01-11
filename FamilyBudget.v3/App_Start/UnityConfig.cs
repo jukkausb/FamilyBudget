@@ -36,6 +36,8 @@ namespace FamilyBudget.v3
             container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider));
             //container.RegisterType(typeof(ICurrencyProvider), typeof(CBRCurrencyProvider));
 
+            container.RegisterType(typeof(ICalculationService), typeof(CalculationService));
+
             container.RegisterType(typeof(IAccountRepository), typeof(AccountRepository));
             container.RegisterType(typeof(ICurrencyRepository), typeof(CurrencyRepository));
             container.RegisterType(typeof(IExpenditureCategoryRepository), typeof(ExpenditureCategoryRepository));

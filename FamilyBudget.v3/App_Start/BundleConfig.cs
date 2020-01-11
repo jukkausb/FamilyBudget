@@ -8,8 +8,13 @@ namespace FamilyBudget.v3
         {
             // Common JS libs
 
+            bundles.Add(new ScriptBundle("~/bundles/lodash").Include(
+                "~/Scripts/lodash.min.js"
+                ));
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                 "~/Scripts/jquery-3.4.1.min.js",
+                "~/js/jquery-easing/jquery.easing.min.js",
                 "~/Scripts/jquery-ui-1.12.1.min.js"
                 ));
 
@@ -67,6 +72,10 @@ namespace FamilyBudget.v3
 
             bundles.Add(new ScriptBundle("~/bundles/morris").Include(
                 "~/Scripts/plugins/morris/morris*"
+                ));
+
+            bundles.Add(new ScriptBundle("~/bundles/charts").Include(
+                "~/js/charts.js/Chart.min.js"
                 ));
 
             // CSS

@@ -284,10 +284,17 @@
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="img\undraw_posting_photo.svg" />
+    <Content Include="js\chart.js\Chart.bundle.js" />
+    <Content Include="js\chart.js\Chart.bundle.min.js" />
+    <Content Include="js\chart.js\Chart.js" />
+    <Content Include="js\chart.js\Chart.min.js" />
     <Content Include="js\demo\chart-area-demo.js" />
     <Content Include="js\demo\chart-bar-demo.js" />
     <Content Include="js\demo\chart-pie-demo.js" />
     <Content Include="js\demo\datatables-demo.js" />
+    <Content Include="js\jquery-easing\jquery.easing.compatibility.js" />
+    <Content Include="js\jquery-easing\jquery.easing.js" />
+    <Content Include="js\jquery-easing\jquery.easing.min.js" />
     <Content Include="js\sb-admin-2.js" />
     <Content Include="js\sb-admin-2.min.js" />
     <Content Include="log4net.config" />
@@ -2282,8 +2289,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Charts\Index.cshtml" />
     <Content Include="Views\Charts\Widget_ExpenditureByCategory.cshtml" />
-    <Content Include="Views\Charts\Widget_ExpenditureByCategoryCurrentMonth.cshtml" />
-    <Content Include="Views\Charts\Widget_ExpenditureIncomeCompare.cshtml" />
+    <Content Include="Views\Charts\Widget_AccountBalanceCircle.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2455,6 +2461,7 @@
     <Compile Include="App_CodeBase\AccountTransactionOperation.cs" />
     <Compile Include="App_CodeBase\AssemblyInfoHelper.cs" />
     <Compile Include="App_CodeBase\CacheHelper.cs" />
+    <Compile Include="App_CodeBase\Constants.cs" />
     <Compile Include="App_CodeBase\Csv\CurrencyRateFileWriter.cs" />
     <Compile Include="App_CodeBase\Csv\GoldOunceRate.cs" />
     <Compile Include="App_CodeBase\Csv\GoldOunceRateFileWriter.cs" />
@@ -2553,6 +2560,7 @@
     <Compile Include="Controllers\IncomeController.cs" />
     <Compile Include="Controllers\MoneyControllerBase.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\Services\CalculationService.cs" />
     <Compile Include="Controllers\Services\ExpenditureSuggestionService.cs" />
     <Compile Include="Controllers\Services\IncomeSuggestionService.cs" />
     <Compile Include="Controllers\Services\SuggestionServiceBase.cs" />

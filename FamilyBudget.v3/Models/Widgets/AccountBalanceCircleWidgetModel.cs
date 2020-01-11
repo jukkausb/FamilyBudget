@@ -5,6 +5,6 @@ namespace FamilyBudget.v3.Models.Widgets
 {
     public class AccountBalanceCircleWidgetModel : WidgetModelBase
     {
-        public List<AccountCircleEquivalentView> Accounts { get; set; }
+        public List<AccountRateView> AccountRateViews { get; set; }
     }
 }
