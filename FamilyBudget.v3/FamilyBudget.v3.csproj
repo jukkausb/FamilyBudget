@@ -2290,6 +2290,8 @@
     <Content Include="Views\Charts\Index.cshtml" />
     <Content Include="Views\Charts\Widget_ExpenditureByCategory.cshtml" />
     <Content Include="Views\Charts\Widget_AccountBalanceCircle.cshtml" />
+    <Content Include="Views\Charts\Widget_BalanceAndInvestmentCircle.cshtml" />
+    <Content Include="Views\Charts\Widget_ExpenditureIncomeCompare.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2617,6 +2619,7 @@
     <Compile Include="Models\Repository\Interfaces\IIncomeRepository.cs" />
     <Compile Include="Models\MoneyModel.cs" />
     <Compile Include="Models\Widgets\AccountBalanceCircleWidgetModel.cs" />
+    <Compile Include="Models\Widgets\BalanceAndInvestmentCircleWidgetModel.cs" />
     <Compile Include="Models\Widgets\ExpenditureByCategoryWidgetModel.cs" />
     <Compile Include="Models\Widgets\ExpenditureIncomeCompareWidgetModel.cs" />
     <Compile Include="Models\Widgets\MoneyWidgetModelBase.cs" />

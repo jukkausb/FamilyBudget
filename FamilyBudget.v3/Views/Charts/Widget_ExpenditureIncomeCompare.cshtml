@@ -1,11 +1,11 @@
-﻿@model FamilyBudget.v3.Models.Widgets.ExpenditureByCategoryWidgetModel
+﻿@model FamilyBudget.v3.Models.Widgets.ExpenditureIncomeCompareWidgetModel
 <div class="col-md-12">
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
                 <div class="input-group date" id="dtStartDateContainer" data-target-input="nearest">
-                    <input type="text" id="dtStartDate" name="StartDate" class="form-control datetimepicker-input" data-target="#dtStartDate" />
-                    <div class="input-group-append" data-target="#dtStartDate" data-toggle="datetimepicker">
+                    @Html.TextBoxFor(model => model.StartDate, Model.StartDate.ToShortDateString(), new { id = "dtExpenditureIncomeStartDate", name = "StartDate", @class = "form-control datetimepicker-input" })
+                    <div class="input-group-append" data-target="#dtExpenditureIncomeStartDate" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
@@ -14,66 +14,66 @@
         <div class="col-md-3">
             <div class="form-group">
                 <div class="input-group date" id="dtEndDateContainer" data-target-input="nearest">
-                    @*@Html.TextBoxFor(model => model.EndDate, null, new { id = "dtEndDate", name = "EndDate", @class = "form-control datetimepicker-input", data_target = "#dtEndDate" })*@
-                    <input type="text" id="dtEndDate" name="EndDate" class="form-control datetimepicker-input" data-target="#dtEndDate" />
-                    <div class="input-group-append" data-target="#dtEndDate" data-toggle="datetimepicker">
+                    @Html.TextBoxFor(model => model.EndDate, Model.EndDate.ToShortDateString(), new { id = "dtExpenditureIncomeEndDate", name = "EndDate", @class = "form-control datetimepicker-input" })
+                    <div class="input-group-append" data-target="#dtExpenditureIncomeEndDate" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <button class="btn btn-success mr-2" onclick="ExpenditureByCategoryCallback();"><span class="glyphicon glyphicon-refresh"></span> Обновить</button>
-            <button class="btn btn-primary" onclick="ExpenditureByCategoryCallback(true);"><span class="glyphicon glyphicon-refresh"></span> Текущий месяц</button>
+        <div class="col-md-2">
+            <div class="form-group">
+                <button class="btn btn-success" onclick="ExpenditureIncomeCompareCallback() "><span class="glyphicon glyphicon-refresh"></span> Обновить</button>
+            </div>
         </div>
     </div>
 </div>
 <div class="col-md-12">
-    <div class="text-center" id="expenditureByCategoryLoading">
+    <div class="text-center" id="expenditureIncomeLoading">
         @Html.Partial("_LoadingIndicator")
     </div>
-    <div id="accountBalanceCircleChartContainer" style="height: 30rem">
+    <div id="expenditureIncomeChartContainer" style="height: 30rem">
     </div>
 </div>
 
 <script type="text/javascript">
-    var accountBalanceCircleStartDateObj = $('#dtStartDate');
-    var accountBalanceCircleEndDateObj = $('#dtEndDate');
+    var expenditureIncomeStartDateObj = $('#dtExpenditureIncomeStartDate');
+    var expenditureIncomeEndDateObj = $('#dtExpenditureIncomeEndDate');
 
     $(function () {
-        initializeDateTimePicker('#dtStartDate', new Date(@Model.StartDate.Year, @Model.StartDate.Month, @Model.StartDate.Day));
-        initializeDateTimePicker('#dtEndDate', new Date(@Model.EndDate.Year, @Model.EndDate.Month, @Model.EndDate.Day));
-        requestExpenditureByCategoryChartData();
+        expenditureIncomeStartDateObj.datetimepicker({
+            locale: 'ru',
+            format: 'L'
+        });
+        expenditureIncomeEndDateObj.datetimepicker({
+            locale: 'ru',
+            format: 'L'
+        });
+
+        requestExpenditureIncomeChartData();
     });
 
-    function requestExpenditureByCategoryChartData(currentMonth) {
+    function requestExpenditureIncomeChartData() {
 
-        if (currentMonth) {
-            var today = new Date();
-            var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-            $('#dtStartDate').datetimepicker('date', firstDay);
-            $('#dtEndDate').datetimepicker('date', today);
-        }
-
-        $('#expenditureByCategoryLoading').show();
-        var selectedStartDate = accountBalanceCircleStartDateObj.val();
-        var selectedEndDate = accountBalanceCircleEndDateObj.val();
+        $('#expenditureIncomeLoading').show();
+        var selectedStartDate = expenditureIncomeStartDateObj.val();
+        var selectedEndDate = expenditureIncomeEndDateObj.val();
 
         $.ajax(
             {
                 type: "POST",
                 data: { startDate: selectedStartDate, endDate: selectedEndDate },
-                url: "/Charts/Widget_ExpenditureByCategoryData"
+                url: "/Charts/Widget_ExpenditureIncomeCompareData"
             })
             .done(function (reportData) {
-                $('#expenditureByCategoryLoading').hide();
-                buildExpenditureByCategoryChart(reportData);
+                $('#expenditureIncomeLoading').hide();
+                buildExpenditureIncomeChart(reportData);
             });
     }
 
-    function buildExpenditureByCategoryChart(reportData) {
+    function buildExpenditureIncomeChart(reportData) {
 
-        var containerId = 'accountBalanceCircleChartContainer';
+        var containerId = 'expenditureIncomeChartContainer';
         var container = document.getElementById(containerId);
         $(container).html('');
         var canvas = document.createElement("CANVAS");
@@ -87,17 +87,27 @@
             type: 'bar',
             data: {
                 labels: _.map(reportData, function (r) {
-                    return r.category;
+                    return r.period;
                 }),
-                datasets: [{
-                    label: "Итого",
-                    backgroundColor: "#4e73df",
-                    hoverBackgroundColor: "#2e59d9",
-                    borderColor: "#4e73df",
-                    data: _.map(reportData, function (r) {
-                        return r.total;
-                    }),
-                }],
+                datasets: [
+                    {
+                        label: "Расходы",
+                        backgroundColor: "#4e73df",
+                        hoverBackgroundColor: "#2e59d9",
+                        borderColor: "#4e73df",
+                        data: _.map(reportData, function (r) {
+                            return r.expenditure;
+                        }),
+                    },
+                    {
+                        label: "Доходы",
+                        backgroundColor: "#1cc88a",
+                        hoverBackgroundColor: "#17a673",
+                        borderColor: "#4e73df",
+                        data: _.map(reportData, function (r) {
+                            return r.income;
+                        }),
+                    }],
             },
             options: {
                 maintainAspectRatio: false,
@@ -168,7 +178,8 @@
         });
     }
 
-    function ExpenditureByCategoryCallback(currentMonth) {
-        requestExpenditureByCategoryChartData(currentMonth);
+    function ExpenditureIncomeCompareCallback() {
+        requestExpenditureIncomeChartData();
     }
+
 </script>

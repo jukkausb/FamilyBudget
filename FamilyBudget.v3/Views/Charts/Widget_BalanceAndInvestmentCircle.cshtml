@@ -1,9 +1,9 @@
-﻿@model FamilyBudget.v3.Models.Widgets.AccountBalanceCircleWidgetModel
+﻿@model FamilyBudget.v3.Models.Widgets.BalanceAndInvestmentCircleWidgetModel
 <div class="col-md-12">
-    <div class="text-center" id="accountBalanceCircleLoading">
+    <div class="text-center" id="balanceAndInvestmentCircleLoading">
         @Html.Partial("_LoadingIndicator")
     </div>
-    <canvas id="accountBalanceCircleChart"></canvas>
+    <canvas id="balanceAndInvestmentCircleChart"></canvas>
 </div>
 
 <script type="text/javascript">
@@ -12,20 +12,20 @@
         $.ajax(
             {
                 type: "POST",
-                url: "/Charts/Widget_AccountBalanceCircleData"
+                url: "/Charts/Widget_BalanceAndInvestmentCircleData"
             })
             .done(function (reportData) {
-                $('#accountBalanceCircleLoading').hide();
-                buildAccountBalanceChart(reportData);
+                $('#balanceAndInvestmentCircleLoading').hide();
+                buildBalanceAndInvestmentChart(reportData);
             });
     });
 
-    function buildAccountBalanceChart(reportData) {
+    function buildBalanceAndInvestmentChart(reportData) {
         // Set new default font family and font color to mimic Bootstrap's default styling
         Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
         Chart.defaults.global.defaultFontColor = '#858796';
 
-        var ctx = document.getElementById("accountBalanceCircleChart");
+        var ctx = document.getElementById("balanceAndInvestmentCircleChart");
         new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -34,10 +34,10 @@
             }),
             datasets: [{
                 data: _.map(reportData, function (r) {
-                    return (r.equivalent + "").replace(/\s/g, '');
+                    return (r.balance + "").replace(/\s/g, '');
                 }),
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-                hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                backgroundColor: ['#4e73df', '#1cc88a'],
+                hoverBackgroundColor: ['#2e59d9', '#17a673'],
                 hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
             },
@@ -61,7 +61,7 @@
         });
     }
 
-    function AccountBalanceCircleCallback() {
+    function BalanceAndInvestmentCircleCallback() {
         @*var containerId = 'morris-bar-chart-expenditure-by-category';
         $(document.getElementById(containerId)).html('');
         var selectedStartDate = $('#@Model.WidgetClientId').find('#dtStartDate').val();

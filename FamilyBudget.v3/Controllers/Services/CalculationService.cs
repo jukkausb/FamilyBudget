@@ -18,17 +18,21 @@ namespace FamilyBudget.v3.Controllers.Services
             string mainCurrencyCode,
             int monthCount);
         List<AccountRateView> GetAccountBalanceWithRatesViews();
+        List<AccountRateView> GetBalanceAndInvestmentWithRatesViews();
     }
 
     public class CalculationService : ICalculationService
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ICurrencyProvider _currencyProvider;
+        private readonly IExpenditureRepository _expenditureRepository;
 
-        public CalculationService(IAccountRepository accountRepository, ICurrencyProvider currencyProvider)
+        public CalculationService(IAccountRepository accountRepository, ICurrencyProvider currencyProvider,
+            IExpenditureRepository expenditureRepository)
         {
             _accountRepository = accountRepository;
             _currencyProvider = currencyProvider;
+            _expenditureRepository = expenditureRepository;
         }
 
         public decimal CalculateWealth(string mainCurrencyCode)
@@ -143,6 +147,48 @@ namespace FamilyBudget.v3.Controllers.Services
             };
             eurAccountView.Percent = eurAccountView.Equivalent / wealth * 100;
             accountRateViews.Add(eurAccountView);
+
+            return accountRateViews;
+        }
+
+        public List<AccountRateView> GetBalanceAndInvestmentWithRatesViews()
+        {
+            var accounts = _accountRepository.GetAll().ToList();
+            Account mainAccount = accounts.FirstOrDefault(a => a.IsMain);
+            string mainCurrencyCode = mainAccount.Currency.Code;
+            var wealth = CalculateWealth(mainCurrencyCode);
+
+            // Get investment balance
+            var accountRub = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_RUB);
+            var investments = _expenditureRepository.GetAll().Where(e =>
+                e.ExpenditureCategory.ID == 58 || /* ИИС */
+                e.ExpenditureCategory.ID == 59    /* Брокерский счет*/
+                ).ToList();
+
+            var totalInvestmentValue = investments.Sum(i => i.Summa);
+
+            var capital = wealth + totalInvestmentValue;
+
+            List<AccountRateView> accountRateViews = new List<AccountRateView>();
+
+            var balanceView = new AccountRateView
+            {
+                Name = "Свободные денежные средства",
+                Balance = wealth,
+                CurrencyCode = Constants.CURRENCY_RUB,
+                Percent = wealth / capital * 100
+            };
+            accountRateViews.Add(balanceView);
+
+            var investmentView = new AccountRateView
+            {
+                Name = "Инвестиции",
+                Balance = investments.Sum(i => i.Summa),
+                CurrencyCode = Constants.CURRENCY_RUB,
+                Percent = totalInvestmentValue / capital * 100
+            };
+
+            accountRateViews.Add(investmentView);
 
             return accountRateViews;
         }

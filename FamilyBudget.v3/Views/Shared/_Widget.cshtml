@@ -11,9 +11,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                     <div class="dropdown-header">Действия:</div>
-                    <a class="dropdown-item" href="#" onclick="javascript:refreshWidget(getWidgetById('@Model.Id'));">Обновить</a>
-                    @*<div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">Something else here</a>*@
+                    <a class="dropdown-item" href="#" onclick="return refreshWidget(getWidgetById('@Model.Id'));">Обновить</a>
                 </div>
             </div>
         </div>
