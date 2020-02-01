@@ -2292,6 +2292,8 @@
     <Content Include="Views\Charts\Widget_AccountBalanceCircle.cshtml" />
     <Content Include="Views\Charts\Widget_BalanceAndInvestmentCircle.cshtml" />
     <Content Include="Views\Charts\Widget_ExpenditureIncomeCompare.cshtml" />
+    <Content Include="Views\Income\Copy.cshtml" />
+    <Content Include="Views\Expenditure\Copy.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

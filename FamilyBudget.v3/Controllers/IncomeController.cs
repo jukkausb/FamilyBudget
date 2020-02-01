@@ -247,6 +247,89 @@ namespace FamilyBudget.v3.Controllers
             return View(incomeModel);
         }
 
+        public ActionResult Copy(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Income income = _incomeRepository.FindBy(i => i.ID == id.Value).FirstOrDefault();
+            if (income == null)
+            {
+                return HttpNotFound();
+            }
+
+            Income copy = new Income
+            {
+                AccountID = income.AccountID,
+                CategoryID = income.CategoryID,
+                Date = DateTime.Now.Date,
+                Description = income.Description,
+                Summa = income.Summa
+            };
+
+            var model = new IncomeModel
+            {
+                Categories = GetIncomeCategories(),
+                Accounts = GetAccountsForDropDownExtended(_accountRepository),
+                DescriptionSuggestions = _incomeSuggestionService.GetTopNSuggestions(),
+                Object = copy
+            };
+            model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(IncomeModel incomeModel, int submit)
+        {
+            if (incomeModel == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (ModelState.IsValid)
+            {
+                using (var scope = new TransactionScope())
+                {
+                    try
+                    {
+                        _incomeRepository.Add(incomeModel.Object);
+                        _accountRepository.ChangeAccountBalance(incomeModel.Object.AccountID, incomeModel.Object);
+                        _incomeRepository.SaveChanges();
+                        _accountRepository.SaveChanges();
+
+                        scope.Complete();
+
+                        incomeModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+                        switch (submit)
+                        {
+                            case 1:
+                                return RedirectToAction("Index", incomeModel.ToRouteValueDictionary());
+                            case 2:
+                                return RedirectToAction("Create",
+                                    new { returnParams = Request[QueryStringParser.GridReturnParameters] });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        incomeModel.Categories = GetIncomeCategories();
+                        incomeModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
+                        HandleException(ex);
+                    }
+                }
+            }
+            else
+            {
+                incomeModel.Categories = GetIncomeCategories();
+                incomeModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
+            }
+
+            return View(incomeModel);
+        }
+
         protected List<SelectListItem> GetIncomeCategories()
         {
             List<SelectListItem> categories =

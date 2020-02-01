@@ -245,6 +245,90 @@ namespace FamilyBudget.v3.Controllers
             return View(expenditureModel);
         }
 
+        public ActionResult Copy(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Expenditure expenditure = _expenditureRepository.FindBy(e => e.ID == id).FirstOrDefault();
+            if (expenditure == null)
+            {
+                return HttpNotFound();
+            }
+
+            Expenditure copy = new Expenditure
+            {
+                AccountID = expenditure.AccountID,
+                CategoryID = expenditure.CategoryID,
+                Date = DateTime.Now.Date,
+                Description = expenditure.Description,
+                Summa = expenditure.Summa
+            };
+
+            var model = new ExpenditureModel
+            {
+                Categories = GetExpenditureCategories(),
+                Accounts = GetAccountsForDropDownExtended(_accountRepository),
+                DescriptionSuggestions = _expenditureSuggestionService.GetTopNSuggestions(),
+                Object = copy
+            };
+            model.RestoreModelState(Request.QueryString[QueryStringParser.GridReturnParameters]);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Copy(ExpenditureModel expenditureModel, int submit)
+        {
+            if (expenditureModel == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (ModelState.IsValid)
+            {
+                using (var scope = new TransactionScope())
+                {
+                    try
+                    {
+                        _expenditureRepository.Add(expenditureModel.Object);
+                        _accountRepository.ChangeAccountBalance(expenditureModel.Object.AccountID, expenditureModel.Object);
+                        _expenditureRepository.SaveChanges();
+                        _accountRepository.SaveChanges();
+
+                        scope.Complete();
+
+                        expenditureModel.RestoreModelState(Request[QueryStringParser.GridReturnParameters]);
+
+                        switch (submit)
+                        {
+                            case 1:
+                                return RedirectToAction("Index", expenditureModel.ToRouteValueDictionary());
+                            case 2:
+                                return RedirectToAction("Create",
+                                    new { returnParams = Request[QueryStringParser.GridReturnParameters] });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        expenditureModel.Categories = GetExpenditureCategories();
+                        expenditureModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
+                        HandleException(ex);
+                    }
+                }
+            }
+            else
+            {
+                expenditureModel.Categories = GetExpenditureCategories();
+                expenditureModel.Accounts = GetAccountsForDropDownExtended(_accountRepository);
+            }
+
+            return View(expenditureModel);
+        }
+
         protected List<SelectListItem> GetExpenditureCategories()
         {
             List<SelectListItem> categories =

@@ -6,8 +6,8 @@
     width: 120px;
 }
 
-.webgrid-editColumn, .webgrid-deleteColumn {
-    width: 120px;
+.webgrid-editColumn, .webgrid-copyColumn, .webgrid-deleteColumn {
+    width: 50px;
 }
 
 .card {
