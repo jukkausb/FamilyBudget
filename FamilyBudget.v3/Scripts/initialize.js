@@ -80,6 +80,12 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
+function applyResponsiveTableRoutines(tableSelector) {
+    $(tableSelector + ' td').each(function () {
+        $(this).attr('data-label', $(this).children("span.d-none").text());
+    });
+}
+
 $(function () {
 
     $.validator.methods.date = function (value, element) {

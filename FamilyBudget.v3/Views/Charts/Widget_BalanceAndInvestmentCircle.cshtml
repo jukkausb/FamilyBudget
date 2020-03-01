@@ -21,10 +21,6 @@
     });
 
     function buildBalanceAndInvestmentChart(reportData) {
-        // Set new default font family and font color to mimic Bootstrap's default styling
-        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-        Chart.defaults.global.defaultFontColor = '#858796';
-
         var ctx = document.getElementById("balanceAndInvestmentCircleChart");
         new Chart(ctx, {
             type: 'doughnut',
@@ -59,31 +55,5 @@
             cutoutPercentage: 50,
             },
         });
-    }
-
-    function BalanceAndInvestmentCircleCallback() {
-        @*var containerId = 'morris-bar-chart-expenditure-by-category';
-        $(document.getElementById(containerId)).html('');
-        var selectedStartDate = $('#@Model.WidgetClientId').find('#dtStartDate').val();
-        var selectedEndDate = $('#@Model.WidgetClientId').find('#dtEndDate').val();
-        $('#loading').show();
-        $.ajax({
-                type: "POST",
-                data: { startDate: selectedStartDate, endDate: selectedEndDate },
-                url: "/Charts/Widget_ExpenditureByCategoryData",
-            })
-            .done(function (reportData) {
-                $('#loading').hide();
-                    Morris.Bar({
-                        element: containerId,
-                        data: reportData,
-                        xkey: 'category',
-                        ykeys: ['total'],
-                        labels: ['Категория'],
-                        hideHover: 'false',
-                        gridTextSize: 14,
-                        resize: false
-                    });
-                });*@
     }
 </script>

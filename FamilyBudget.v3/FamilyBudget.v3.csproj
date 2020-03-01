@@ -215,6 +215,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\flags\NOK.png" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\Mobile\assets\fonts\iline1.eot" />
     <Content Include="Content\Mobile\assets\fonts\iline1.ttf" />
@@ -2294,6 +2295,7 @@
     <Content Include="Views\Charts\Widget_ExpenditureIncomeCompare.cshtml" />
     <Content Include="Views\Income\Copy.cshtml" />
     <Content Include="Views\Expenditure\Copy.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\_FormActionButtons.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2590,6 +2592,7 @@
     <Compile Include="Models\Filter\ExpenditureFilterModel.cs" />
     <Compile Include="Models\Filter\IncomeCategoryFilterModel.cs" />
     <Compile Include="Models\Filter\IncomeFilterModel.cs" />
+    <Compile Include="Models\FormActionButtonsModel.cs" />
     <Compile Include="Models\Home\AccountCircleEquivalentView.cs" />
     <Compile Include="Models\Home\AccountRateView.cs" />
     <Compile Include="Models\Home\CurrencyRateView.cs" />

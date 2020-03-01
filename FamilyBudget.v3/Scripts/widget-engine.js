@@ -16,7 +16,7 @@
                 this.indicator.stop();
                 $(this.button).hide();
                 $(this.container).append(data);
-                if (this.widget.callback) {
+                if (this.widget.callback && typeof this.widget.callback === "function") {
                     window[this.widget.callback]();
                 }
             });

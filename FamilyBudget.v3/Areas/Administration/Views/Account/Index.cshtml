@@ -21,20 +21,20 @@
                 if (Model != null)
                 {
                     <div class="card mb-4">
-                        <div class="card-body">
-                            @{
-                                WebGrid grid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.Entities, rowsPerPage: Model.PageSize, canPage: true, canSort: true, defaultSort: "Currency.Code");
-                                @grid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
-                                    columns: grid.Columns(
-                                        grid.Column("Name", "Наименование счета"),
-                                        grid.Column("Currency.Code", "Код валюты"),
-                                        grid.Column("Balance", "Остаток"),
-                                        grid.Column("IsMain", "Основной", item => Html.CheckBox("IsMain", (bool)item.IsMain, new { disabled = "disabled" })),
-                                        grid.Column(style: "webgrid-editColumn", format: item => Html.ActionLink("Редактировать", "Edit", new { id = item.ID, returnParams = @returnParameters }, new { @class = "btn btn-warning btn-sm btn-table-action" })),
-                                        grid.Column(style: "webgrid-deleteColumn", format: item => Html.ActionLink("Удалить", "Delete", new { id = item.ID, returnParams = @returnParameters }, new { @class = "btn btn-danger btn-sm btn-table-action" })
-                                            )));
-                            }
-                        </div>
+                                    <div class="card-body">
+                                        @{
+                                            WebGrid grid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.Entities, rowsPerPage: Model.PageSize, canPage: true, canSort: true, defaultSort: "Currency.Code");
+                                            @grid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
+                                                columns: grid.Columns(
+                                                    grid.Column("Name", "Наименование счета"),
+                                                    grid.Column("Currency.Code", "Код валюты"),
+                                                    grid.Column("Balance", "Остаток"),
+                                                    grid.Column("IsMain", "Основной", item => Html.CheckBox("IsMain", (bool)item.IsMain, new { disabled = "disabled" })),
+                                                    grid.Column(style: "webgrid-editColumn", format: @<a href="@Url.Action("Edit", "Account", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-info btn-circle"><i class="fa fa-list"></i></a>),
+                                                    grid.Column(style: "webgrid-deleteColumn", format: @<a href="@Url.Action("Delete", "Account", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-danger btn-circle"><i class="fa fa-trash-o"></i></a>)
+));
+                                        }
+                                    </div>
                     </div>
                 }
             }

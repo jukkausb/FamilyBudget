@@ -114,6 +114,7 @@ namespace FamilyBudget.v3.Controllers.Services
             var accountRub = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_RUB);
             var accountUsd = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_USD);
             var accountEur = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_EUR);
+            var accountNok = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_NOK);
 
             List<AccountRateView> accountRateViews = new List<AccountRateView>();
 
@@ -147,6 +148,16 @@ namespace FamilyBudget.v3.Controllers.Services
             };
             eurAccountView.Percent = eurAccountView.Equivalent / wealth * 100;
             accountRateViews.Add(eurAccountView);
+
+            var nokAccountView = new AccountRateView
+            {
+                Name = accountNok.Name,
+                Balance = accountEur.Balance,
+                CurrencyCode = accountEur.Currency.Code,
+                Rate = _currencyProvider.GetSellCurrencyRate(accountNok.Currency.Code, mainCurrencyCode)
+            };
+            nokAccountView.Percent = nokAccountView.Equivalent / wealth * 100;
+            accountRateViews.Add(nokAccountView);
 
             return accountRateViews;
         }

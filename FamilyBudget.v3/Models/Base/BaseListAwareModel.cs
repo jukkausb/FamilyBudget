@@ -8,7 +8,7 @@ namespace FamilyBudget.v3.Models.Base
     public abstract class BaseListAwareModel<T> : BaseModel
     {
         public T Object { get; set; }
-
+        public virtual FormActionButtonsModel FormActionButtons { get; }
         public int PageIndex { get; set; }
         public string SortField { get; set; }
         public string SortDirection { get; set; }

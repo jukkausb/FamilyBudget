@@ -1,0 +1,23 @@
+﻿@model FamilyBudget.v3.Models.FormActionButtonsModel
+@if (Model != null)
+{
+    <div class="btn-group btn-block">
+        @if (Model.RenderSaveButton)
+        {
+            <button name="submit" type="submit" class="btn btn-success" value="1">Сохранить</button>
+        }
+        @if (Model.RenderSaveAndCreateButton)
+        {
+            <button name="submit" type="submit" class="btn btn-secondary" value="2">Сохранить и создать</button>
+        }
+        @if (Model.RenderDeleteButton)
+        {
+            <button name="submit" type="submit" class="btn btn-danger" value="3">Удалить</button>
+        }
+        @if (Model.RenderBackButton)
+        {
+            <a class="btn btn-primary" href="@Model.BackButtonLink">Назад</a>
+        }
+    </div>
+}
+
