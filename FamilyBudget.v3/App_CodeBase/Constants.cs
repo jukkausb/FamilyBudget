@@ -6,5 +6,7 @@
         public const string CURRENCY_USD = "USD";
         public const string CURRENCY_EUR = "EUR";
         public const string CURRENCY_NOK = "NOK";
+
+        public const string CURRENCY_NAME_RUB = "Российский рубль";
     }
 }

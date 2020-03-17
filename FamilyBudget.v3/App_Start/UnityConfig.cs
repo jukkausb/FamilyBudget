@@ -1,6 +1,7 @@
 using FamilyBudget.v3.App_CodeBase;
 using FamilyBudget.v3.App_CodeBase.Csv;
 using FamilyBudget.v3.App_CodeBase.Json;
+using FamilyBudget.v3.App_CodeBase.Tinkoff;
 using FamilyBudget.v3.Areas.Administration.Controllers;
 using FamilyBudget.v3.Controllers;
 using FamilyBudget.v3.Controllers.Services;
@@ -31,6 +32,8 @@ namespace FamilyBudget.v3
 
         private static void RegisterControllers(IUnityContainer container)
         {
+            container.RegisterType(typeof(ITinkoffInvestmentDataProvider), typeof(TinkoffInvestmentDataProvider));
+
             //container.RegisterType(typeof(ICurrencyProvider), typeof(YahooCurrencyProvider));
             container.RegisterType(typeof(ICurrencyProvider), typeof(FreeCurrencyConverter));
             container.RegisterType(typeof(IGoldOunceRateProvider), typeof(GoldOunceRateProvider));

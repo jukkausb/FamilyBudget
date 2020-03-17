@@ -111,8 +111,8 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
@@ -167,6 +167,9 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Tinkoff.Trading.OpenApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tinkoff.Trading.OpenApi.1.2.0\lib\netstandard2.0\Tinkoff.Trading.OpenApi.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Mvc5, Version=1.2.3.0, Culture=neutral, PublicKeyToken=43da31bc42a85347, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.Mvc5.1.2.3\lib\net45\Unity.Mvc5.dll</HintPath>
     </Reference>
@@ -2296,6 +2299,7 @@
     <Content Include="Views\Income\Copy.cshtml" />
     <Content Include="Views\Expenditure\Copy.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\_FormActionButtons.cshtml" />
+    <Content Include="Views\Investment\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2492,6 +2496,14 @@
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
     <Compile Include="App_CodeBase\Prosperity.cs" />
     <Compile Include="App_CodeBase\SiteMap.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffBrokerAccounts.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioPosition.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffContext.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffDataRetrieverBase.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffInvestmentDataProvider.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffOpenApiTokenReader.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffUserAccountDataRetriever.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffPortfolioDataRetriever.cs" />
     <Compile Include="App_CodeBase\Valuta.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureByCategoryItem.cs" />
     <Compile Include="App_CodeBase\Widgets\ExpenditureIncomeItem.cs" />
@@ -2564,6 +2576,7 @@
     <Compile Include="Controllers\ExpenditureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IncomeController.cs" />
+    <Compile Include="Controllers\InvestmentController.cs" />
     <Compile Include="Controllers\MoneyControllerBase.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\Services\CalculationService.cs" />
@@ -2600,6 +2613,7 @@
     <Compile Include="Models\Home\LabelAndValueWithTrend.cs" />
     <Compile Include="Models\IncomeListModel.cs" />
     <Compile Include="Models\IncomeModel.cs" />
+    <Compile Include="Models\InvestmentModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageModel.cs" />

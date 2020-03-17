@@ -1,0 +1,162 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Models.InvestmentModel
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="text-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Инвестирование</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
+                @foreach (var account in Model.Accounts)
+                {
+                    string activeCssClass = (bool)account.IsActive ? "active" : "";
+                    string areaSelected = (bool)account.IsActive ? "true" : "";
+                    <li class="nav-item">
+                        <a class="nav-link @activeCssClass" id="pills-@account.Id-tab" data-toggle="pill" href="#pills-@account.Id" role="tab" aria-controls="pills-@account.Id" aria-selected="@areaSelected">@account.Name</a>
+                    </li>
+                }
+            </ul>
+            @{
+                var getStyle = new Func<decimal, string>((total) => total >= 0 ? "text-success" : "text-danger");
+                @helper RenderInstrumentInfoDetails(dynamic position)
+                {
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            @if (!string.IsNullOrEmpty(position.Ticker))
+                            {
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @position.Name&nbsp;
+                                    <a class="h6" href="https://www.tinkoff.ru/invest/stocks/@position.Ticker" target="_blank">($@position.Ticker)</a>
+                                </div>
+                                <div class="h6 mb-0 text-gray-800">@position.Balance шт.</div>
+                                <div class="h6 mb-0 text-gray-800">Ср. цена: @position.CurrentPriceInPortfolioPresentation</div>
+                            }
+                            else
+                            {
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @position.Name
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                @helper RenderInstrumentPriceDetails(dynamic position)
+                {
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="h6 mb-0 text-gray-800">
+                                @if (!string.IsNullOrEmpty(position.Ticker))
+                                {
+                                    @position.CurrentPriceInMarketPresentation
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                @helper RenderInstrumentTotalDetails(dynamic position)
+                {
+                    if (!string.IsNullOrEmpty(position.Ticker))
+                    {
+                        string colorClass = "text-gray-800";
+                        string arrowClass = "";
+                        if (position.CurrentDeltaType == FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType.Negative)
+                        {
+                            colorClass = "text-danger";
+                            arrowClass = "fa-arrow-down text-danger";
+                        }
+                        else if (position.CurrentDeltaType == FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType.Positive)
+                        {
+                            colorClass = "text-success";
+                            arrowClass = "fa-arrow-up text-success";
+                        }
+
+                        <div class="row no-gutters align-items-center">
+                            <div class="col">
+                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-right">@position.CurrentTotalInPortfolioPresentation</div>
+                                <div class="h6 mb-0 font-weight-bold @colorClass text-right">
+                                    <i class="fas @arrowClass"></i>
+                                    @position.CurrentDeltaPresentation (@position.CurrentDeltaPercent%)
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row no-gutters align-items-center">
+                            <div class="col">
+                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-right">@position.CurrentTotalInPortfolioPresentation</div>
+                            </div>
+                        </div>
+                    }
+                }
+                @helper RenderGrid(dynamic source)
+                {
+                    if (source != null)
+                    {
+                        WebGrid grid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(source, rowsPerPage: 100000);
+                        @grid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
+                            columns: grid.Columns(
+                                grid.Column("Name", "Название", item => Html.Raw(RenderInstrumentInfoDetails(item))),
+                                grid.Column("Name", "Текущая цена", item => Html.Raw(RenderInstrumentPriceDetails(item))),
+                                grid.Column("CurrentDeltaPercent", "Итого", item => Html.Raw(RenderInstrumentTotalDetails(item)))));
+                    }
+                }
+
+                if (Model != null && Model.Accounts.Any())
+                {
+                    <div class="tab-content" id="pills-tabContent">
+                        @foreach (var account in Model.Accounts)
+                        {
+                            string activeCssClass = (bool)account.IsActive ? "show active" : "";
+                            <div class="tab-pane fade @activeCssClass" id="pills-@account.Id" role="tabpanel" aria-labelledby="pills-@account.Id-tab">
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <div class="card border-left-success shadow h-100 py-2">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col mr-2">
+                                                        <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
+                                                        <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(account.TotalBalance)">@account.TotalBalancePresentation</div>
+                                                        <div class="h6 mb-0 text-xl-center font-weight-bold @getStyle(account.TotalDelta)">@account.TotalDeltaPresentation (@account.TotalDeltaPercent%)</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mb-5">
+                                    <div class="card-header py-3">
+                                        <h4 class="m-0 font-weight-bold text-primary">Акции</h4>
+                                    </div>
+                                    @RenderGrid(account.Stocks)
+                                </div>
+                                <div class="card mb-5">
+                                    <div class="card-header py-3">
+                                        <h4 class="m-0 font-weight-bold text-primary">Фонды</h4>
+                                    </div>
+                                    @RenderGrid(account.Etfs)
+                                </div>
+                                <div class="card mb-5">
+                                    <div class="card-header py-3">
+                                        <h4 class="m-0 font-weight-bold text-primary">Валюта</h4>
+                                    </div>
+                                    @RenderGrid(account.Currencies)
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function brokerAccountChanged(btn) {
+        $(btn).button('toggle');
+        alert(btn);
+    }
+</script>
