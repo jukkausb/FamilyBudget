@@ -6,6 +6,8 @@ using System.Linq;
 using Tinkoff.Trading.OpenApi.Models;
 using static Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies;
 using System;
+using FamilyBudget.v3.App_Helpers;
+using FamilyBudget.v3.Models.Repository.Interfaces;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
@@ -16,6 +18,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
     public class TinkoffInvestmentDataProvider : ITinkoffInvestmentDataProvider
     {
+        private readonly IExpenditureRepository _expenditureRepository;
+
+        public TinkoffInvestmentDataProvider(IExpenditureRepository expenditureRepository)
+        {
+            _expenditureRepository = expenditureRepository;
+        }
+
         private string GetToken()
         {
             string tokenFileName = System.Web.Configuration.WebConfigurationManager.AppSettings["TinkoffTokenFileName"];
@@ -44,6 +53,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         {
             string token = GetToken();
 
+            decimal investmentsToIIS = BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
+            decimal investmentsBrokerAccount = BusinessHelper.GetBrokerAccountExpenditures(_expenditureRepository).Sum(e => e.Summa);
+            decimal totalInvestments = investmentsToIIS + investmentsBrokerAccount;
+
             ITinkoffUserAccountDataRetriever tinkoffUserAccountDataRetriever = new TinkoffUserAccountDataRetriever(token);
             List<TinkoffBrokerAccount> accounts = await tinkoffUserAccountDataRetriever.GetTinkoffUserAccounts();
 
@@ -60,11 +73,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 if (account.BrokerAccountType == BrokerAccountType.TinkoffIis)
                 {
                     investmentAccount.Name = "ИИС";
+                    investmentAccount.TotalInvested = investmentsToIIS;
                     investmentAccount.IsActive = false;
                 }
                 else
                 {
                     investmentAccount.Name = "Брокерский счет";
+                    investmentAccount.TotalInvested = investmentsBrokerAccount;
                     investmentAccount.IsActive = true;
                 }
 
@@ -77,7 +92,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
                 investmentAccount.TotalBalance = portfolioPositions.Sum(p => p.CurrentTotalInPortfolio) + accountCashRub.Balance;
                 investmentAccount.TotalDelta = portfolioPositions.Sum(p => p.CurrentDelta);
-                investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccount.TotalDelta / investmentAccount.TotalBalance * 100), 2).ToString("N2");
+                investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccount.TotalDelta / investmentAccount.TotalInvested * 100), 2).ToString("N2");
 
                 foreach (var group in groups)
                 {

@@ -120,8 +120,23 @@
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col mr-2">
                                                         <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
-                                                        <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(account.TotalBalance)">@account.TotalBalancePresentation</div>
-                                                        <div class="h6 mb-0 text-xl-center font-weight-bold @getStyle(account.TotalDelta)">@account.TotalDeltaPresentation (@account.TotalDeltaPercent%)</div>
+
+                                                        <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(account.TotalBalance)">
+                                                            @account.TotalBalancePresentation
+                                                        </div>
+                                                        <div class="h6 mb-0 text-xl-center font-weight-bold @getStyle(account.TotalDelta)">
+                                                            @{
+                                                                if (account.TotalDelta < 0)
+                                                                {
+                                                                    <i class="fas fa-arrow-down text-danger"></i>
+                                                                }
+                                                                else if (account.TotalDelta > 0)
+                                                                {
+                                                                    <i class="fas fa-arrow-up text-success"></i>
+                                                                }
+                                                            }
+                                                            @account.TotalDeltaPresentation (@account.TotalDeltaPercent%)
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
