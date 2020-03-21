@@ -6,7 +6,18 @@ namespace FamilyBudget.v3.Models
 {
     public class DashboardModel : BaseModel
     {
-        public MoneyModel Wealth { get; set; }
+        /// <summary>
+        /// Total capital
+        /// </summary>
+        public MoneyModel Capital { get; set; }
+        /// <summary>
+        /// Cash on accounts
+        /// </summary>
+        public MoneyModel Cash { get; set; }
+        /// <summary>
+        /// Total results of investment
+        /// </summary>
+        public MoneyModel Investment { get; set; }
         public List<AccountRateView> AccountRateViews { get; set; }
         public int AverageLastMonthCount { get; set; }
         public MoneyModel AverageIncomePerMonth { get; set; }

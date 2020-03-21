@@ -11,7 +11,7 @@ namespace FamilyBudget.v3.Controllers.Services
 {
     public interface ICalculationService
     {
-        decimal CalculateWealth(string mainCurrencyCode);
+        decimal CalculateCash(string mainCurrencyCode);
         AverageMoneyModel CalculateAverageValues(List<Account> accounts,
             List<Income> allIncomesInMonth,
             List<Expenditure> allExpenditresInMonth,
@@ -35,7 +35,7 @@ namespace FamilyBudget.v3.Controllers.Services
             _expenditureRepository = expenditureRepository;
         }
 
-        public decimal CalculateWealth(string mainCurrencyCode)
+        public decimal CalculateCash(string mainCurrencyCode)
         {
             decimal wealthValue = 0;
 
@@ -109,7 +109,7 @@ namespace FamilyBudget.v3.Controllers.Services
             var accounts = _accountRepository.GetAll().ToList();
             Account mainAccount = accounts.FirstOrDefault(a => a.IsMain);
             string mainCurrencyCode = mainAccount.Currency.Code;
-            var wealth = CalculateWealth(mainCurrencyCode);
+            var wealth = CalculateCash(mainCurrencyCode);
 
             var accountRub = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_RUB);
             var accountUsd = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_USD);
@@ -167,7 +167,7 @@ namespace FamilyBudget.v3.Controllers.Services
             var accounts = _accountRepository.GetAll().ToList();
             Account mainAccount = accounts.FirstOrDefault(a => a.IsMain);
             string mainCurrencyCode = mainAccount.Currency.Code;
-            var wealth = CalculateWealth(mainCurrencyCode);
+            var wealth = CalculateCash(mainCurrencyCode);
 
             // Get investment balance
             var accountRub = accounts.FirstOrDefault(a => a.Currency.Code == Constants.CURRENCY_RUB);

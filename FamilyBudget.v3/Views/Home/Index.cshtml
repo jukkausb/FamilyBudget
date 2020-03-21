@@ -10,8 +10,34 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Баланс</div>
-                            <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(Model.Wealth.Value)">@Model.Wealth.Value.ToString("N")</div>
+                            <div class="h3 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Капитал</div>
+                            <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(Model.Capital.Value)">@Model.Capital.ValuePresentation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Кэш</div>
+                            <div class="h3 mb-0 text-xl-center font-weight-bold @getStyle(Model.Cash.Value)">@Model.Cash.ValuePresentation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Инвестиции</div>
+                            <div class="h3 mb-0 text-xl-center font-weight-bold @getStyle(Model.Investment.Value)">@Model.Investment.ValuePresentation</div>
                         </div>
                     </div>
                 </div>

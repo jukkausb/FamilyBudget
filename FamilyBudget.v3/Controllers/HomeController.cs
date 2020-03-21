@@ -1,10 +1,12 @@
-﻿using FamilyBudget.v3.App_DataModel;
+﻿using FamilyBudget.v3.App_CodeBase.Tinkoff;
+using FamilyBudget.v3.App_DataModel;
 using FamilyBudget.v3.App_Helpers;
 using FamilyBudget.v3.Controllers.Services;
 using FamilyBudget.v3.Models;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace FamilyBudget.v3.Controllers
@@ -15,14 +17,17 @@ namespace FamilyBudget.v3.Controllers
         private readonly IIncomeRepository _incomeRepository;
         private readonly IExpenditureRepository _expenditureRepository;
         private readonly ICalculationService _calculationService;
+        private readonly ITinkoffInvestmentDataProvider _tinkoffInvestmentDataProvider;
 
-        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository, 
-            IExpenditureRepository expenditureRepository, ICalculationService calculationService)
+        public HomeController(IAccountRepository accountRepository, IIncomeRepository incomeRepository,
+            IExpenditureRepository expenditureRepository, ICalculationService calculationService,
+            ITinkoffInvestmentDataProvider tinkoffInvestmentDataProvider)
         {
             _accountRepository = accountRepository;
             _incomeRepository = incomeRepository;
             _expenditureRepository = expenditureRepository;
             _calculationService = calculationService;
+            _tinkoffInvestmentDataProvider = tinkoffInvestmentDataProvider;
         }
 
         public ActionResult Index()
@@ -37,14 +42,31 @@ namespace FamilyBudget.v3.Controllers
             var accountUsd = accounts.FirstOrDefault(a => a.Currency.Code == "USD");
             var accountEur = accounts.FirstOrDefault(a => a.Currency.Code == "EUR");
 
-            if (mainAccount != null)
+            var totalCash = _calculationService.CalculateCash(mainCurrencyCode);
+            model.Cash = new MoneyModel
             {
-                model.Wealth = new MoneyModel
-                {
-                    Currency = mainCurrencyCode.ToCurrencySymbol(),
-                    Value = _calculationService.CalculateWealth(mainCurrencyCode)
-                };
-            }
+                Currency = mainCurrencyCode.ToCurrencySymbol(),
+                Value = totalCash,
+                ValuePresentation = totalCash.ToCurrencyDisplay(mainCurrencyCode, true)
+            };
+
+            var investmentAccounts = Task.Run(() => _tinkoffInvestmentDataProvider.GetInvestmentAccounts()).Result;
+            var totalInvestmentBalance = investmentAccounts.Sum(a => a.TotalBalance);
+
+            model.Investment = new MoneyModel
+            {
+                Currency = mainCurrencyCode.ToCurrencySymbol(),
+                Value = totalInvestmentBalance,
+                ValuePresentation = totalInvestmentBalance.ToCurrencyDisplay(mainCurrencyCode, true)
+            };
+
+            var totalCapital = totalInvestmentBalance + totalCash;
+            model.Capital = new MoneyModel
+            {
+                Currency = mainCurrencyCode.ToCurrencySymbol(),
+                Value = totalCapital,
+                ValuePresentation = totalCapital.ToCurrencyDisplay(mainCurrencyCode, true)
+            };
 
             model.AccountRateViews = _calculationService.GetAccountBalanceWithRatesViews();
 

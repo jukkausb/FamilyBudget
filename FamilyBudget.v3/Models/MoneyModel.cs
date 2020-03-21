@@ -6,5 +6,6 @@ namespace FamilyBudget.v3.Models
     {
         public decimal Value { get; set; }
         public string Currency { get; set; }
+        public string ValuePresentation { get; set; }
     }
 }
