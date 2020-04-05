@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tinkoff.Trading.OpenApi.Models;
-using static Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies;
+using static FamilyBudget.v3.App_CodeBase.Tinkoff.Models.PortfolioCurrenciesExtended;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
     public interface ITinkoffPortfolioDataRetriever
     {
-        Task<List<PortfolioCurrency>> GetTinkoffPortfolioCurrencies(string brokerAccountId = null);
+        Task<List<PortfolioCurrencyExtended>> GetTinkoffPortfolioCurrencies(string brokerAccountId = null);
         Task<List<TinkoffPortfolioPosition>> GetTinkoffPortfolioPositions(string brokerAccountId = null);
     }
 
@@ -20,7 +20,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         {
         }
 
-        public async Task<List<PortfolioCurrency>> GetTinkoffPortfolioCurrencies(string brokerAccountId = null)
+        public async Task<List<PortfolioCurrencyExtended>> GetTinkoffPortfolioCurrencies(string brokerAccountId = null)
         {
             var context = GetContext();
 

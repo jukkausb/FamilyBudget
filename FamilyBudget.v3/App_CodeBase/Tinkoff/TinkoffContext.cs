@@ -27,11 +27,18 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return response?.Payload;
         }
 
-        public async Task<PortfolioCurrencies> PortfolioCurrenciesAsync(string brokerAccountId)
+        public new async Task<PortfolioCurrenciesExtended> PortfolioCurrenciesAsync()
+        {
+            var path = $"{Endpoints.PortfolioCurrency}";
+            var response = await Connection.SendGetRequestAsync<PortfolioCurrenciesExtended>(path).ConfigureAwait(false);
+            return response?.Payload;
+        }
+
+        public async Task<PortfolioCurrenciesExtended> PortfolioCurrenciesAsync(string brokerAccountId)
         {
             var brokerAccountIdParam = HttpUtility.UrlEncode(brokerAccountId);
             var path = $"{Endpoints.PortfolioCurrency}?brokerAccountId={brokerAccountIdParam}";
-            var response = await Connection.SendGetRequestAsync<PortfolioCurrencies>(path).ConfigureAwait(false);
+            var response = await Connection.SendGetRequestAsync<PortfolioCurrenciesExtended>(path).ConfigureAwait(false);
             return response?.Payload;
         }
 

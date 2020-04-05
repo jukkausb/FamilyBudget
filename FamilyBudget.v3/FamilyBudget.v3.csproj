@@ -2497,6 +2497,7 @@
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
     <Compile Include="App_CodeBase\Prosperity.cs" />
     <Compile Include="App_CodeBase\SiteMap.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioCurrenciesExtended.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffBrokerAccounts.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioPosition.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffContext.cs" />

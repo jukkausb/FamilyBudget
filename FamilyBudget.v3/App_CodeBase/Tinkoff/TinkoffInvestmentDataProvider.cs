@@ -8,6 +8,7 @@ using static Tinkoff.Trading.OpenApi.Models.PortfolioCurrencies;
 using System;
 using FamilyBudget.v3.App_Helpers;
 using FamilyBudget.v3.Models.Repository.Interfaces;
+using static FamilyBudget.v3.App_CodeBase.Tinkoff.Models.PortfolioCurrenciesExtended;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
@@ -41,11 +42,11 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return positions;
         }
 
-        private async Task<List<PortfolioCurrency>> GetPortfolioCurrencies(string brokerAccountId)
+        private async Task<List<PortfolioCurrencyExtended>> GetPortfolioCurrencies(string brokerAccountId)
         {
             string token = GetToken();
             ITinkoffPortfolioDataRetriever tinkoffPortfolioDataRetriever = new TinkoffPortfolioDataRetriever(token);
-            List<PortfolioCurrency> positions = await tinkoffPortfolioDataRetriever.GetTinkoffPortfolioCurrencies(brokerAccountId);
+            List<PortfolioCurrencyExtended> positions = await tinkoffPortfolioDataRetriever.GetTinkoffPortfolioCurrencies(brokerAccountId);
             return positions;
         }
 
