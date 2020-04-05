@@ -1,0 +1,23 @@
+﻿@model FamilyBudget.v3.Models.MessageModel
+
+@if (Model == null)
+{
+    return;
+}
+
+
+@foreach (var message in Model.Messages)
+{
+    string messageTypeCss = "border-left-info";
+    if (message.Type == FamilyBudget.v3.Models.MessageType.Error || message.Type == FamilyBudget.v3.Models.MessageType.Warning)
+    {
+        messageTypeCss = "border-left-warning";
+    }
+    <div class="card @messageTypeCss shadow">
+        <div class="card-body">
+            @message.Text
+        </div>
+    </div>
+}
+
+

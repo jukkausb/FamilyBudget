@@ -1,10 +1,12 @@
 ﻿using FamilyBudget.v3.App_CodeBase.Tinkoff;
 using FamilyBudget.v3.App_DataModel;
 using FamilyBudget.v3.App_Helpers;
+using FamilyBudget.v3.App_Utils;
 using FamilyBudget.v3.Controllers.Services;
 using FamilyBudget.v3.Models;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -50,8 +52,25 @@ namespace FamilyBudget.v3.Controllers
                 ValuePresentation = totalCash.ToCurrencyDisplay(mainCurrencyCode, true)
             };
 
-            var investmentAccounts = Task.Run(() => _tinkoffInvestmentDataProvider.GetInvestmentAccounts()).Result;
-            var totalInvestmentBalance = investmentAccounts.Sum(a => a.TotalBalance);
+            List<InvestmentAccount> investmentAccounts = null;
+
+            try
+            {
+                investmentAccounts = Task.Run(() => _tinkoffInvestmentDataProvider.GetInvestmentAccounts()).Result;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+
+                model.Message = new MessageModel();
+                model.Message.Messages.Add(new Message
+                {
+                    Text = "Ошибка загрузки данных с Tinkoff",
+                    Type = MessageType.Error
+                });
+            }
+
+            var totalInvestmentBalance = investmentAccounts?.Sum(a => a.TotalBalance) ?? 0;
 
             model.Investment = new MoneyModel
             {

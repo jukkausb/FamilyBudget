@@ -106,6 +106,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                         investmentAccount.Currencies.Add(new TinkoffPortfolioPosition
                         {
                             Name = Constants.CURRENCY_NAME_RUB,
+                            Isin = Constants.CURRENCY_RUB,
                             CurrentTotalInPortfolio = accountCashRub.Balance
                         });
                     }

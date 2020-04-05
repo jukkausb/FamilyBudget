@@ -8,6 +8,7 @@ namespace FamilyBudget.v3.Models
 {
     public class InvestmentModel : BaseModel
     {
+        public MessageModel Message { get; set; }
         public List<InvestmentAccount> Accounts { get; set; }
         public InvestmentModel()
         {

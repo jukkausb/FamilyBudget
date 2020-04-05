@@ -60,9 +60,14 @@ input[type="checkbox"].input-validation-error {
     width: 150px;
 }
 
+.stock-position-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
 
 @media screen and (max-width: 768px) {
-    table.table {
+    table .table {
         border: 0;
         margin-bottom: 0;
     }

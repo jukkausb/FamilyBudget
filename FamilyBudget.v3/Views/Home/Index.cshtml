@@ -1,9 +1,19 @@
 ﻿@model FamilyBudget.v3.Models.DashboardModel
 
+
+
 @{
     var getStyle = new Func<decimal, string>((total) => total >= 0 ? "text-success" : "text-danger");
 }
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-12 col-md-6 mb-4">
+            @if (Model.Message != null)
+            {
+                @Html.Partial("~/Views/Shared/MessageModel.cshtml", Model.Message)
+            }
+        </div>
+    </div>
     <div class="row">
         <div class="col-xl-12 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">

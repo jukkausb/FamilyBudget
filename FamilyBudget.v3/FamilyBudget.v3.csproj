@@ -2300,6 +2300,7 @@
     <Content Include="Views\Expenditure\Copy.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\_FormActionButtons.cshtml" />
     <Content Include="Views\Investment\Index.cshtml" />
+    <Content Include="Views\Shared\MessageModel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2501,6 +2502,7 @@
     <Compile Include="App_CodeBase\Tinkoff\TinkoffContext.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffDataRetrieverBase.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffInvestmentDataProvider.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffIsinOverride.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffOpenApiTokenReader.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffUserAccountDataRetriever.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffPortfolioDataRetriever.cs" />

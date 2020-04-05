@@ -9,6 +9,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         public string Name { get; set; }
         public InstrumentType Type { get; set; }
         public string Ticker { get; set; }
+        public string Isin { get; set; }
         public int Lots { get; set; }
         public decimal Balance { get; set; }
         public string Currency { get; set; }

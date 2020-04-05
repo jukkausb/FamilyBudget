@@ -8,12 +8,25 @@
         <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Инвестирование</h1>
     </div>
 
+    <div class="row">
+        <div class="col-xl-12 col-md-6 mb-4">
+            @if (Model.Message != null)
+            {
+                @Html.Partial("~/Views/Shared/MessageModel.cshtml", Model.Message)
+            }
+        </div>
+    </div>
+
     @{
         var getStyle = new Func<decimal, string>((total) => total >= 0 ? "text-success" : "text-danger");
         @helper RenderInstrumentInfoDetails(dynamic position)
         {
             <div class="row no-gutters align-items-center">
                 <div class="col">
+                    @{
+                        string avatarSrc = "https://static.tinkoff.ru/brands/traiding/" + @position.Isin + "x160.png";
+                    }
+                    <img class="stock-position-avatar" src="@avatarSrc"></img>
                     @if (!string.IsNullOrEmpty(position.Ticker))
                     {
                         <div class="h5 mb-0 font-weight-bold text-gray-800">

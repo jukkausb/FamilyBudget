@@ -59,7 +59,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 {
                     Name = portfolioStock?.Name,
                     Type = position.InstrumentType,
-                    Ticker = position.Ticker,
+                    Ticker = portfolioStock.Ticker,
+                    Isin = TinkoffIsinOverride.ResolveIsin(portfolioStock.Ticker, portfolioStock.Isin),
                     Lots = position.Lots,
                     Balance = position.Balance,
                     Currency = currency,

@@ -6,6 +6,7 @@ namespace FamilyBudget.v3.Models
 {
     public class DashboardModel : BaseModel
     {
+        public MessageModel Message { get; set; }
         /// <summary>
         /// Total capital
         /// </summary>
