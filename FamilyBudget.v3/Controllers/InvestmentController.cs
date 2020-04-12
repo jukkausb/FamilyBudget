@@ -2,7 +2,6 @@
 using FamilyBudget.v3.App_Utils;
 using FamilyBudget.v3.Models;
 using System;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace FamilyBudget.v3.Controllers
@@ -16,13 +15,13 @@ namespace FamilyBudget.v3.Controllers
             _tinkoffInvestmentDataProvider = tinkoffInvestmentDataProvider;
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             InvestmentModel model = new InvestmentModel();
 
             try
             {
-                model.Accounts = await _tinkoffInvestmentDataProvider.GetInvestmentAccounts();
+                model.Accounts = _tinkoffInvestmentDataProvider.GetInvestmentAccounts();
             }
             catch (Exception ex)
             {

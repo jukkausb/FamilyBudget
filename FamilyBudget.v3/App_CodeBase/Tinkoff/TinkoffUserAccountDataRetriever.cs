@@ -6,7 +6,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
     public interface ITinkoffUserAccountDataRetriever
     {
-        Task<List<TinkoffBrokerAccount>> GetTinkoffUserAccounts();
+        List<TinkoffBrokerAccount> GetTinkoffUserAccounts();
     }
 
     public class TinkoffUserAccountDataRetriever : TinkoffDataRetrieverBase, ITinkoffUserAccountDataRetriever
@@ -15,10 +15,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         {
         }
 
-        public async Task<List<TinkoffBrokerAccount>> GetTinkoffUserAccounts()
+        public List<TinkoffBrokerAccount> GetTinkoffUserAccounts()
         {
             var context = GetContext();
-            var accounts = await context.UserAccountsAsync();
+            var accounts = Task.Run(() => context.UserAccountsAsync()).Result;
             return accounts.Accounts;
         }
     }

@@ -8,7 +8,6 @@ using FamilyBudget.v3.Models.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace FamilyBudget.v3.Controllers
@@ -56,7 +55,7 @@ namespace FamilyBudget.v3.Controllers
 
             try
             {
-                investmentAccounts = Task.Run(() => _tinkoffInvestmentDataProvider.GetInvestmentAccounts()).Result;
+                investmentAccounts = _tinkoffInvestmentDataProvider.GetInvestmentAccounts();
             }
             catch (Exception ex)
             {

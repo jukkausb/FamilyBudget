@@ -13,7 +13,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
     public interface ITinkoffInvestmentDataProvider
     {
-        Task<List<InvestmentAccount>> GetInvestmentAccounts();
+        List<InvestmentAccount> GetInvestmentAccounts();
     }
 
     public class TinkoffInvestmentDataProvider : ITinkoffInvestmentDataProvider
@@ -39,28 +39,28 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return token;
         }
 
-        private async Task<List<TinkoffPortfolioPosition>> GetPortfolioPositions(string brokerAccountId)
+        private List<TinkoffPortfolioPosition> GetPortfolioPositions(string brokerAccountId)
         {
             ITinkoffPortfolioDataRetriever tinkoffPortfolioDataRetriever = new TinkoffPortfolioDataRetriever(GetToken());
-            List<TinkoffPortfolioPosition> positions = await tinkoffPortfolioDataRetriever.GetTinkoffPortfolioPositions(brokerAccountId);
+            List<TinkoffPortfolioPosition> positions = tinkoffPortfolioDataRetriever.GetTinkoffPortfolioPositions(brokerAccountId);
             return positions;
         }
 
-        private async Task<List<PortfolioCurrencyExtended>> GetPortfolioCurrencies(string brokerAccountId)
+        private List<PortfolioCurrencyExtended> GetPortfolioCurrencies(string brokerAccountId)
         {
             ITinkoffPortfolioDataRetriever tinkoffPortfolioDataRetriever = new TinkoffPortfolioDataRetriever(GetToken());
-            List<PortfolioCurrencyExtended> positions = await tinkoffPortfolioDataRetriever.GetTinkoffPortfolioCurrencies(brokerAccountId);
+            List<PortfolioCurrencyExtended> positions = tinkoffPortfolioDataRetriever.GetTinkoffPortfolioCurrencies(brokerAccountId);
             return positions;
         }
 
-        public async Task<List<InvestmentAccount>> GetInvestmentAccounts()
+        public List<InvestmentAccount> GetInvestmentAccounts()
         {
             decimal investmentsToIIS = BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
             decimal investmentsBrokerAccount = BusinessHelper.GetBrokerAccountExpenditures(_expenditureRepository).Sum(e => e.Summa);
             decimal totalInvestments = investmentsToIIS + investmentsBrokerAccount;
 
             ITinkoffUserAccountDataRetriever tinkoffUserAccountDataRetriever = new TinkoffUserAccountDataRetriever(GetToken());
-            List<TinkoffBrokerAccount> accounts = await tinkoffUserAccountDataRetriever.GetTinkoffUserAccounts();
+            List<TinkoffBrokerAccount> accounts = tinkoffUserAccountDataRetriever.GetTinkoffUserAccounts();
 
             List<InvestmentAccount> investmentAccounts = new List<InvestmentAccount>();
 
@@ -85,8 +85,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     investmentAccount.IsActive = true;
                 }
 
-                var portfolioPositions = await GetPortfolioPositions(account.BrokerAccountId);
-                var accountCashRub = (await GetPortfolioCurrencies(account.BrokerAccountId)).
+                var portfolioPositions = GetPortfolioPositions(account.BrokerAccountId);
+                var accountCashRub = GetPortfolioCurrencies(account.BrokerAccountId).
                     Where(c => c.Currency.ToString().ToUpper() == Constants.CURRENCY_RUB).
                     FirstOrDefault();
 
