@@ -119,6 +119,8 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Spatial, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.6.0\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
@@ -320,10 +322,6 @@
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
-    <EntityDeploy Include="App_DataModel\FamilyBudgetModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>FamilyBudgetModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <Content Include="Scripts\esm\popper.min.js.map" />
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
@@ -451,6 +449,14 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <EntityDeploy Include="App_DataModel\FamilyBudgetModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>FamilyBudgetModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="App_DataModel\FamilyBudgetModel.edmx.diagram">
+      <DependentUpon>FamilyBudgetModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Areas\Administration\Views\InvestmentConfig\Index.cshtml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Scripts\cldr\main\ru\ca-gregorian.json" />
     <Content Include="Scripts\cldr\main\ru\numbers.json" />
@@ -2525,24 +2531,30 @@
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\FamilyBudgetModel.Context.cs">
-      <DependentUpon>FamilyBudgetModel.Context.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FamilyBudgetModel.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\FamilyBudgetModel.cs">
-      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\FamilyBudgetModel.Designer.cs">
-      <DependentUpon>FamilyBudgetModel.edmx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>FamilyBudgetModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\Income.cs">
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\IncomeCategory.cs">
+      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DataModel\InvestmentRulesEtf.cs">
+      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DataModel\InvestmentRulesInstruments.cs">
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\Metadata\FamilyBudgetMetadata.cs" />
@@ -2561,6 +2573,7 @@
     <Compile Include="App_Utils\Logger.cs" />
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
     <Compile Include="Areas\Administration\Controllers\AccountController.cs" />
+    <Compile Include="Areas\Administration\Controllers\InvestmentConfigController.cs" />
     <Compile Include="Areas\Administration\Controllers\CurrencyController.cs" />
     <Compile Include="Areas\Administration\Controllers\ExpenditureCategoryController.cs" />
     <Compile Include="Areas\Administration\Controllers\IncomeCategoryController.cs" />
@@ -2572,6 +2585,7 @@
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryListModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentConfigModel.cs" />
     <Compile Include="CallHandlers\LoggingCallHandler.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ChartsController.cs" />
@@ -2595,6 +2609,7 @@
     <Compile Include="Models\Base\BaseFilterModel.cs" />
     <Compile Include="Models\Base\BaseListAwareModel.cs" />
     <Compile Include="Models\Base\BaseListModel.cs" />
+    <Compile Include="Models\Base\BaseListModelSimple.cs" />
     <Compile Include="Models\Base\BaseModel.cs" />
     <Compile Include="Models\Base\BaseMoneyFilterModel.cs" />
     <Compile Include="Models\Base\ListSortDirection.cs" />
@@ -2626,6 +2641,9 @@
     <Compile Include="Models\Report\ReportIncomesModel.cs" />
     <Compile Include="Models\Report\ReportsModel.cs" />
     <Compile Include="Models\Repository\AccountRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IInvestmentRulesInstrumentsRepository.cs" />
+    <Compile Include="Models\Repository\InvestmentRulesInstrumentsRepository.cs" />
+    <Compile Include="Models\Repository\InvestmentRulesEtfRepository.cs" />
     <Compile Include="Models\Repository\CurrencyRepository.cs" />
     <Compile Include="Models\Repository\ExpenditureCategoryRepository.cs" />
     <Compile Include="Models\Repository\ExpenditureRepository.cs" />
@@ -2634,6 +2652,7 @@
     <Compile Include="Models\Repository\IncomeCategoryRepository.cs" />
     <Compile Include="Models\Repository\IncomeRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IAccountRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IInvestmentRulesEtfRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\ICurrencyRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IExpenditureCategoryRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IExpenditureRepository.cs" />

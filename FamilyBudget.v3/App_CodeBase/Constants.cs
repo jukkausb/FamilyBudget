@@ -8,5 +8,11 @@
         public const string CURRENCY_NOK = "NOK";
 
         public const string CURRENCY_NAME_RUB = "Российский рубль";
+
+        public static class Investment
+        {
+            public const string INSTRUMENT_TYPE_CODE_STOCKS = "STOCKS";
+            public const string INSTRUMENT_TYPE_CODE_ETF = "ETF";
+        }
     }
 }

@@ -12,16 +12,11 @@ namespace FamilyBudget.v3.App_DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class Income
+    public partial class InvestmentRulesEtf
     {
         public int ID { get; set; }
-        public decimal Summa { get; set; }
-        public string Description { get; set; }
-        public int CategoryID { get; set; }
-        public System.DateTime Date { get; set; }
-        public int AccountID { get; set; }
-    
-        public virtual Account Account { get; set; }
-        public virtual IncomeCategory IncomeCategory { get; set; }
+        public string Ticker { get; set; }
+        public int PortfolioPercent { get; set; }
+        public int PortfolioPercentDelta { get; set; }
     }
 }

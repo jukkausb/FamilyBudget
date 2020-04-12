@@ -18,6 +18,7 @@ namespace FamilyBudget.v3.Models
 
     public class InvestmentAccount
     {
+        public List<Message> Messages { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public string Currency { get; set; }
@@ -51,5 +52,9 @@ namespace FamilyBudget.v3.Models
             }
         }
         public string TotalDeltaPercent { get; set; }
+        public InvestmentAccount()
+        {
+            Messages = new List<Message>();
+        }
     }
 }
