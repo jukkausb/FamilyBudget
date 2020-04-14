@@ -2509,7 +2509,7 @@
     <Compile Include="App_CodeBase\Tinkoff\TinkoffContext.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffDataRetrieverBase.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffInvestmentDataProvider.cs" />
-    <Compile Include="App_CodeBase\Tinkoff\TinkoffIsinOverride.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffStaticUrlResolver.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffOpenApiTokenReader.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffUserAccountDataRetriever.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffPortfolioDataRetriever.cs" />

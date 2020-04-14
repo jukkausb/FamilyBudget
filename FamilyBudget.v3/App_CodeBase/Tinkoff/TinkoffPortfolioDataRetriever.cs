@@ -56,6 +56,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             foreach (var position in portfolio.Positions)
             {
                 var portfolioStock = marketInstruments.FirstOrDefault(s => s.Ticker == position.Ticker);
+                if (portfolioStock == null)
+                {
+                    continue;
+                }
 
                 string currency = position.AveragePositionPrice.Currency.ToString().ToUpper();
                 decimal currentTotalInPortfolio = position.Balance * position.AveragePositionPrice.Value + position.ExpectedYield.Value;
@@ -63,10 +67,12 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
                 var portfolioPosition = new TinkoffPortfolioPosition
                 {
-                    Name = portfolioStock?.Name,
+                    Name = portfolioStock.Name,
                     Type = position.InstrumentType,
-                    Ticker = portfolioStock?.Ticker,
-                    Isin = TinkoffIsinOverride.ResolveIsin(portfolioStock?.Ticker, portfolioStock?.Isin),
+                    Ticker = portfolioStock.Ticker,
+                    Isin = portfolioStock.Isin,
+                    AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioStock.Ticker, portfolioStock.Isin),
+                    TickerPageLink = TinkoffStaticUrlResolver.ResolveTickerPageLink(portfolioStock.Ticker, position.InstrumentType),
                     Lots = position.Lots,
                     Balance = position.Balance,
                     Currency = currency,

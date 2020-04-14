@@ -23,15 +23,12 @@
         {
             <div class="row no-gutters align-items-center">
                 <div class="col">
-                    @{
-                        string avatarSrc = "https://static.tinkoff.ru/brands/traiding/" + @position.Isin + "x160.png";
-                    }
-                    <img class="stock-position-avatar" src="@avatarSrc"></img>
+                    <img class="stock-position-avatar" src="@position.AvatarImageLink" />
                     @if (!string.IsNullOrEmpty(position.Ticker))
                     {
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
                             @position.Name&nbsp;
-                            <a class="h6" href="https://www.tinkoff.ru/invest/stocks/@position.Ticker" target="_blank">($@position.Ticker)</a>
+                            <a class="h6" href="@position.TickerPageLink" target="_blank">($@position.Ticker)</a>
                         </div>
                         <div class="h6 mb-0 text-gray-800">@position.Balance шт.</div>
                         <div class="h6 mb-0 text-gray-800">Ср. цена: @position.CurrentPriceInPortfolioPresentation</div>
@@ -152,24 +149,42 @@
                             </div>
                         }
 
-                        <div class="card mb-5">
-                            <div class="card-header py-3">
-                                <h4 class="m-0 font-weight-bold text-primary">Акции</h4>
+                        @if (account.Stocks != null && account.Stocks.Any())
+                        {
+                            <div class="card mb-5">
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-primary">Акции</h4>
+                                </div>
+                                @RenderGrid(account.Stocks)
                             </div>
-                            @RenderGrid(account.Stocks)
-                        </div>
-                        <div class="card mb-5">
-                            <div class="card-header py-3">
-                                <h4 class="m-0 font-weight-bold text-primary">Фонды</h4>
+                        }
+                        @if (account.Etfs != null && account.Etfs.Any())
+                        {
+                            <div class="card mb-5">
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-primary">Фонды</h4>
+                                </div>
+                                @RenderGrid(account.Etfs)
                             </div>
-                            @RenderGrid(account.Etfs)
-                        </div>
-                        <div class="card mb-5">
-                            <div class="card-header py-3">
-                                <h4 class="m-0 font-weight-bold text-primary">Валюта</h4>
+                        }
+                        @if (account.Bonds != null && account.Bonds.Any())
+                        {
+                            <div class="card mb-5">
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-primary">Облигации</h4>
+                                </div>
+                                @RenderGrid(account.Bonds)
                             </div>
-                            @RenderGrid(account.Currencies)
-                        </div>
+                        }
+                        @if (account.Currencies != null && account.Currencies.Any())
+                        {
+                            <div class="card mb-5">
+                                <div class="card-header py-3">
+                                    <h4 class="m-0 font-weight-bold text-primary">Валюта</h4>
+                                </div>
+                                @RenderGrid(account.Currencies)
+                            </div>
+                        }
                     </div>
                 }
             </div>

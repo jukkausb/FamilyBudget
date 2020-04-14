@@ -97,51 +97,53 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccount.TotalDelta / investmentAccount.TotalInvested * 100), 2).ToString("N2");
 
                 decimal etfTotal = 0;
+                decimal bondsTotal = 0;
+                decimal stocksTotal = 0;
 
                 foreach (var group in groups)
                 {
+                    var groupData = group.OrderBy(p => p.Name).ToList();
                     if (group.Key == InstrumentType.Bond)
                     {
-                        investmentAccount.Bonds = group.OrderBy(p => p.Name).ToList();
+                        investmentAccount.Bonds = groupData;
+                        bondsTotal = groupData.Sum(e => e.CurrentTotalInPortfolio);
                     }
                     if (group.Key == InstrumentType.Currency)
                     {
-                        investmentAccount.Currencies = group.OrderBy(p => p.Name).ToList();
+                        investmentAccount.Currencies = groupData;
                         investmentAccount.Currencies.Add(new TinkoffPortfolioPosition
                         {
                             Name = Constants.CURRENCY_NAME_RUB,
-                            Isin = Constants.CURRENCY_RUB,
+                            AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(Constants.CURRENCY_RUB, Constants.CURRENCY_RUB),
                             CurrentTotalInPortfolio = accountCashRub.Balance
                         });
                     }
                     if (group.Key == InstrumentType.Etf)
                     {
-                        investmentAccount.Etfs = group.OrderBy(p => p.Name).ToList();
-                        etfTotal = investmentAccount.Etfs.Sum(e => e.CurrentTotalInPortfolio);
-                        investmentAccount.Messages.AddRange(CheckInvestmentRulesEtf(investmentAccount.Etfs.ToDictionary(
+                        investmentAccount.Etfs = groupData;
+                        etfTotal = groupData.Sum(e => e.CurrentTotalInPortfolio);
+
+                        // Additional check for ETF investment rules
+                        investmentAccount.Messages.AddRange(CheckInvestmentRulesEtf(groupData.ToDictionary(
                             e => e.Ticker,
                             e => e.CurrentTotalInPortfolio / etfTotal * 100
                             )));
                     }
                     if (group.Key == InstrumentType.Stock)
                     {
-                        investmentAccount.Stocks = group.OrderBy(p => p.Name).ToList();
+                        investmentAccount.Stocks = groupData;
+                        stocksTotal = groupData.Sum(e => e.CurrentTotalInPortfolio);
                     }
                 }
 
-                // Check investment rules (instruments)
-                if (etfTotal == 0)
-                {
-                    // just refresh value
-                    investmentAccount.Etfs.Sum(e => e.CurrentTotalInPortfolio);
-                }
-
                 var etfPercentOnAccount = etfTotal / investmentAccount.TotalBalance * 100;
-                investmentAccount.Messages.AddRange(CheckInvestmentRulesInstrument(Constants.Investment.INSTRUMENT_TYPE_CODE_ETF, etfPercentOnAccount));
+                investmentAccount.Messages.AddRange(CheckInvestmentRulesInstrument(Constants.InvestmentType.INSTRUMENT_TYPE_CODE_ETF, etfPercentOnAccount));
 
-                var stocksTotal = investmentAccount.Stocks.Sum(e => e.CurrentTotalInPortfolio);
+                var bondsPercentOnAccount = bondsTotal / investmentAccount.TotalBalance * 100;
+                investmentAccount.Messages.AddRange(CheckInvestmentRulesInstrument(Constants.InvestmentType.INSTRUMENT_TYPE_CODE_BONDS, bondsPercentOnAccount));
+
                 var stocksPercentOnAccount = stocksTotal / investmentAccount.TotalBalance * 100;
-                investmentAccount.Messages.AddRange(CheckInvestmentRulesInstrument(Constants.Investment.INSTRUMENT_TYPE_CODE_STOCKS, stocksPercentOnAccount));
+                investmentAccount.Messages.AddRange(CheckInvestmentRulesInstrument(Constants.InvestmentType.INSTRUMENT_TYPE_CODE_STOCKS, stocksPercentOnAccount));
 
                 investmentAccounts.Add(investmentAccount);
             }
@@ -195,9 +197,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
 
             string instrumentName = instrumentCode;
-            if (instrumentCode == Constants.Investment.INSTRUMENT_TYPE_CODE_STOCKS)
+            if (instrumentCode == Constants.InvestmentType.INSTRUMENT_TYPE_CODE_STOCKS)
             {
                 instrumentName = "акций";
+            }
+            else if (instrumentCode == Constants.InvestmentType.INSTRUMENT_TYPE_CODE_BONDS)
+            {
+                instrumentName = "облигаций";
             }
 
             if (currentPercentOnAccount > instrumentPersentOnAccountTarget + instrumentPersentOnAccountDelta)

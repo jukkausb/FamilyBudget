@@ -7,6 +7,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
     public class TinkoffPortfolioPosition
     {
         public string Name { get; set; }
+        public string AvatarImageLink { get; set; }
+        public string TickerPageLink { get; set; }
         public InstrumentType Type { get; set; }
         public string Ticker { get; set; }
         public string Isin { get; set; }
