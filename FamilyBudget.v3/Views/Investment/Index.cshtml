@@ -19,74 +19,48 @@
 
     @{
         var getStyle = new Func<decimal, string>((total) => total >= 0 ? "text-success" : "text-danger");
-        @helper RenderInstrumentInfoDetails(dynamic position)
+        @helper RenderArrow(FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType deltaType)
         {
-            <div class="row no-gutters align-items-center">
-                <div class="col">
-                    <img class="stock-position-avatar" src="@position.AvatarImageLink" />
-                    @if (!string.IsNullOrEmpty(position.Ticker))
-                    {
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            @position.Name&nbsp;
-                            <a class="h6" href="@position.TickerPageLink" target="_blank">($@position.Ticker)</a>
-                        </div>
-                        <div class="h6 mb-0 text-gray-800">@position.Balance шт.</div>
-                        <div class="h6 mb-0 text-gray-800">Ср. цена: @position.CurrentPriceInPortfolioPresentation</div>
-                    }
-                    else
-                    {
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            @position.Name
-                        </div>
-                    }
-                </div>
-            </div>
-        }
-        @helper RenderInstrumentPriceDetails(dynamic position)
-        {
-            <div class="row no-gutters align-items-center">
-                <div class="col">
-                    <div class="h6 mb-0 text-gray-800">
-                        @if (!string.IsNullOrEmpty(position.Ticker))
-                        {
-                            @position.CurrentPriceInMarketPresentation
-                        }
-                    </div>
-                </div>
-            </div>
-        }
-        @helper RenderInstrumentTotalDetails(dynamic position)
-        {
-            if (!string.IsNullOrEmpty(position.Ticker))
+            if (deltaType == FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType.Negative)
             {
-                string colorClass = "text-gray-800";
-                string arrowClass = "";
-                if (position.CurrentDeltaType == FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType.Negative)
-                {
-                    colorClass = "text-danger";
-                    arrowClass = "fa-arrow-down text-danger";
-                }
-                else if (position.CurrentDeltaType == FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType.Positive)
-                {
-                    colorClass = "text-success";
-                    arrowClass = "fa-arrow-up text-success";
-                }
-
-                <div class="row no-gutters align-items-center">
-                    <div class="col">
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 text-right">@position.CurrentTotalInPortfolioPresentation</div>
-                        <div class="h6 mb-0 @colorClass text-right">
-                            <i class="fas @arrowClass"></i>
-                            @position.CurrentDeltaPresentation (@position.CurrentDeltaPercent%)
-                        </div>
-                    </div>
+                <div class="triangle-red">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16">
+                        <g fill="none" fill-rule="evenodd">
+                            <rect width="12" height="16"></rect>
+                            <polygon fill="none" class="icon__fill" points="0 12 8 12 4 5" transform="matrix(1 0 0 -1 0 17)">
+                            </polygon>
+                        </g>
+                    </svg>
                 </div>
             }
-            else
+            if (deltaType == FamilyBudget.v3.App_CodeBase.Tinkoff.Models.DeltaType.Positive)
             {
-                <div class="row no-gutters align-items-center">
-                    <div class="col">
-                        <div class="h5 mb-0 font-weight-bold text-gray-800 text-right">@position.CurrentTotalInPortfolioPresentation</div>
+                <div class="triangle-green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 -1 12 16">
+                        <g fill="none" fill-rule="evenodd">
+                            <rect width="12" height="16"></rect>
+                            <polygon fill="none" class="icon__fill" points="0 11 8 11 4 4"></polygon>
+                        </g>
+                    </svg>
+                </div>
+            }
+        }
+        @helper RenderSection(string parentId, string id, string name, dynamic data)
+        {
+            if (data != null)
+            {
+                <div class="card mb-1">
+                    @{
+                        string headingId = parentId + "_heading_" + id;
+                        string collapseId = parentId + "_collapse_" + id;
+                    }
+                    <div class="card-header py-3" id="@headingId">
+                        <h4 class="m-0 font-weight-bold text-primary cursor-pointer" data-toggle="collapse" data-target="#@collapseId" aria-controls="@collapseId">
+                            <span class="text-center">@name</span>
+                        </h4>
+                    </div>
+                    <div id="@collapseId" class="collapse" aria-labelledby="@headingId" data-parent="#@parentId">
+                        @RenderGrid(data)
                     </div>
                 </div>
             }
@@ -95,12 +69,50 @@
         {
             if (source != null)
             {
-                WebGrid grid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(source, rowsPerPage: 100000);
-                @grid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
-                    columns: grid.Columns(
-                        grid.Column("Name", "Название", item => Html.Raw(RenderInstrumentInfoDetails(item))),
-                        grid.Column("Name", "Текущая цена", item => Html.Raw(RenderInstrumentPriceDetails(item)), "investment-account-table-column-price"),
-                        grid.Column("CurrentDeltaPercent", "Итого", item => Html.Raw(RenderInstrumentTotalDetails(item)), "investment-account-table-column-total")));
+                <table class="table-instruments">
+                    @foreach (var sourceItem in source)
+                    {
+                        <tr class="table-instruments-row">
+                            <td class="table-instruments-column">
+                                <a href="@sourceItem.TickerPageLink" target="_blank">
+                                    <div class="table-instruments-info">
+                                        <div class="table-instruments-info-avatar">
+                                            <img class="stock-position-avatar" src="@sourceItem.AvatarImageLink" />
+                                        </div>
+                                        <div class="table-instruments-info-details">
+                                            <div class="table-instruments-info-details-name">@sourceItem.Name</div>
+                                            <div class="table-instruments-info-details-ticker">@sourceItem.Balance шт.</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </td>
+                            <td class="table-instruments-column">
+                                <a href="@sourceItem.TickerPageLink" target="_blank">
+                                    @if (!string.IsNullOrEmpty(sourceItem.Ticker))
+                                    {
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col text-gray-800 table-instruments-price-details">
+                                                <div class="mb-0 font-weight-bold text-right">@sourceItem.CurrentTotalInPortfolioPresentation</div>
+                                                <div class="mb-0 text-right table-instruments-price-details-delta">
+                                                    @RenderArrow(sourceItem.CurrentDeltaType)
+                                                    @sourceItem.CurrentDeltaPresentation (@sourceItem.CurrentDeltaPercent%)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col">
+                                                <div class="mb-0 font-weight-bold text-gray-800 text-right">@sourceItem.CurrentTotalInPortfolioPresentation</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </table>
             }
         }
 
@@ -113,7 +125,7 @@
                         <div class="card border-left-success shadow py-2 mb-4">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
-                                    <div class="col-12 mr-2">
+                                    <div class="col mr-2">
                                         <div class="h5 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">@account.Name</div>
                                         <div class="h2 mb-0 text-xl-center font-weight-bold text-primary">
                                             @account.TotalBalancePresentation
@@ -132,59 +144,43 @@
                                             @account.TotalDeltaPresentation (@account.TotalDeltaPercent%)
                                         </div>
                                     </div>
+                                    @if (account.Messages.Any())
+                                    {
+                                        string modelId = "modal_" + account.Id;
+                                        <div class="col-auto account-messages-trigger" data-toggle="modal" data-target="#@modelId">
+                                            <a href="#" class="btn btn-warning btn-circle">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </a>
+                                        </div>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="@modelId" tabindex="-1" role="dialog">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Информация (@account.Name)</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @foreach (var message in account.Messages)
+                                                        {
+                                                            <p>@Html.Raw(message.Text)</p>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
-
-                        @if (account.Messages.Any())
-                        {
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                @foreach (var message in account.Messages)
-                                {
-                                    <p>@Html.Raw(message.Text)</p>
-                                }
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        }
-
-                        @if (account.Stocks != null && account.Stocks.Any())
-                        {
-                            <div class="card mb-5">
-                                <div class="card-header py-3">
-                                    <h4 class="m-0 font-weight-bold text-primary">Акции</h4>
-                                </div>
-                                @RenderGrid(account.Stocks)
-                            </div>
-                        }
-                        @if (account.Etfs != null && account.Etfs.Any())
-                        {
-                            <div class="card mb-5">
-                                <div class="card-header py-3">
-                                    <h4 class="m-0 font-weight-bold text-primary">Фонды</h4>
-                                </div>
-                                @RenderGrid(account.Etfs)
-                            </div>
-                        }
-                        @if (account.Bonds != null && account.Bonds.Any())
-                        {
-                            <div class="card mb-5">
-                                <div class="card-header py-3">
-                                    <h4 class="m-0 font-weight-bold text-primary">Облигации</h4>
-                                </div>
-                                @RenderGrid(account.Bonds)
-                            </div>
-                        }
-                        @if (account.Currencies != null && account.Currencies.Any())
-                        {
-                            <div class="card mb-5">
-                                <div class="card-header py-3">
-                                    <h4 class="m-0 font-weight-bold text-primary">Валюта</h4>
-                                </div>
-                                @RenderGrid(account.Currencies)
-                            </div>
-                        }
+                        <div id="accordionInstruments_@account.Id">
+                            @RenderSection("accordionInstruments_" + @account.Id, "stocks", "Акции", account.Stocks)
+                            @RenderSection("accordionInstruments_" + @account.Id, "etfs", "Фонды", account.Etfs)
+                            @RenderSection("accordionInstruments_" + @account.Id, "bonds", "Облигации", account.Bonds)
+                            @RenderSection("accordionInstruments_" + @account.Id, "currencies", "Валюта", account.Currencies)
+                        </div>
                     </div>
                 }
             </div>
