@@ -10,6 +10,10 @@
     /*width: 50px;*/
 }
 
+.modal-header {
+    background-color: #e3e6f0;
+}
+
 .card {
     border-color: #acaaaa;
 }

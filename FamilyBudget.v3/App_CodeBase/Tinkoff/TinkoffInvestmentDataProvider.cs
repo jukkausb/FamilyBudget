@@ -94,6 +94,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
                 investmentAccount.TotalBalance = portfolioPositions.Sum(p => p.CurrentTotalInPortfolio) + accountCashRub.Balance;
                 investmentAccount.TotalDelta = portfolioPositions.Sum(p => p.CurrentDelta);
+                investmentAccount.TotalDeltaType = BusinessHelper.GetDeltaType(investmentAccount.TotalDelta);
                 investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccount.TotalDelta / investmentAccount.TotalInvested * 100), 2).ToString("N2");
 
                 decimal etfTotal = 0;
@@ -105,13 +106,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     var groupData = group.OrderBy(p => p.Name).ToList();
                     if (group.Key == InstrumentType.Bond)
                     {
-                        investmentAccount.Bonds = groupData;
+                        investmentAccount.Bonds.Positions = groupData;
                         bondsTotal = groupData.Sum(e => e.CurrentTotalInPortfolio);
                     }
                     if (group.Key == InstrumentType.Currency)
                     {
-                        investmentAccount.Currencies = groupData;
-                        investmentAccount.Currencies.Add(new TinkoffPortfolioPosition
+                        investmentAccount.Currencies.Positions = groupData;
+                        investmentAccount.Currencies.Positions.Add(new TinkoffPortfolioPosition
                         {
                             Name = Constants.CURRENCY_NAME_RUB,
                             AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(Constants.CURRENCY_RUB, Constants.CURRENCY_RUB),
@@ -120,18 +121,18 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     }
                     if (group.Key == InstrumentType.Etf)
                     {
-                        investmentAccount.Etfs = groupData;
+                        investmentAccount.Etfs.Positions = groupData;
                         etfTotal = groupData.Sum(e => e.CurrentTotalInPortfolio);
 
                         // Additional check for ETF investment rules
-                        investmentAccount.Messages.AddRange(CheckInvestmentRulesEtf(groupData.ToDictionary(
+                        investmentAccount.Etfs.Messages.AddRange(CheckInvestmentRulesEtf(groupData.ToDictionary(
                             e => e.Ticker,
                             e => e.CurrentTotalInPortfolio / etfTotal * 100
                             )));
                     }
                     if (group.Key == InstrumentType.Stock)
                     {
-                        investmentAccount.Stocks = groupData;
+                        investmentAccount.Stocks.Positions = groupData;
                         stocksTotal = groupData.Sum(e => e.CurrentTotalInPortfolio);
                     }
                 }
@@ -225,7 +226,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             {
                 Type = MessageType.Warning,
                 Text = $"Доля {code} (<b>{currentPercentOnAccountPresentationString}%</b>) ниже целевого значения для портфеля (<b>{instrumentPersentOnAccountTargetPresentationString}%</b>). " +
-                            $"Рекомендуется, увеличить долю {code} в портфеле"
+                            $"Рекомендуется увеличить долю {code} в портфеле"
             };
 
         }
@@ -236,7 +237,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             {
                 Type = MessageType.Warning,
                 Text = $"Доля {code} (<b>{currentPercentOnAccountPresentationString}</b>%) выше целевого значения для портфеля (<b>{instrumentPersentOnAccountTargetPresentationString}%</b>). " +
-                            $"Рекомендуется, снизить долю {code} в портфеле"
+                            $"Рекомендуется снизить долю {code} в портфеле"
             };
         }
 

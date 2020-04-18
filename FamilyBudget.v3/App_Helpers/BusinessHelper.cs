@@ -1,4 +1,5 @@
-﻿using FamilyBudget.v3.App_DataModel;
+﻿using FamilyBudget.v3.App_CodeBase.Tinkoff.Models;
+using FamilyBudget.v3.App_DataModel;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,21 @@ namespace FamilyBudget.v3.App_Helpers
             return expenditureRepository.GetAll().Where(e =>
                 e.ExpenditureCategory.ID == 59
                 );
+        }
+
+        public static DeltaType GetDeltaType(decimal deltaValue)
+        {
+            if (deltaValue > 0)
+            {
+                return DeltaType.Positive;
+            }
+
+            if (deltaValue < 0)
+            {
+                return DeltaType.Negative;
+            }
+
+            return DeltaType.Neutral;
         }
     }
 }

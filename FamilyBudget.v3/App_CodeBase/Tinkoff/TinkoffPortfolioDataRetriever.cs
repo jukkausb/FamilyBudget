@@ -80,7 +80,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     CurrentPriceInPortfolio = position.AveragePositionPrice.Value,
                     CurrentTotalInPortfolio = currentTotalInPortfolio,
                     CurrentDelta = position.ExpectedYield.Value,
-                    CurrentDeltaType = GetPositionDeltaType(position.ExpectedYield.Value),
+                    CurrentDeltaType = BusinessHelper.GetDeltaType(position.ExpectedYield.Value),
                     CurrentDeltaPercent = Math.Round(Math.Abs(position.ExpectedYield.Value / (position.Balance * position.AveragePositionPrice.Value) * 100), 2).ToString("N2")
                 };
 
@@ -146,21 +146,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             }
 
             return marketInstruments;
-        }
-
-        private DeltaType GetPositionDeltaType(decimal deltaValue)
-        {
-            if (deltaValue > 0)
-            {
-                return DeltaType.Positive;
-            }
-
-            if (deltaValue < 0)
-            {
-                return DeltaType.Negative;
-            }
-
-            return DeltaType.Neutral;
         }
     }
 }
