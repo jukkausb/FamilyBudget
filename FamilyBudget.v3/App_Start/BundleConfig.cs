@@ -78,14 +78,11 @@ namespace FamilyBudget.v3
                 "~/js/charts.js/Chart.min.js"
                 ));
 
-            // CSS
-
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                 "~/vendor/fontawesome-free/css/all.min.css",
                 "~/Content/bootstrap.min.css",
                 "~/css/sb-admin-2.min.css",
                 "~/css/fb.css",
-                "~/font-awesome/css/font-awesome*",
                 "~/Content/plugins/morris/morris*",
                 "~/Content/plugins/timeline/timeline*",
                 "~/Content/plugins/dataTables/dataTables.bootstrap*",

@@ -5,15 +5,10 @@ namespace FamilyBudget.v3.Areas.Administration.Models
 {
     public class InvestmentConfigModel
     {
-        public InvestmentRulesEtfListModel InvestmentRulesEtfListModel { get; set; }
-        public InvestmentRulesInstrumentsListModel InvestmentRulesInstrumentsListModel { get; set; }
+        public InvestmentInstrumentListModel InvestmentInstrumentListModel { get; set; }
     }
 
-    public class InvestmentRulesEtfListModel : BaseListModelSimple<InvestmentRulesEtf>
-    {
-    }
-
-    public class InvestmentRulesInstrumentsListModel : BaseListModelSimple<InvestmentRulesInstruments>
+    public class InvestmentInstrumentListModel : BaseListModelSimple<InvestmentInstrument>
     {
     }
 }

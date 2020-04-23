@@ -12,14 +12,11 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
 {
     public class InvestmentConfigController : BaseController
     {
-        private readonly IInvestmentRulesEtfRepository _investmentRulesEtfRepository;
-        private readonly IInvestmentRulesInstrumentsRepository _investmentRulesInstrumentsRepository;
+        private readonly IInvestmentInstrumentRepository _investmentInstrumentRepository;
 
-        public InvestmentConfigController(IInvestmentRulesEtfRepository investmentRulesEtfRepository,
-            IInvestmentRulesInstrumentsRepository investmentRulesInstrumentsRepository)
+        public InvestmentConfigController(IInvestmentInstrumentRepository investmentInstrumentRepository)
         {
-            _investmentRulesEtfRepository = investmentRulesEtfRepository;
-            _investmentRulesInstrumentsRepository = investmentRulesInstrumentsRepository;
+            _investmentInstrumentRepository = investmentInstrumentRepository;
         }
 
         public ViewResult Index()
@@ -28,13 +25,9 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
             {
                 InvestmentConfigModel model = new InvestmentConfigModel();
 
-                model.InvestmentRulesEtfListModel = new InvestmentRulesEtfListModel
+                model.InvestmentInstrumentListModel = new InvestmentInstrumentListModel
                 {
-                    Entities = _investmentRulesEtfRepository.GetAll().ToList()
-                };
-                model.InvestmentRulesInstrumentsListModel = new InvestmentRulesInstrumentsListModel
-                {
-                    Entities = _investmentRulesInstrumentsRepository.GetAll().ToList()
+                    Entities = _investmentInstrumentRepository.GetAll().ToList()
                 };
 
                 return View(model);

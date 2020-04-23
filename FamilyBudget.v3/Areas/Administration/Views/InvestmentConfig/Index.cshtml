@@ -9,31 +9,16 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <div class="card mb-4">
                 <div class="card-body">
                     @{
-                        WebGrid investmentRulesEtfGrid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.InvestmentRulesEtfListModel.Entities, rowsPerPage: 1000);
-                        @investmentRulesEtfGrid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
-                            columns: investmentRulesEtfGrid.Columns(
-                                investmentRulesEtfGrid.Column("Ticker", "Тикер"),
-                                investmentRulesEtfGrid.Column("PortfolioPercent", "Целевая доля в портфеле, %"),
-                                investmentRulesEtfGrid.Column("PortfolioPercentDelta", "Отклонение, %")
-                        ));
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    @{
-                        WebGrid investmentRulesInstrumentsGrid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.InvestmentRulesInstrumentsListModel.Entities, rowsPerPage: 1000);
-                        @investmentRulesInstrumentsGrid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
-                            columns: investmentRulesInstrumentsGrid.Columns(
-                                investmentRulesInstrumentsGrid.Column("Code", "Код"),
-                                investmentRulesInstrumentsGrid.Column("PortfolioPercent", "Целевая доля в портфеле, %"),
-                                investmentRulesInstrumentsGrid.Column("PortfolioPercentDelta", "Отклонение, %")
+                        WebGrid investmentInstrumentGrid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.InvestmentInstrumentListModel.Entities, rowsPerPage: 1000);
+                        @investmentInstrumentGrid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
+                            columns: investmentInstrumentGrid.Columns(
+                                investmentInstrumentGrid.Column("Code", "Код"),
+                                investmentInstrumentGrid.Column("PortfolioPercent", "Целевая доля в портфеле, %"),
+                                investmentInstrumentGrid.Column("PortfolioPercentDelta", "Отклонение, %")
                         ));
                     }
                 </div>

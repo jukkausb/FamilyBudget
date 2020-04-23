@@ -14,11 +14,17 @@
             public const string BOND_TYPE_MINFIN = "minfin";
         }
 
-        public static class InvestmentType
+        public static class InstrumentType
         {
-            public const string INSTRUMENT_TYPE_CODE_STOCKS = "STOCKS";
-            public const string INSTRUMENT_TYPE_CODE_ETF = "ETF";
-            public const string INSTRUMENT_TYPE_CODE_BONDS = "BONDS";
+            public const string INSTRUMENT_TYPE_CODE_CURRENCIES = "TYPE_CURRENCIES";
+            public const string INSTRUMENT_TYPE_CODE_STOCKS = "TYPE_STOCKS";
+            public const string INSTRUMENT_TYPE_CODE_ETF = "TYPE_ETF";
+            public const string INSTRUMENT_TYPE_CODE_BONDS = "TYPE_BONDS";
+
+            public const string INSTRUMENT_TYPE_TITLE_CURRENCIES = "Валюта";
+            public const string INSTRUMENT_TYPE_TITLE_STOCKS = "Акции";
+            public const string INSTRUMENT_TYPE_TITLE_ETF = "ETF";
+            public const string INSTRUMENT_TYPE_TITLE_BONDS = "Облигации";
         }
 
         public static class TinkoffStaticLinks

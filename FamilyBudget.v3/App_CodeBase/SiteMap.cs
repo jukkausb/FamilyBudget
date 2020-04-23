@@ -1,11 +1,29 @@
 ﻿
+using System.Collections.Generic;
+using System.Web;
+
 namespace FamilyBudget.v3.App_CodeBase
 {
-    public class SiteMap
+    public class Sitemap
     {
-        public string PageUrlDefault { get; set; }
+        public List<SitemapEntry> MenuList { get; set; }
+    }
 
-        public string PageUrlIncomes { get; set; }
-        public string PageUrlExpenditures { get; set; }
+    public class SitemapEntry
+    {
+        public string Id { get; set; }
+        public List<SitemapEntry> Children { get; set; }
+        public bool IsDivider { get; set; }
+        public string IconCssClass { get; set; }
+        public string Url { get; set; }
+        public string Title { get; set; }
+        public bool IsActive
+        {
+            get
+            {
+                // Ugly but fast
+                return HttpContext.Current.Request.Url.AbsolutePath.EndsWith(this.Url);
+            }
+        }
     }
 }

@@ -16,8 +16,7 @@
         <AssociationConnector Association="FamilyBudgetModel.FK_Income_Account" ManuallyRouted="false" />
         <AssociationConnector Association="FamilyBudgetModel.FK_Expenditure_ExpenditureCategory" ManuallyRouted="false" />
         <AssociationConnector Association="FamilyBudgetModel.FK_Income_IncomeCategory" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentRulesEtf" Width="1.5" PointX="0.75" PointY="6.75" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentRulesInstruments" Width="1.5" PointX="2.75" PointY="6.75" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrument" Width="1.5" PointX="0.75" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

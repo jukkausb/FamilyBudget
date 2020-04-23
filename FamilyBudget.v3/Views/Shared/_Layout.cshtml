@@ -23,9 +23,11 @@
 </head>
 <body id="page-top">
     <div id="wrapper">
-
+        @{
+            var sitemap = FamilyBudget.v3.App_CodeBase.SitemapHelper.GetSitemap();
+            var funcIsActiveCssClass = new Func<FamilyBudget.v3.App_CodeBase.SitemapEntry, string>((s) => s.IsActive ? "active" : "");
+        }
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
                 <div class="sidebar-brand-icon rotate-n-15">
@@ -34,63 +36,50 @@
                 <div class="sidebar-brand-text mx-3">Family Budget v3.0</div>
             </a>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+            @if (sitemap != null && sitemap.MenuList != null)
+            {
+                foreach (var menuItem in sitemap.MenuList)
+                {
+                    if (menuItem.IsDivider)
+                    {
+                        <hr class="sidebar-divider my-0" />
+                    }
+                    else
+                    {
+                        if (menuItem.Children != null && menuItem.Children.Any())
+                        {
+                            <li class="nav-item">
+                                @{
+                                    string linkId = "collapse" + menuItem.Id;
+                                }
+                                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#@linkId" aria-expanded="true" aria-controls="@linkId">
+                                    <i class="fas fa-fw @menuItem.IconCssClass"></i>
+                                    <span>@menuItem.Title</span>
+                                </a>
+                                <div id="@linkId" class="collapse" data-parent="#accordionSidebar">
+                                    <div class="bg-white py-2 collapse-inner rounded">
+                                        @foreach (var childItem in menuItem.Children)
+                                        {
+                                            <a class="collapse-item @funcIsActiveCssClass(childItem)" href="@childItem.Url">@childItem.Title</a>
+                                        }
+                                    </div>
+                                </div>
+                            </li>
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="/">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Главная</span>
-                </a>
-            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item @funcIsActiveCssClass(menuItem)">
+                                <a class="nav-link" href="@menuItem.Url">
+                                    <i class="fas fa-fw @menuItem.IconCssClass"></i>
+                                    <span>@menuItem.Title</span>
+                                </a>
+                            </li>
+                        }
 
-            <li class="nav-item">
-                <a class="nav-link" href="/Charts">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Графики</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="/Investment">
-                    <i class="fas fa-fw fa-dollar-sign"></i>
-                    <span>Инвестирование</span>
-                </a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Работа с деньгами</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="/Income?sort=Date&sortdir=DESC">Доходы</a>
-                        <a class="collapse-item" href="/Expenditure?sort=Date&sortdir=DESC">Расходы</a>
-                    </div>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Настройка</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="/Administration/Account">Счета</a>
-                        <a class="collapse-item" href="/Administration/Currency">Справочник валют</a>
-                        <a class="collapse-item" href="/Administration/ExpenditureCategory">Категории расходов</a>
-                        <a class="collapse-item" href="/Administration/IncomeCategory">Категории доходов</a>
-                        <a class="collapse-item" href="/Administration/InvestmentConfig">Конфигурация инвестиционного портфеля</a>
-                        <a class="collapse-item" href="/Administration/SelfCheck">Диагностика</a>
-                    </div>
-                </div>
-            </li>
+                    }
+                }
+            }
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

@@ -31,7 +31,6 @@ namespace FamilyBudget.v3.App_DataModel
         public virtual DbSet<ExpenditureCategory> ExpenditureCategory { get; set; }
         public virtual DbSet<Income> Income { get; set; }
         public virtual DbSet<IncomeCategory> IncomeCategory { get; set; }
-        public virtual DbSet<InvestmentRulesEtf> InvestmentRulesEtf { get; set; }
-        public virtual DbSet<InvestmentRulesInstruments> InvestmentRulesInstruments { get; set; }
+        public virtual DbSet<InvestmentInstrument> InvestmentInstrument { get; set; }
     }
 }

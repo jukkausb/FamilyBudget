@@ -23,10 +23,7 @@ namespace FamilyBudget.v3.Models
         public string Name { get; set; }
         public string Currency { get; set; }
         public bool IsActive { get; set; }
-        public TinkoffPortfolioGroup Bonds { get; set; }
-        public TinkoffPortfolioGroup Etfs { get; set; }
-        public TinkoffPortfolioGroup Stocks { get; set; }
-        public TinkoffPortfolioGroup Currencies { get; set; }
+        public List<TinkoffPortfolioGroup> Groups { get; set; }
         public decimal TotalInvested { get; set; }
         public string TotalInvestedPresentation
         {
@@ -56,10 +53,7 @@ namespace FamilyBudget.v3.Models
         public InvestmentAccount()
         {
             Messages = new List<Message>();
-            Bonds = new TinkoffPortfolioGroup();
-            Etfs = new TinkoffPortfolioGroup();
-            Stocks = new TinkoffPortfolioGroup();
-            Currencies = new TinkoffPortfolioGroup();
+            Groups = new List<TinkoffPortfolioGroup>();
         }
     }
 }

@@ -61,23 +61,19 @@
           <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
         </EntityType>
-        <EntityType Name="InvestmentRulesEtf">
+        <EntityType Name="InvestmentInstrument">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Ticker" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="PortfolioPercent" Type="int" Nullable="false" />
-          <Property Name="PortfolioPercentDelta" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="InvestmentRulesInstruments">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Code" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="PortfolioPercent" Type="int" Nullable="false" />
-          <Property Name="PortfolioPercentDelta" Type="int" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="DiagramBackgroundColor" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="DiagramBackgroundHoverColor" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="PortfolioPercent" Type="int" />
+          <Property Name="PortfolioPercentDelta" Type="int" />
+          <Property Name="GroupPercent" Type="int" />
+          <Property Name="GroupPercentDelta" Type="int" />
         </EntityType>
         <Association Name="FK_Account_Currency">
           <End Role="Currency" Type="Self.Currency" Multiplicity="1" />
@@ -146,8 +142,7 @@
           <EntitySet Name="ExpenditureCategory" EntityType="Self.ExpenditureCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Income" EntityType="Self.Income" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IncomeCategory" EntityType="Self.IncomeCategory" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InvestmentRulesEtf" EntityType="Self.InvestmentRulesEtf" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InvestmentRulesInstruments" EntityType="Self.InvestmentRulesInstruments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvestmentInstrument" EntityType="Self.InvestmentInstrument" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Account_Currency" Association="Self.FK_Account_Currency">
             <End Role="Currency" EntitySet="Currency" />
             <End Role="Account" EntitySet="Account" />
@@ -326,26 +321,21 @@
             <End Role="IncomeCategory" EntitySet="IncomeCategory" />
             <End Role="Income" EntitySet="Income" />
           </AssociationSet>
-          <EntitySet Name="InvestmentRulesEtf" EntityType="FamilyBudgetModel.InvestmentRulesEtf" />
-          <EntitySet Name="InvestmentRulesInstruments" EntityType="FamilyBudgetModel.InvestmentRulesInstruments" />
+          <EntitySet Name="InvestmentInstrument" EntityType="FamilyBudgetModel.InvestmentInstrument" />
         </EntityContainer>
-        <EntityType Name="InvestmentRulesEtf">
+        <EntityType Name="InvestmentInstrument">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="Ticker" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PortfolioPercent" Type="Int32" Nullable="false" />
-          <Property Name="PortfolioPercentDelta" Type="Int32" Nullable="false" />
-        </EntityType>
-        <EntityType Name="InvestmentRulesInstruments">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PortfolioPercent" Type="Int32" Nullable="false" />
-          <Property Name="PortfolioPercentDelta" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DiagramBackgroundColor" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundHoverColor" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramHoverBorderColor" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PortfolioPercent" Type="Int32" />
+          <Property Name="PortfolioPercentDelta" Type="Int32" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="GroupPercent" Type="Int32" />
+          <Property Name="GroupPercentDelta" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -415,22 +405,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InvestmentRulesEtf">
-            <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentRulesEtf">
-              <MappingFragment StoreEntitySet="InvestmentRulesEtf">
-                <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
-                <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
-                <ScalarProperty Name="Ticker" ColumnName="Ticker" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="InvestmentRulesInstruments">
-            <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentRulesInstruments">
-              <MappingFragment StoreEntitySet="InvestmentRulesInstruments">
-                <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
-                <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
+          <EntitySetMapping Name="InvestmentInstrument">
+            <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentInstrument">
+              <MappingFragment StoreEntitySet="InvestmentInstrument">
+                <ScalarProperty Name="GroupPercentDelta" ColumnName="GroupPercentDelta" />
+                <ScalarProperty Name="GroupPercent" ColumnName="GroupPercent" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
+                <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
+                <ScalarProperty Name="DiagramHoverBorderColor" ColumnName="DiagramHoverBorderColor" />
+                <ScalarProperty Name="DiagramBackgroundHoverColor" ColumnName="DiagramBackgroundHoverColor" />
+                <ScalarProperty Name="DiagramBackgroundColor" ColumnName="DiagramBackgroundColor" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

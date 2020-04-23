@@ -3,7 +3,7 @@ using FamilyBudget.v3.Models.Repository.Interfaces;
 
 namespace FamilyBudget.v3.Models.Repository
 {
-    public class InvestmentRulesEtfRepository : GenericRepository<FamilyBudgetEntities, InvestmentRulesEtf>, IInvestmentRulesEtfRepository
+    public class InvestmentInstrumentRepository : GenericRepository<FamilyBudgetEntities, InvestmentInstrument>, IInvestmentInstrumentRepository
     {
     }
 }

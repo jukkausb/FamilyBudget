@@ -284,20 +284,10 @@
     <Content Include="css\fb.css" />
     <Content Include="css\sb-admin-2.css" />
     <Content Include="css\sb-admin-2.min.css" />
-    <Content Include="font-awesome\css\font-awesome.css" />
-    <Content Include="font-awesome\css\font-awesome.min.css" />
-    <Content Include="font-awesome\fonts\fontawesome-webfont.svg" />
-    <Content Include="fonts\fontawesome-webfont.svg" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="img\undraw_posting_photo.svg" />
     <Content Include="js\chart.js\Chart.bundle.js" />
     <Content Include="js\chart.js\Chart.bundle.min.js" />
     <Content Include="js\chart.js\Chart.js" />
     <Content Include="js\chart.js\Chart.min.js" />
-    <Content Include="js\demo\chart-area-demo.js" />
-    <Content Include="js\demo\chart-bar-demo.js" />
-    <Content Include="js\demo\chart-pie-demo.js" />
-    <Content Include="js\demo\datatables-demo.js" />
     <Content Include="js\jquery-easing\jquery.easing.compatibility.js" />
     <Content Include="js\jquery-easing\jquery.easing.js" />
     <Content Include="js\jquery-easing\jquery.easing.min.js" />
@@ -411,44 +401,6 @@
     <Content Include="Content\bootstrap\bootstrap.less" />
     <Content Include="Content\bootstrap\badges.less" />
     <Content Include="Content\bootstrap\alerts.less" />
-    <Content Include="font-awesome\fonts\fontawesome-webfont.eot" />
-    <Content Include="font-awesome\fonts\fontawesome-webfont.ttf" />
-    <Content Include="font-awesome\fonts\fontawesome-webfont.woff" />
-    <Content Include="font-awesome\fonts\FontAwesome.otf" />
-    <Content Include="font-awesome\less\bordered-pulled.less" />
-    <Content Include="font-awesome\less\core.less" />
-    <Content Include="font-awesome\less\fixed-width.less" />
-    <Content Include="font-awesome\less\font-awesome.less" />
-    <Content Include="font-awesome\less\icons.less" />
-    <Content Include="font-awesome\less\larger.less" />
-    <Content Include="font-awesome\less\list.less" />
-    <Content Include="font-awesome\less\mixins.less" />
-    <Content Include="font-awesome\less\path.less" />
-    <Content Include="font-awesome\less\rotated-flipped.less" />
-    <Content Include="font-awesome\less\spinning.less" />
-    <Content Include="font-awesome\less\stacked.less" />
-    <Content Include="font-awesome\less\variables.less" />
-    <Content Include="font-awesome\scss\font-awesome.scss" />
-    <Content Include="font-awesome\scss\_bordered-pulled.scss" />
-    <Content Include="font-awesome\scss\_core.scss" />
-    <Content Include="font-awesome\scss\_fixed-width.scss" />
-    <Content Include="font-awesome\scss\_icons.scss" />
-    <Content Include="font-awesome\scss\_larger.scss" />
-    <Content Include="font-awesome\scss\_list.scss" />
-    <Content Include="font-awesome\scss\_mixins.scss" />
-    <Content Include="font-awesome\scss\_path.scss" />
-    <Content Include="font-awesome\scss\_rotated-flipped.scss" />
-    <Content Include="font-awesome\scss\_spinning.scss" />
-    <Content Include="font-awesome\scss\_stacked.scss" />
-    <Content Include="font-awesome\scss\_variables.scss" />
-    <Content Include="fonts\fontawesome-webfont.eot" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <EntityDeploy Include="App_DataModel\FamilyBudgetModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>FamilyBudgetModel.Designer.cs</LastGenOutput>
@@ -2502,7 +2454,8 @@
     <Compile Include="App_CodeBase\LayoutInjecterAttribute.cs" />
     <Compile Include="App_CodeBase\LinqExtensions.cs" />
     <Compile Include="App_CodeBase\Prosperity.cs" />
-    <Compile Include="App_CodeBase\SiteMap.cs" />
+    <Compile Include="App_CodeBase\Sitemap.cs" />
+    <Compile Include="App_CodeBase\SitemapHelper.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioCurrenciesExtended.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffBrokerAccounts.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioGroup.cs" />
@@ -2552,16 +2505,14 @@
     <Compile Include="App_DataModel\IncomeCategory.cs">
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_DataModel\InvestmentRulesEtf.cs">
-      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="App_DataModel\InvestmentRulesInstruments.cs">
+    <Compile Include="App_DataModel\InvestmentInstrument.cs">
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\Metadata\FamilyBudgetMetadata.cs" />
     <Compile Include="App_Helpers\CurrencyExtensions.cs" />
     <Compile Include="App_Helpers\BusinessHelper.cs" />
     <Compile Include="App_Helpers\HtmlHelperExtensions.cs" />
+    <Compile Include="App_Helpers\JsonSerializeHelper.cs" />
     <Compile Include="App_Helpers\JsonUtils.cs" />
     <Compile Include="App_Helpers\QueryStringParser.cs" />
     <Compile Include="App_Helpers\WebGridHelpers.cs" />
@@ -2642,9 +2593,7 @@
     <Compile Include="Models\Report\ReportIncomesModel.cs" />
     <Compile Include="Models\Report\ReportsModel.cs" />
     <Compile Include="Models\Repository\AccountRepository.cs" />
-    <Compile Include="Models\Repository\Interfaces\IInvestmentRulesInstrumentsRepository.cs" />
-    <Compile Include="Models\Repository\InvestmentRulesInstrumentsRepository.cs" />
-    <Compile Include="Models\Repository\InvestmentRulesEtfRepository.cs" />
+    <Compile Include="Models\Repository\InvestmentInstrumentRepository.cs" />
     <Compile Include="Models\Repository\CurrencyRepository.cs" />
     <Compile Include="Models\Repository\ExpenditureCategoryRepository.cs" />
     <Compile Include="Models\Repository\ExpenditureRepository.cs" />
@@ -2653,7 +2602,7 @@
     <Compile Include="Models\Repository\IncomeCategoryRepository.cs" />
     <Compile Include="Models\Repository\IncomeRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IAccountRepository.cs" />
-    <Compile Include="Models\Repository\Interfaces\IInvestmentRulesEtfRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IInvestmentInstrumentRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\ICurrencyRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IExpenditureCategoryRepository.cs" />
     <Compile Include="Models\Repository\Interfaces\IExpenditureRepository.cs" />

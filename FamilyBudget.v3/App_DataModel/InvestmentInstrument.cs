@@ -12,11 +12,16 @@ namespace FamilyBudget.v3.App_DataModel
     using System;
     using System.Collections.Generic;
     
-    public partial class InvestmentRulesInstruments
+    public partial class InvestmentInstrument
     {
         public int ID { get; set; }
+        public string DiagramBackgroundColor { get; set; }
+        public string DiagramBackgroundHoverColor { get; set; }
+        public string DiagramHoverBorderColor { get; set; }
+        public Nullable<int> PortfolioPercent { get; set; }
+        public Nullable<int> PortfolioPercentDelta { get; set; }
         public string Code { get; set; }
-        public int PortfolioPercent { get; set; }
-        public int PortfolioPercentDelta { get; set; }
+        public Nullable<int> GroupPercent { get; set; }
+        public Nullable<int> GroupPercentDelta { get; set; }
     }
 }
