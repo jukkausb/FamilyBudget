@@ -20,9 +20,9 @@ namespace FamilyBudget.v3.Models
     {
         public List<Message> Messages { get; set; }
         public string Id { get; set; }
+        public BrokerAccountType Type { get; set; }
         public string Name { get; set; }
         public string Currency { get; set; }
-        public bool IsActive { get; set; }
         public List<TinkoffPortfolioGroup> Groups { get; set; }
         public decimal TotalInvested { get; set; }
         public string TotalInvestedPresentation

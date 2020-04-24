@@ -49,6 +49,9 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         }
         public DeltaType CurrentDeltaType { get; set; }
         public string CurrentDeltaPercent { get; set; }
+        public string DiagramBackgroundColor { get; set; }
+        public string DiagramBackgroundHoverColor { get; set; }
+        public string DiagramHoverBorderColor { get; set; }
     }
 
     public enum DeltaType

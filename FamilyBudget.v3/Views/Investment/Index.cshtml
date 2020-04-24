@@ -11,23 +11,18 @@
         Chart.defaults.global.defaultFontColor = '#858796';
         Chart.defaults.global.defaultFontSize = 16;
 
-        var randomColor = function () {
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-            return "rgb(" + r + "," + g + "," + b + ")";
-        };
-
         function buildPieChart(canvasId, reportData) {
             var ctx = document.getElementById(canvasId);
-            var backgroundColors = [];
-            var hoverBackgroundColors = [];
-            var hoverBorderColors = [];
-            for (var i = 0; i < reportData.length; i++) {
-                backgroundColors.push(randomColor());
-                hoverBackgroundColors.push(randomColor());
-                hoverBorderColors.push(randomColor());
-            }
+
+            var backgroundColors = _.map(reportData, function (r) {
+                return r.diagramBackgroundColor;
+            });
+            var hoverBackgroundColors = _.map(reportData, function (r) {
+                return r.diagramBackgroundHoverColor;
+            });
+            var hoverBorderColors = _.map(reportData, function (r) {
+                return r.diagramHoverBorderColor;
+            });
 
             new Chart(ctx, {
                 type: 'doughnut',

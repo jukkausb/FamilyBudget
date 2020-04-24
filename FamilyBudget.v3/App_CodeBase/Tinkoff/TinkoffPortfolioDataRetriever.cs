@@ -55,8 +55,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             foreach (var position in portfolio.Positions)
             {
-                var portfolioStock = marketInstruments.FirstOrDefault(s => s.Ticker == position.Ticker);
-                if (portfolioStock == null)
+                var portfolioInstrument = marketInstruments.FirstOrDefault(s => s.Ticker == position.Ticker);
+                if (portfolioInstrument == null)
                 {
                     continue;
                 }
@@ -67,12 +67,12 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
                 var portfolioPosition = new TinkoffPortfolioPosition
                 {
-                    Name = portfolioStock.Name,
+                    Name = portfolioInstrument.Name,
                     Type = position.InstrumentType,
-                    Ticker = portfolioStock.Ticker,
-                    Isin = portfolioStock.Isin,
-                    AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioStock.Ticker, portfolioStock.Isin),
-                    TickerPageLink = TinkoffStaticUrlResolver.ResolveTickerPageLink(portfolioStock.Ticker, position.InstrumentType),
+                    Ticker = portfolioInstrument.Ticker,
+                    Isin = portfolioInstrument.Isin,
+                    AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioInstrument.Ticker, portfolioInstrument.Isin),
+                    TickerPageLink = TinkoffStaticUrlResolver.ResolveTickerPageLink(portfolioInstrument.Ticker, position.InstrumentType),
                     Lots = position.Lots,
                     Balance = position.Balance,
                     Currency = currency,

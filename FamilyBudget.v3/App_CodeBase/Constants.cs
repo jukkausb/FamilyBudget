@@ -23,8 +23,13 @@
 
             public const string INSTRUMENT_TYPE_TITLE_CURRENCIES = "Валюта";
             public const string INSTRUMENT_TYPE_TITLE_STOCKS = "Акции";
-            public const string INSTRUMENT_TYPE_TITLE_ETF = "ETF";
+            public const string INSTRUMENT_TYPE_TITLE_ETF = "Фонды";
             public const string INSTRUMENT_TYPE_TITLE_BONDS = "Облигации";
+        }
+
+        public static class InstrumentDiagram
+        {
+            public const string DEFAULT_COLOR = "#000000";
         }
 
         public static class TinkoffStaticLinks
