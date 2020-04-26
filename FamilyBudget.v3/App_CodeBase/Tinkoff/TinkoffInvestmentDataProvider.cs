@@ -200,66 +200,29 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             string groupCode,
             string groupTitle)
         {
+            decimal total = instrumentsInGroup.Sum(e => e.CurrentTotalInPortfolio);
+
             TinkoffPortfolioGroup group = new TinkoffPortfolioGroup();
             group.Positions = instrumentsInGroup;
             group.Code = groupCode;
-            group.Title = groupTitle;
-
-            decimal total = instrumentsInGroup.Sum(e => e.CurrentTotalInPortfolio);
+            group.Name = groupTitle;
             group.CurrentTotalInPortfolio = total;
-            group.Messages.AddRange(CheckInvestmentInstrumentRulesInGroup(group, groupTitle));
+
+            var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == groupCode).FirstOrDefault();
+            if (investmentInstrument != null)
+            {
+                group.DiagramBackgroundColor = investmentInstrument.DiagramBackgroundColor;
+                group.DiagramBackgroundHoverColor = investmentInstrument.DiagramBackgroundHoverColor;
+                group.DiagramHoverBorderColor = investmentInstrument.DiagramHoverBorderColor;
+            }
+            else
+            {
+                group.DiagramBackgroundColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
+                group.DiagramBackgroundHoverColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
+                group.DiagramHoverBorderColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
+            }
 
             return group;
-        }
-
-        private List<Message> CheckInvestmentInstrumentRulesInGroup(TinkoffPortfolioGroup group, string groupTitle)
-        {
-            List<Message> messages = new List<Message>();
-            if (group == null)
-            {
-                return messages;
-            }
-
-            var tickers = group.Positions
-                .Where(g => !string.IsNullOrEmpty(g.Ticker))
-                .ToDictionary(
-                    e => e.Ticker,
-                    e => e.CurrentTotalInPortfolio / group.CurrentTotalInPortfolio * 100
-                );
-
-            foreach (var ticker in tickers)
-            {
-                string code = ticker.Key;
-                decimal currentPercentInGroup = ticker.Value;
-                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == ticker.Key).FirstOrDefault();
-                if (investmentInstrument == null)
-                {
-                    continue;
-                }
-
-                var instrumentPersentInGroupTarget = investmentInstrument.GroupPercent;
-                var instrumentPersentInGroupDelta = investmentInstrument.GroupPercentDelta;
-                if (!instrumentPersentInGroupTarget.HasValue || !instrumentPersentInGroupDelta.HasValue)
-                {
-                    // Do not check if rule values are not specified
-                    continue;
-                }
-
-                string currectPercentInGroupPresentationString = Math.Round(currentPercentInGroup, 2).ToString();
-                string instrumentPersentInGroupTargetPresentationString = Math.Round((decimal)instrumentPersentInGroupTarget, 2).ToString();
-
-                if (currentPercentInGroup > instrumentPersentInGroupTarget + instrumentPersentInGroupDelta)
-                {
-                    messages.Add(GetMessageToDecreaseInstrumentInGroup(code, groupTitle, currectPercentInGroupPresentationString, instrumentPersentInGroupTargetPresentationString));
-                }
-
-                if (currentPercentInGroup < instrumentPersentInGroupTarget - instrumentPersentInGroupDelta)
-                {
-                    messages.Add(GetMessageToIncreaseInstrumentInGroup(code, groupTitle, currectPercentInGroupPresentationString, instrumentPersentInGroupTargetPresentationString));
-                }
-            }
-
-            return messages;
         }
 
         private List<Message> CheckInvestmentInstrumentRulesOnAccount(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)

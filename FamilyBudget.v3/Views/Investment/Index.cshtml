@@ -11,6 +11,7 @@
         Chart.defaults.global.defaultFontColor = '#858796';
         Chart.defaults.global.defaultFontSize = 16;
 
+        // Source interface is IPieDiagramDataItem
         function buildPieChart(canvasId, reportData) {
             var ctx = document.getElementById(canvasId);
 
@@ -109,11 +110,15 @@
                 }
             </ul>
         }
-        @helper RenderPositionsPieChart(string canvasId, string modalId, string positionsDataAsJson)
+        @helper RenderPositionsPieChart(string canvasId, string modalId, IEnumerable<IPieDiagramDataItem> reportData)
         {
             <canvas id="@canvasId"></canvas>
             <script>
-                var reportData = JSON.parse('@Html.Raw(positionsDataAsJson.Replace(System.Environment.NewLine, ""))');
+                @{
+                    string reportJsonData = FamilyBudget.v3.App_Helpers.JsonSerializeHelper.Serialize(reportData)
+                        .Replace(System.Environment.NewLine, "");
+                }
+                var reportData = JSON.parse('@Html.Raw(reportJsonData)');
                 buildPieChart('@canvasId', reportData);
             </script>
         }
@@ -138,6 +143,14 @@
                             string modalId = "modalAccountInfo_" + account.Id;
                             @RenderWarningModalTrigger(modalId, false)
                             @RenderModal(modalId, "Информация (" + @account.Name + ")", true, RenderMessages(account.Messages))
+                        }
+                        @if (account.Groups.Any())
+                        {
+                            string parentId = "accordionInstruments_" + account.Id;
+                            string modalId = "modalInstrumentGroupChart_" + parentId;
+                            string canvasId = "modalInstrumentChartGroupCanvas_" + parentId;
+                            @RenderPieChartModalTrigger(modalId, true);
+                            @RenderModal(modalId, "Пропорции инструментов", false, RenderPositionsPieChart(canvasId, modalId, account.Groups.Cast<IPieDiagramDataItem>()));
                         }
                     </div>
                 </div>
@@ -203,18 +216,12 @@
 
                                 </h4>
                             </div>
-                            @if (data.Messages != null && data.Messages.Any())
-                            {
-                                string modalId = "modalGroupInfo_" + parentId + "_" + id;
-                                @RenderWarningModalTrigger(modalId, true);
-                                @RenderModal(modalId, "Информация (" + modalCaption + ")", true, RenderMessages(data.Messages));
-                            }
                             @if (data.Positions.Any())
                             {
                                 string modalId = "modalInstrumentChart_" + parentId + "_" + id;
                                 string canvasId = "modalInstrumentChartCanvas_" + parentId + "_" + id;
                                 @RenderPieChartModalTrigger(modalId, true);
-                                @RenderModal(modalId, "Пропорции инструментов", false, RenderPositionsPieChart(canvasId, modalId, data.PositionsAsJson));
+                                @RenderModal(modalId, "Пропорции инструментов", false, RenderPositionsPieChart(canvasId, modalId, data.Positions.Cast<IPieDiagramDataItem>()));
                             }
 
                         </div>
@@ -286,7 +293,7 @@
                         <div id="accordionInstruments_@account.Id">
                             @foreach (var group in account.Groups)
                             {
-                                @RenderGroup("accordionInstruments_" + @account.Id, @group.Code, @group.Title, @account.Name + " - " + @group.Title, group)
+                                @RenderGroup("accordionInstruments_" + @account.Id, @group.Code, @group.Name, @account.Name + " - " + @group.Name, group)
                             }
                         </div>
                     </div>

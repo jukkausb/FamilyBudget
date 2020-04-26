@@ -4,7 +4,7 @@ using Tinkoff.Trading.OpenApi.Models;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
 {
-    public class TinkoffPortfolioPosition
+    public class TinkoffPortfolioPosition : IPieDiagramDataItem
     {
         public string Name { get; set; }
         public string AvatarImageLink { get; set; }

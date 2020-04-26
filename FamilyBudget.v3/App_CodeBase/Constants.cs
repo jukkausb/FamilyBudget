@@ -21,7 +21,7 @@
             public const string INSTRUMENT_TYPE_CODE_ETF = "TYPE_ETF";
             public const string INSTRUMENT_TYPE_CODE_BONDS = "TYPE_BONDS";
 
-            public const string INSTRUMENT_TYPE_TITLE_CURRENCIES = "Валюта";
+            public const string INSTRUMENT_TYPE_TITLE_CURRENCIES = "Кэш";
             public const string INSTRUMENT_TYPE_TITLE_STOCKS = "Акции";
             public const string INSTRUMENT_TYPE_TITLE_ETF = "Фонды";
             public const string INSTRUMENT_TYPE_TITLE_BONDS = "Облигации";

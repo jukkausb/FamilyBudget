@@ -21,7 +21,5 @@ namespace FamilyBudget.v3.App_DataModel
         public Nullable<int> PortfolioPercent { get; set; }
         public Nullable<int> PortfolioPercentDelta { get; set; }
         public string Code { get; set; }
-        public Nullable<int> GroupPercent { get; set; }
-        public Nullable<int> GroupPercentDelta { get; set; }
     }
 }

@@ -67,13 +67,11 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Code" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="DiagramBackgroundColor" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="DiagramBackgroundHoverColor" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="DiagramBackgroundColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="DiagramBackgroundHoverColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" />
           <Property Name="PortfolioPercent" Type="int" />
           <Property Name="PortfolioPercentDelta" Type="int" />
-          <Property Name="GroupPercent" Type="int" />
-          <Property Name="GroupPercentDelta" Type="int" />
         </EntityType>
         <Association Name="FK_Account_Currency">
           <End Role="Currency" Type="Self.Currency" Multiplicity="1" />
@@ -328,14 +326,12 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DiagramBackgroundColor" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="DiagramBackgroundHoverColor" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="DiagramHoverBorderColor" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundHoverColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramHoverBorderColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PortfolioPercent" Type="Int32" />
           <Property Name="PortfolioPercentDelta" Type="Int32" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="GroupPercent" Type="Int32" />
-          <Property Name="GroupPercentDelta" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -408,8 +404,6 @@
           <EntitySetMapping Name="InvestmentInstrument">
             <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentInstrument">
               <MappingFragment StoreEntitySet="InvestmentInstrument">
-                <ScalarProperty Name="GroupPercentDelta" ColumnName="GroupPercentDelta" />
-                <ScalarProperty Name="GroupPercent" ColumnName="GroupPercent" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
                 <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
