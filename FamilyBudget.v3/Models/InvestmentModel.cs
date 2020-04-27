@@ -18,7 +18,7 @@ namespace FamilyBudget.v3.Models
 
     public class InvestmentAccount
     {
-        public List<Message> Messages { get; set; }
+        public List<MessageGroup> MessageGroups { get; set; }
         public string Id { get; set; }
         public BrokerAccountType Type { get; set; }
         public string Name { get; set; }
@@ -52,7 +52,7 @@ namespace FamilyBudget.v3.Models
         public string TotalDeltaPercent { get; set; }
         public InvestmentAccount()
         {
-            Messages = new List<Message>();
+            MessageGroups = new List<MessageGroup>();
             Groups = new List<TinkoffPortfolioGroup>();
         }
     }

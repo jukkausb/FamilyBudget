@@ -2587,6 +2587,7 @@
     <Compile Include="Models\InvestmentModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessageGroup.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\MessageType.cs" />
     <Compile Include="Models\Report\ReportExpendituresByCategoryModel.cs" />

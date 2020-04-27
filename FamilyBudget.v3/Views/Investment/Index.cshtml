@@ -96,6 +96,24 @@
                 </div>
             </div>
         }
+        @helper RenderMessageGroups(List<MessageGroup> messageGroups)
+        {
+            if (messageGroups == null)
+            {
+                return;
+            }
+
+            foreach (var messageGroup in messageGroups)
+            {
+                if (!messageGroup.HasMessages)
+                {
+                    continue;
+                }
+
+                <h6><b>@messageGroup.Name</b></h6>
+                @RenderMessages(messageGroup.Messages)
+            }
+        }
         @helper RenderMessages(List<Message> messages)
         {
             if (messages == null || !messages.Any())
@@ -138,11 +156,11 @@
                                 @account.TotalDeltaPresentation (@account.TotalDeltaPercent%)
                             </div>
                         </div>
-                        @if (account.Messages.Any())
+                        @if (account.MessageGroups.Any())
                         {
                             string modalId = "modalAccountInfo_" + account.Id;
                             @RenderWarningModalTrigger(modalId, false)
-                            @RenderModal(modalId, "Информация (" + @account.Name + ")", true, RenderMessages(account.Messages))
+                            @RenderModal(modalId, "Информация (" + @account.Name + ")", true, RenderMessageGroups(account.MessageGroups))
                         }
                         @if (account.Groups.Any())
                         {

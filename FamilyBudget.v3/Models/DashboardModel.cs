@@ -11,6 +11,8 @@ namespace FamilyBudget.v3.Models
         /// Total capital
         /// </summary>
         public MoneyModel Capital { get; set; }
+        public MoneyModel Target { get; set; }
+        public decimal TargetAccomplishedPercent { get; set; }
         /// <summary>
         /// Cash on accounts
         /// </summary>

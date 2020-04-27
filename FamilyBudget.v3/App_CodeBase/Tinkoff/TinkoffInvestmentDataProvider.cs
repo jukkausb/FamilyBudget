@@ -181,17 +181,21 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             var totalAccountBalance = investmentAccount.TotalBalance;
 
             // Check investment instrument rules on account
-            investmentAccount.Messages.AddRange(CheckInvestmentInstrumentRulesOnAccount(allInstruments, totalAccountBalance));
+            investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentRulesOnAccount(allInstruments, totalAccountBalance));
+
+            MessageGroup mgCommon = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_COMMON };
 
             // Check investment instrument type rules on account
             var etfPercentOnAccount = etfTotal / investmentAccount.TotalBalance * 100;
-            investmentAccount.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_ETF, etfPercentOnAccount));
+            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_ETF, etfPercentOnAccount));
             var bondsPercentOnAccount = bondsTotal / investmentAccount.TotalBalance * 100;
-            investmentAccount.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_BONDS, bondsPercentOnAccount));
+            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_BONDS, bondsPercentOnAccount));
             var stocksPercentOnAccount = stocksTotal / investmentAccount.TotalBalance * 100;
-            investmentAccount.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_STOCKS, stocksPercentOnAccount));
+            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_STOCKS, stocksPercentOnAccount));
             var currenciesPercentOnAccount = currenciesTotal / investmentAccount.TotalBalance * 100;
-            investmentAccount.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES, currenciesPercentOnAccount));
+            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES, currenciesPercentOnAccount));
+
+            investmentAccount.MessageGroups.Insert(0, mgCommon);
 
             return investmentAccount;
         }
@@ -225,13 +229,19 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return group;
         }
 
-        private List<Message> CheckInvestmentInstrumentRulesOnAccount(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
+        private List<MessageGroup> CheckInvestmentInstrumentRulesOnAccount(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
         {
-            List<Message> messages = new List<Message>();
+            List<MessageGroup> messageGroups = new List<MessageGroup>();
             if (instruments == null)
             {
-                return messages;
+                return messageGroups;
             }
+
+            MessageGroup mgStocks = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_STOCKS };
+            MessageGroup mgBonds = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_BONDS };
+            MessageGroup mgEtf = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_ETF };
+
+            MessageGroup targetGroup = null;
 
             foreach (var instrument in instruments)
             {
@@ -254,22 +264,46 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
+                if (instrument.Type == InstrumentType.Stock)
+                {
+                    targetGroup = mgStocks;
+                }
+                else if (instrument.Type == InstrumentType.Bond)
+                {
+                    targetGroup = mgBonds;
+                }
+                else if (instrument.Type == InstrumentType.Etf)
+                {
+                    targetGroup = mgEtf;
+                }
+
                 var currentPercentOnAccount = instrument.CurrentTotalInPortfolio / totalAccountBalance * 100;
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
 
                 if (currentPercentOnAccount > instrumentPersentOnAccountTarget + instrumentPersentOnAccountDelta)
                 {
-                    messages.Add(GetMessageToDecreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                    targetGroup.Messages.Add(GetMessageToDecreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                }
+
+                if (instrument.Type == InstrumentType.Stock)
+                {
+                    // Do not encourage to increase Stocks share in portfolio
+                    // No need to introduce more risk (more stocks more risk)
+                    continue;
                 }
 
                 if (currentPercentOnAccount < instrumentPersentOnAccountTarget - instrumentPersentOnAccountDelta)
                 {
-                    messages.Add(GetMessageToIncreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                    targetGroup.Messages.Add(GetMessageToIncreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
                 }
             }
 
-            return messages;
+            messageGroups.Add(mgStocks);
+            messageGroups.Add(mgBonds);
+            messageGroups.Add(mgEtf);
+
+            return messageGroups;
         }
 
         private List<Message> CheckInvestmentInstrumentTypeOnAccount(string instrumentTypeCode, decimal currentInstrumentTypePercentOnAccount)
@@ -293,6 +327,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 // Do not check if rule values are not specified
                 return messages;
             }
+
+            MessageGroup mgCommon = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_COMMON };
 
             string currentPercentOnAccountPresentationString = Math.Round(currentInstrumentTypePercentOnAccount, 2).ToString();
             string instrumentTypePersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentTypePersentOnAccountTarget, 2).ToString();

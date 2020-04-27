@@ -16,13 +16,26 @@ namespace FamilyBudget.v3.App_CodeBase
         public bool IsDivider { get; set; }
         public string IconCssClass { get; set; }
         public string Url { get; set; }
+        public string Path
+        {
+            get
+            {
+                if (!Url.Contains("?"))
+                {
+                    return Url;
+                }
+
+                var urlSegments = Url.Split('?');
+                return urlSegments[0];
+            }
+        }
         public string Title { get; set; }
         public bool IsActive
         {
             get
             {
                 // Ugly but fast
-                return HttpContext.Current.Request.Url.AbsolutePath.EndsWith(this.Url);
+                return HttpContext.Current.Request.Url.AbsolutePath.EndsWith(this.Path);
             }
         }
     }

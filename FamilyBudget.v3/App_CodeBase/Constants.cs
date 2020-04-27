@@ -25,6 +25,8 @@
             public const string INSTRUMENT_TYPE_TITLE_STOCKS = "Акции";
             public const string INSTRUMENT_TYPE_TITLE_ETF = "Фонды";
             public const string INSTRUMENT_TYPE_TITLE_BONDS = "Облигации";
+
+            public const string INSTRUMENT_TYPE_TITLE_COMMON = "Общее";
         }
 
         public static class InstrumentDiagram

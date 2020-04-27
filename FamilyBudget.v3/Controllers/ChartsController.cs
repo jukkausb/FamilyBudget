@@ -193,7 +193,7 @@ namespace FamilyBudget.v3.Controllers
                 }
 
                 expendituresPerMonth.AddRange(
-                (from expenditure in _expenditureRepository.GetAll()
+                (from expenditure in BusinessHelper.GetRealExpenditures(_expenditureRepository)
                  where expenditure.AccountID == account.ID
                  where expenditure.Date >= startDate.Date && expenditure.Date <= endDate.Date
                  group expenditure by expenditure.ExpenditureCategory.Name

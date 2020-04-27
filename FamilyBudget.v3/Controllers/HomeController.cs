@@ -86,6 +86,16 @@ namespace FamilyBudget.v3.Controllers
                 ValuePresentation = totalCapital.ToCurrencyDisplay(mainCurrencyCode, true)
             };
 
+            decimal targetCapitalValue = 10000000;
+            model.Target = new MoneyModel
+            {
+                Currency = mainCurrencyCode.ToCurrencySymbol(),
+                Value = targetCapitalValue,
+                ValuePresentation = targetCapitalValue.ToCurrencyDisplay(mainCurrencyCode, true)
+            };
+
+            model.TargetAccomplishedPercent = Math.Round(model.Capital.Value / model.Target.Value * 100, 2);
+
             model.AccountRateViews = _calculationService.GetAccountBalanceWithRatesViews();
 
             #region Average values

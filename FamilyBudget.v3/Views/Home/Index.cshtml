@@ -22,6 +22,16 @@
                         <div class="col mr-2">
                             <div class="h3 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Капитал</div>
                             <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(Model.Capital.Value)">@Model.Capital.ValuePresentation</div>
+                            <div class="p-2">
+                                <div class="progress mt-2" style="height: 25px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.TargetAccomplishedPercent %;" aria-valuenow="@Model.TargetAccomplishedPercent" aria-valuemin="0" aria-valuemax="100">
+                                        @Model.TargetAccomplishedPercent%
+                                    </div>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <div class="h5 mb-0 text-xl-center text-primary font-weight-bold">Цель: @Model.Target.ValuePresentation</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
