@@ -178,12 +178,12 @@ input[type="checkbox"].input-validation-error {
 }
 
 @media screen and (max-width: 768px) {
-    table .table {
+    .list-view table .table {
         border: 0;
         margin-bottom: 0;
     }
 
-        table.table thead {
+        .list-view table.table thead {
             border: none;
             clip: rect(0 0 0 0);
             height: 1px;
@@ -194,31 +194,31 @@ input[type="checkbox"].input-validation-error {
             width: 1px;
         }
 
-        table.table tr {
+        .list-view table.table tr {
             border: 1px solid #d3d2d2;
             display: block;
             margin-bottom: .6em;
         }
 
-            table.table tr:last-child {
+            .list-view table.table tr:last-child {
                 margin-bottom: 0;
             }
 
-        table.table td {
+        .list-view table.table td {
             border-bottom: 0;
             display: block;
             text-align: right;
             padding: .4rem;
         }
 
-            table.table td::before {
+            .list-view table.table td::before {
                 content: attr(data-label);
                 float: left;
                 font-style: italic;
                 font-size: .8rem;
             }
 
-            table.table td:last-child {
+            .list-view table.table td:last-child {
                 border-bottom: 0;
             }
 }
