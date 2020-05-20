@@ -12,11 +12,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         {
             _isinOverrideLookup = new Dictionary<string, string>()
             {
+                // { "<ticker>", "isin" }
                 { "TCSG", "US87238U2033" },
                 { "SBERP", "RU0009029540" },
                 { "FXTB", "IE00B84D7P43" },
                 { "USD000UTSTOM", "USD" },
-                { "SU24020RMFS8", Constants.BondType.BOND_TYPE_MINFIN }
+                { "SU24020RMFS8", Constants.BondType.BOND_TYPE_MINFIN },
+                { "VTBB", "RU000A0JP5V6"}
             };
 
             _tickerOverrideLookup = new Dictionary<string, string>()
