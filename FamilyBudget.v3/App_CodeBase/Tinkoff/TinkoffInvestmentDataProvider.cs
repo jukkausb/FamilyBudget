@@ -20,12 +20,14 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
     {
         private readonly IExpenditureRepository _expenditureRepository;
         private readonly IInvestmentInstrumentRepository _investmentInstrumentRepository;
+        private readonly ICurrencyProvider _currencyProvider;
 
         public TinkoffInvestmentDataProvider(IExpenditureRepository expenditureRepository,
-            IInvestmentInstrumentRepository investmentInstrumentRepository)
+            IInvestmentInstrumentRepository investmentInstrumentRepository, ICurrencyProvider currencyProvider)
         {
             _expenditureRepository = expenditureRepository;
             _investmentInstrumentRepository = investmentInstrumentRepository;
+            _currencyProvider = currencyProvider;
         }
 
         private string GetToken()
@@ -118,17 +120,20 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 Where(c => c.Currency.ToString().ToUpper() == Constants.CURRENCY_RUB).
                 FirstOrDefault();
 
-            var positionGroups = portfolioPositions.GroupBy(p => p.Type).ToList();
+            decimal investmentAccountTotalBalance = GetInvestmentAccountTotalBalance(portfolioPositions);
+            decimal investmentAccountTotalDelta = GetInvestmentAccountTotalDelta(portfolioPositions);
 
-            investmentAccount.TotalBalance = portfolioPositions.Sum(p => p.CurrentTotalInPortfolio) + accountCashRub.Balance;
-            investmentAccount.TotalDelta = portfolioPositions.Sum(p => p.CurrentDelta);
-            investmentAccount.TotalDeltaType = BusinessHelper.GetDeltaType(investmentAccount.TotalDelta);
-            investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccount.TotalDelta / investmentAccount.TotalInvested * 100), 2).ToString("N2");
+            investmentAccount.TotalBalance = investmentAccountTotalBalance + accountCashRub.Balance;
+            investmentAccount.TotalDelta = investmentAccountTotalDelta;
+            investmentAccount.TotalDeltaType = BusinessHelper.GetDeltaType(investmentAccountTotalDelta);
+            investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccountTotalDelta / investmentAccount.TotalInvested * 100), 2).ToString("N2");
 
             decimal stocksTotal = 0;
             decimal etfTotal = 0;
             decimal bondsTotal = 0;
             decimal currenciesTotal = 0;
+
+            var positionGroups = portfolioPositions.GroupBy(p => p.Type).ToList();
 
             foreach (var positionGroup in positionGroups)
             {
@@ -198,6 +203,48 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             investmentAccount.MessageGroups.Insert(0, mgCommon);
 
             return investmentAccount;
+        }
+
+        private decimal GetInvestmentAccountTotalBalance(List<TinkoffPortfolioPosition> portfolioPositions)
+        {
+            decimal total = 0;
+
+            foreach (var portfolioPosition in portfolioPositions)
+            {
+                string positionCurrency = portfolioPosition.Currency.ToUpper();
+                if (positionCurrency == Constants.CURRENCY_RUB)
+                {
+                    total += portfolioPosition.CurrentTotalInPortfolio;
+                }
+                else
+                {
+                    decimal rate = _currencyProvider.GetSellCurrencyRate(positionCurrency, Constants.CURRENCY_RUB);
+                    total += portfolioPosition.CurrentTotalInPortfolio * rate;
+                }
+            }
+
+            return total;
+        }
+
+        private decimal GetInvestmentAccountTotalDelta(List<TinkoffPortfolioPosition> portfolioPositions)
+        {
+            decimal total = 0;
+
+            foreach (var portfolioPosition in portfolioPositions)
+            {
+                string positionCurrency = portfolioPosition.Currency.ToUpper();
+                if (positionCurrency == Constants.CURRENCY_RUB)
+                {
+                    total += portfolioPosition.CurrentDelta;
+                }
+                else
+                {
+                    decimal rate = _currencyProvider.GetSellCurrencyRate(positionCurrency, Constants.CURRENCY_RUB);
+                    total += portfolioPosition.CurrentDelta * rate;
+                }
+            }
+
+            return total;
         }
 
         private TinkoffPortfolioGroup BuildGroup(List<TinkoffPortfolioPosition> instrumentsInGroup,
