@@ -26,7 +26,7 @@ namespace FamilyBudget.v3.Models
         {
             get
             {
-                return Math.Abs(DeltaPercent).ToCurrencyDisplay(Currency, true) + "%";
+                return Math.Abs(DeltaPercent) + "%";
             }
         }
     }
