@@ -24,32 +24,8 @@ namespace FamilyBudget.v3.Models
         public string Name { get; set; }
         public string Currency { get; set; }
         public List<TinkoffPortfolioGroup> Groups { get; set; }
+        public MoneyWithDeltaModel Totals { get; set; }
         public decimal TotalInvested { get; set; }
-        public string TotalInvestedPresentation
-        {
-            get
-            {
-                return TotalInvested.ToCurrencyDisplay(Currency);
-            }
-        }
-        public decimal TotalBalance { get; set; }
-        public string TotalBalancePresentation
-        {
-            get
-            {
-                return TotalBalance.ToCurrencyDisplay(Currency, true);
-            }
-        }
-        public DeltaType TotalDeltaType { get; set; }
-        public decimal TotalDelta { get; set; }
-        public string TotalDeltaPresentation
-        {
-            get
-            {
-                return Math.Abs(TotalDelta).ToCurrencyDisplay(Currency, true);
-            }
-        }
-        public string TotalDeltaPercent { get; set; }
         public InvestmentAccount()
         {
             MessageGroups = new List<MessageGroup>();

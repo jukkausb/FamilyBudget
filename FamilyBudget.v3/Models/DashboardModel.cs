@@ -20,7 +20,7 @@ namespace FamilyBudget.v3.Models
         /// <summary>
         /// Total results of investment
         /// </summary>
-        public MoneyModel Investment { get; set; }
+        public MoneyWithDeltaModel Investment { get; set; }
         public List<AccountRateView> AccountRateViews { get; set; }
         public int AverageLastMonthCount { get; set; }
         public MoneyModel AverageIncomePerMonth { get; set; }

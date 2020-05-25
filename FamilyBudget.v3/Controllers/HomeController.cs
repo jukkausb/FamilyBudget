@@ -46,16 +46,17 @@ namespace FamilyBudget.v3.Controllers
             var totalCash = _calculationService.CalculateCash(mainCurrencyCode);
             model.Cash = new MoneyModel
             {
-                Currency = mainCurrencyCode.ToCurrencySymbol(),
-                Value = totalCash,
-                ValuePresentation = totalCash.ToCurrencyDisplay(mainCurrencyCode, true)
+                Currency = mainCurrencyCode,
+                Value = totalCash
             };
 
+            decimal totalInvested = 0;
             List<InvestmentAccount> investmentAccounts = null;
 
             try
             {
                 investmentAccounts = _tinkoffInvestmentDataProvider.GetInvestmentAccounts();
+                totalInvested = _tinkoffInvestmentDataProvider.GetTotalInvested();
             }
             catch (Exception ex)
             {
@@ -69,33 +70,27 @@ namespace FamilyBudget.v3.Controllers
                 });
             }
 
-            var totalInvestmentBalance = investmentAccounts?.Sum(a => a.TotalBalance) ?? 0;
+            var totalInvestmentBalance = investmentAccounts?.Sum(a => a.Totals.Value) ?? 0;
+            var totalInvestmentDelta = totalInvestmentBalance - totalInvested;
+            var totalInvestmentDeltaPercent = Math.Round(Math.Abs(totalInvestmentDelta / totalInvestmentBalance * 100), 2);
 
-            model.Investment = new MoneyModel
-            {
-                Currency = mainCurrencyCode.ToCurrencySymbol(),
-                Value = totalInvestmentBalance,
-                ValuePresentation = totalInvestmentBalance.ToCurrencyDisplay(mainCurrencyCode, true)
-            };
+            model.Investment = new MoneyWithDeltaModel(totalInvestmentBalance, mainCurrencyCode, totalInvestmentDelta);
 
             var totalCapital = totalInvestmentBalance + totalCash;
             model.Capital = new MoneyModel
             {
-                Currency = mainCurrencyCode.ToCurrencySymbol(),
-                Value = totalCapital,
-                ValuePresentation = totalCapital.ToCurrencyDisplay(mainCurrencyCode, true)
+                Currency = mainCurrencyCode,
+                Value = totalCapital
             };
 
             decimal targetCapitalValue = 10000000;
             model.Target = new MoneyModel
             {
-                Currency = mainCurrencyCode.ToCurrencySymbol(),
-                Value = targetCapitalValue,
-                ValuePresentation = targetCapitalValue.ToCurrencyDisplay(mainCurrencyCode, true)
+                Currency = mainCurrencyCode,
+                Value = targetCapitalValue
             };
 
             model.TargetAccomplishedPercent = Math.Round(model.Capital.Value / model.Target.Value * 100, 2);
-
             model.AccountRateViews = _calculationService.GetAccountBalanceWithRatesViews();
 
             #region Average values
@@ -124,12 +119,14 @@ namespace FamilyBudget.v3.Controllers
             decimal allToIIS = BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
             model.AllIISExpenditureTotal = new MoneyModel
             {
+                Currency = mainCurrencyCode,
                 Value = allToIIS
             };
 
             decimal allToBrokerAccount = BusinessHelper.GetBrokerAccountExpenditures(_expenditureRepository).Sum(e => e.Summa);
             model.AllBrokerAccountExpenditureTotal = new MoneyModel
             {
+                Currency = mainCurrencyCode,
                 Value = allToBrokerAccount
             };
 

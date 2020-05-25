@@ -2260,6 +2260,9 @@
     <Content Include="Views\Shared\DisplayTemplates\_FormActionButtons.cshtml" />
     <Content Include="Views\Investment\Index.cshtml" />
     <Content Include="Views\Shared\MessageModel.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\_Delta.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\_DeltaArrow.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\_MoneyWithDelta.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2569,6 +2572,7 @@
     <Compile Include="Models\Base\ListSortDirection.cs" />
     <Compile Include="Models\ChartsModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
+    <Compile Include="Models\DeltaModel.cs" />
     <Compile Include="Models\ExpenditureListModel.cs" />
     <Compile Include="Models\ExpenditureModel.cs" />
     <Compile Include="Models\Filter\AccountFilterModel.cs" />
@@ -2591,6 +2595,7 @@
     <Compile Include="Models\MessageGroup.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\MessageType.cs" />
+    <Compile Include="Models\MoneyWithDeltaModel.cs" />
     <Compile Include="Models\Report\ReportExpendituresByCategoryModel.cs" />
     <Compile Include="Models\Report\ReportExpendituresModel.cs" />
     <Compile Include="Models\Report\ReportIncomesModel.cs" />

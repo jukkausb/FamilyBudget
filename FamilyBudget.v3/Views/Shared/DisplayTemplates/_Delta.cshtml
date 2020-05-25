@@ -1,0 +1,7 @@
+﻿@model FamilyBudget.v3.Models.DeltaModel
+@if (Model != null)
+{
+    @Html.Partial("~/Views/Shared/DisplayTemplates/_DeltaArrow.cshtml", Model.Type)
+    @Model.ValuePresentation
+}
+

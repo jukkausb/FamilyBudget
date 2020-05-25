@@ -57,7 +57,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="h4 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Инвестиции</div>
-                            <div class="h3 mb-0 text-xl-center font-weight-bold @getStyle(Model.Investment.Value)">@Model.Investment.ValuePresentation</div>
+                            <div class="text-xl-center text-primary">
+                                @Html.Partial("~/Views/Shared/DisplayTemplates/_MoneyWithDelta.cshtml", Model.Investment)
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -159,7 +161,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Отправлено на ИИС</div>
-                            <div class="h3 mb-0 text-xl-center font-weight-bold text-primary">@Model.AllIISExpenditureTotal.Value.ToString("N")</div>
+                            <div class="h3 mb-0 text-xl-center font-weight-bold text-primary">@Model.AllIISExpenditureTotal.ValuePresentation</div>
                         </div>
                     </div>
                 </div>
@@ -171,7 +173,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xl-center font-weight-bold text-gray-800 text-uppercase mb-1">Отправлено на Брокерский счет</div>
-                            <div class="h3 mb-0 text-xl-center font-weight-bold text-primary">@Model.AllBrokerAccountExpenditureTotal.Value.ToString("N")</div>
+                            <div class="h3 mb-0 text-xl-center font-weight-bold text-primary">@Model.AllBrokerAccountExpenditureTotal.ValuePresentation</div>
                         </div>
                     </div>
                 </div>

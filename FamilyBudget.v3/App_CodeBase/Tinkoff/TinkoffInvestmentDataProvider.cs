@@ -14,6 +14,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
     public interface ITinkoffInvestmentDataProvider
     {
         List<InvestmentAccount> GetInvestmentAccounts();
+        decimal GetTotalInvested();
     }
 
     public class TinkoffInvestmentDataProvider : ITinkoffInvestmentDataProvider
@@ -50,6 +51,14 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             ITinkoffPortfolioDataRetriever tinkoffPortfolioDataRetriever = new TinkoffPortfolioDataRetriever(GetToken());
             List<PortfolioCurrencyExtended> positions = tinkoffPortfolioDataRetriever.GetTinkoffPortfolioCurrencies(brokerAccountId);
             return positions;
+        }
+
+        public decimal GetTotalInvested()
+        {
+            decimal investmentsToIIS = BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
+            decimal investmentsBrokerAccount = BusinessHelper.GetBrokerAccountExpenditures(_expenditureRepository).Sum(e => e.Summa);
+            decimal totalInvestments = investmentsToIIS + investmentsBrokerAccount;
+            return totalInvestments;
         }
 
         public List<InvestmentAccount> GetInvestmentAccounts()
@@ -123,10 +132,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             decimal investmentAccountTotalBalance = GetInvestmentAccountTotalBalance(portfolioPositions);
             decimal investmentAccountTotalDelta = GetInvestmentAccountTotalDelta(portfolioPositions);
 
-            investmentAccount.TotalBalance = investmentAccountTotalBalance + accountCashRub.Balance;
-            investmentAccount.TotalDelta = investmentAccountTotalDelta;
-            investmentAccount.TotalDeltaType = BusinessHelper.GetDeltaType(investmentAccountTotalDelta);
-            investmentAccount.TotalDeltaPercent = Math.Round(Math.Abs(investmentAccountTotalDelta / investmentAccount.TotalInvested * 100), 2).ToString("N2");
+            investmentAccount.Totals = new MoneyWithDeltaModel(investmentAccountTotalBalance, Constants.CURRENCY_RUB, investmentAccountTotalDelta);
 
             decimal stocksTotal = 0;
             decimal etfTotal = 0;
@@ -183,7 +189,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             }
 
             var allInstruments = investmentAccount.Groups.SelectMany(g => g.Positions).ToList();
-            var totalAccountBalance = investmentAccount.TotalBalance;
+            var totalAccountBalance = investmentAccount.Totals.Value;
 
             // Check investment instrument rules on account
             investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentRulesOnAccount(allInstruments, totalAccountBalance));
@@ -191,13 +197,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             MessageGroup mgCommon = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_COMMON };
 
             // Check investment instrument type rules on account
-            var etfPercentOnAccount = etfTotal / investmentAccount.TotalBalance * 100;
+            var etfPercentOnAccount = etfTotal / totalAccountBalance * 100;
             mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_ETF, etfPercentOnAccount));
-            var bondsPercentOnAccount = bondsTotal / investmentAccount.TotalBalance * 100;
+            var bondsPercentOnAccount = bondsTotal / totalAccountBalance * 100;
             mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_BONDS, bondsPercentOnAccount));
-            var stocksPercentOnAccount = stocksTotal / investmentAccount.TotalBalance * 100;
+            var stocksPercentOnAccount = stocksTotal / totalAccountBalance * 100;
             mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_STOCKS, stocksPercentOnAccount));
-            var currenciesPercentOnAccount = currenciesTotal / investmentAccount.TotalBalance * 100;
+            var currenciesPercentOnAccount = currenciesTotal / totalAccountBalance * 100;
             mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES, currenciesPercentOnAccount));
 
             investmentAccount.MessageGroups.Insert(0, mgCommon);

@@ -1,0 +1,14 @@
+﻿@model FamilyBudget.v3.Models.MoneyWithDeltaModel
+@if (Model != null)
+{
+    <div class="h4 mb-0 font-weight-bold">
+        @Model.ValuePresentation
+    </div>
+
+    string textColorCssClass = Model.Delta.Value >= 0 ? "text-success" : "text-danger";
+
+    <div class="h6 mb-0 font-weight-bold @textColorCssClass">
+        @Html.Partial("~/Views/Shared/DisplayTemplates/_Delta.cshtml", Model.Delta)
+        @Html.Raw("(" + Model.DeltaPercentPresentation + ")")
+    </div>
+}

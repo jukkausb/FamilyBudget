@@ -142,18 +142,13 @@
         }
         @helper RenderAccountHeader(InvestmentAccount account)
         {
-            string textColorCssClass = account.TotalDelta >= 0 ? "text-success" : "text-danger";
             <div class="card border-left-success shadow py-2 mb-4">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="h5 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">@account.Name</div>
-                            <div class="h2 mb-0 text-xl-center font-weight-bold text-primary">
-                                @account.TotalBalancePresentation
-                            </div>
-                            <div class="h6 mb-0 text-xl-center font-weight-bold @textColorCssClass">
-                                @RenderArrow(account.TotalDeltaType)
-                                @account.TotalDeltaPresentation (@account.TotalDeltaPercent%)
+                            <div class="text-xl-center text-primary">
+                                @Html.Partial("~/Views/Shared/DisplayTemplates/_MoneyWithDelta.cshtml", account.Totals)
                             </div>
                         </div>
                         @if (account.MessageGroups.Any())
