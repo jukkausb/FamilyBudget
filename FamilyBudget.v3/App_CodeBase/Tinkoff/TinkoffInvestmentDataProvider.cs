@@ -203,6 +203,24 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             investmentAccount.MessageGroups.Insert(0, mgCommon);
 
+            // Add market groups
+            var positionMarketGroups = portfolioPositions.GroupBy(p => p.Market).Where(p => !string.IsNullOrEmpty(p.Key)).ToList();
+            foreach (var group in positionMarketGroups)
+            {
+                string marketGroupCode = Constants.InstrumentMarket.INSTRUMENT_MARKET_CODE_PREFIX + group.Key;
+                TinkoffPortfolioGroup portfolioMarketGroup = new TinkoffPortfolioGroup
+                {
+                    Code = marketGroupCode,
+                    Name = group.Key,
+                    CurrentTotalInPortfolio = group.Sum(p => p.CurrentTotalInPortfolio)
+                };
+
+                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == marketGroupCode).FirstOrDefault();
+                ApplyPortfolioGroupCustomAttributes(portfolioMarketGroup, investmentInstrument);
+
+                investmentAccount.MarketGroups.Add(portfolioMarketGroup);
+            }
+
             return investmentAccount;
         }
 
@@ -211,6 +229,11 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             if (portfolioPosition == null)
             {
                 return;
+            }
+
+            if (investmentInstrument != null)
+            {
+                portfolioPosition.Market = investmentInstrument.Market;
             }
 
             portfolioPosition.AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioPosition, investmentInstrument);

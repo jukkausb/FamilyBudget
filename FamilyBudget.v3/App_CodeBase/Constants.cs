@@ -14,6 +14,11 @@
             public const string BOND_TYPE_MINFIN = "minfin";
         }
 
+        public static class InstrumentMarket
+        {
+            public const string INSTRUMENT_MARKET_CODE_PREFIX = "MARKET_";
+        }
+
         public static class InstrumentType
         {
             public const string INSTRUMENT_TYPE_CODE_CURRENCIES = "TYPE_CURRENCIES";
