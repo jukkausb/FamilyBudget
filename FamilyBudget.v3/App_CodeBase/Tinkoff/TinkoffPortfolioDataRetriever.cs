@@ -71,8 +71,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     Type = position.InstrumentType,
                     Ticker = portfolioInstrument.Ticker,
                     Isin = portfolioInstrument.Isin,
-                    AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioInstrument.Ticker, portfolioInstrument.Isin),
-                    TickerPageLink = TinkoffStaticUrlResolver.ResolveTickerPageLink(portfolioInstrument.Ticker, position.InstrumentType),
                     Lots = position.Lots,
                     Balance = position.Balance,
                     Currency = currency,
@@ -83,6 +81,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     CurrentDeltaType = BusinessHelper.GetDeltaType(position.ExpectedYield.Value),
                     CurrentDeltaPercent = Math.Round(Math.Abs(position.ExpectedYield.Value / (position.Balance * position.AveragePositionPrice.Value) * 100), 2).ToString("N2")
                 };
+
 
                 portfolioPositions.Add(portfolioPosition);
             }

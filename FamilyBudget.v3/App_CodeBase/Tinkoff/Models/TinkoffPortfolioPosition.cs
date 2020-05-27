@@ -10,6 +10,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         public string AvatarImageLink { get; set; }
         public string TickerPageLink { get; set; }
         public InstrumentType Type { get; set; }
+        /// <summary>
+        /// Position without price change (typically brocker account currency, RUB)
+        /// </summary>
+        public bool IsStatic { get; set; }
         public string Ticker { get; set; }
         public string Isin { get; set; }
         public int Lots { get; set; }
@@ -52,12 +56,5 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         public string DiagramBackgroundColor { get; set; }
         public string DiagramBackgroundHoverColor { get; set; }
         public string DiagramHoverBorderColor { get; set; }
-    }
-
-    public enum DeltaType
-    {
-        Positive,
-        Negative,
-        Neutral
     }
 }

@@ -8,6 +8,7 @@ using System;
 using FamilyBudget.v3.App_Helpers;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using static FamilyBudget.v3.App_CodeBase.Tinkoff.Models.PortfolioCurrenciesExtended;
+using FamilyBudget.v3.App_DataModel;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
@@ -107,22 +108,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             var portfolioPositions = GetPortfolioPositions(account.BrokerAccountId);
 
-            // Map additional data
             foreach (var portfolioPosition in portfolioPositions)
             {
                 var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == portfolioPosition.Ticker).FirstOrDefault();
-                if (investmentInstrument != null)
-                {
-                    portfolioPosition.DiagramBackgroundColor = investmentInstrument.DiagramBackgroundColor;
-                    portfolioPosition.DiagramBackgroundHoverColor = investmentInstrument.DiagramBackgroundHoverColor;
-                    portfolioPosition.DiagramHoverBorderColor = investmentInstrument.DiagramHoverBorderColor;
-                }
-                else
-                {
-                    portfolioPosition.DiagramBackgroundColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
-                    portfolioPosition.DiagramBackgroundHoverColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
-                    portfolioPosition.DiagramHoverBorderColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
-                }
+                ApplyPortfolioPositionCustomAttributes(portfolioPosition, investmentInstrument);
             }
 
             var accountCashRub = GetPortfolioCurrencies(account.BrokerAccountId).
@@ -155,12 +144,18 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 }
                 if (positionGroup.Key == InstrumentType.Currency)
                 {
-                    groupData.Add(new TinkoffPortfolioPosition
+                    var rublePortfolioPosition = new TinkoffPortfolioPosition
                     {
                         Name = Constants.CURRENCY_NAME_RUB,
-                        AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(Constants.CURRENCY_RUB, Constants.CURRENCY_RUB),
+                        Ticker = Constants.CURRENCY_RUB,
+                        Isin = Constants.CURRENCY_RUB,
+                        IsStatic = true,
                         CurrentTotalInPortfolio = accountCashRub.Balance
-                    });
+                    };
+
+                    ApplyPortfolioPositionCustomAttributes(rublePortfolioPosition, null);
+
+                    groupData.Add(rublePortfolioPosition);
 
                     group = BuildGroup(groupData,
                         Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES,
@@ -209,6 +204,29 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             investmentAccount.MessageGroups.Insert(0, mgCommon);
 
             return investmentAccount;
+        }
+
+        private void ApplyPortfolioPositionCustomAttributes(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
+        {
+            if (portfolioPosition == null)
+            {
+                return;
+            }
+
+            portfolioPosition.AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioPosition, investmentInstrument);
+            portfolioPosition.TickerPageLink = TinkoffStaticUrlResolver.ResolveExternalPageId(portfolioPosition, investmentInstrument);
+
+            DiagramHelper.ApplyPieDiagramColors(portfolioPosition, investmentInstrument);
+        }
+
+        private void ApplyPortfolioGroupCustomAttributes(TinkoffPortfolioGroup portfolioGroup, InvestmentInstrument investmentInstrument)
+        {
+            if (portfolioGroup == null)
+            {
+                return;
+            }
+
+            DiagramHelper.ApplyPieDiagramColors(portfolioGroup, investmentInstrument);
         }
 
         private decimal GetInvestmentAccountTotalBalance(List<TinkoffPortfolioPosition> portfolioPositions)
@@ -266,18 +284,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             group.CurrentTotalInPortfolio = total;
 
             var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == groupCode).FirstOrDefault();
-            if (investmentInstrument != null)
-            {
-                group.DiagramBackgroundColor = investmentInstrument.DiagramBackgroundColor;
-                group.DiagramBackgroundHoverColor = investmentInstrument.DiagramBackgroundHoverColor;
-                group.DiagramHoverBorderColor = investmentInstrument.DiagramHoverBorderColor;
-            }
-            else
-            {
-                group.DiagramBackgroundColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
-                group.DiagramBackgroundHoverColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
-                group.DiagramHoverBorderColor = Constants.InstrumentDiagram.DEFAULT_COLOR;
-            }
+
+            ApplyPortfolioGroupCustomAttributes(group, investmentInstrument);
 
             return group;
         }

@@ -21,5 +21,8 @@ namespace FamilyBudget.v3.App_DataModel
         public Nullable<int> PortfolioPercent { get; set; }
         public Nullable<int> PortfolioPercentDelta { get; set; }
         public string Code { get; set; }
+        public string Market { get; set; }
+        public string ExternalAvatarIsinOverride { get; set; }
+        public string ExternalPageTickerOverride { get; set; }
     }
 }

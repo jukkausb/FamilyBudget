@@ -261,14 +261,17 @@
                                         </div>
                                         <div class="table-instruments-info-details">
                                             <div class="table-instruments-info-details-name">@sourceItem.Name</div>
-                                            <div class="table-instruments-info-details-ticker">@sourceItem.Balance шт.</div>
+                                            @if (!sourceItem.IsStatic)
+                                            {
+                                                <div class="table-instruments-info-details-ticker">@sourceItem.Balance шт.</div>
+                                            }
                                         </div>
                                     </div>
                                 </a>
                             </td>
                             <td class="table-instruments-column">
                                 <a href="@sourceItem.TickerPageLink" target="_blank">
-                                    @if (!string.IsNullOrEmpty(sourceItem.Ticker))
+                                    @if (!sourceItem.IsStatic)
                                     {
                                         <div class="row no-gutters align-items-center">
                                             <div class="col text-gray-800 table-instruments-price-details">

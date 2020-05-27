@@ -1,60 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using FamilyBudget.v3.App_CodeBase.Tinkoff.Models;
+using FamilyBudget.v3.App_DataModel;
+using System.Collections.Generic;
 using Tinkoff.Trading.OpenApi.Models;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
     public static class TinkoffStaticUrlResolver
     {
-        private static readonly Dictionary<string, string> _isinOverrideLookup;
-        private static readonly Dictionary<string, string> _tickerOverrideLookup;
-
-        static TinkoffStaticUrlResolver()
+        private static string ResolveInstrumentAvatarId(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
         {
-            _isinOverrideLookup = new Dictionary<string, string>()
+            if (portfolioPosition == null || string.IsNullOrEmpty(portfolioPosition.Ticker))
             {
-                // { "<ticker>", "isin" }
-                { "TCSG", "US87238U2033" },
-                { "SBERP", "RU0009029540" },
-                { "FXTB", "IE00B84D7P43" },
-                { "USD000UTSTOM", "USD" },
-                { "SU24020RMFS8", Constants.BondType.BOND_TYPE_MINFIN },
-                { "VTBB", "RU000A0JP5V6"}
-            };
+                return "";
+            }
 
-            _tickerOverrideLookup = new Dictionary<string, string>()
+            if (investmentInstrument == null)
             {
-                { "USD000UTSTOM", "USDRUB" }
-            };
+                return portfolioPosition.Isin;
+            }
+
+            if (!string.IsNullOrEmpty(investmentInstrument.ExternalAvatarIsinOverride))
+            {
+                return investmentInstrument.ExternalAvatarIsinOverride;
+            }
+
+            return portfolioPosition.Isin;
         }
 
-        private static string ResolveIsin(string ticker, string isin)
+        private static string ResolveInstrumentPageId(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
         {
-            if (string.IsNullOrEmpty(ticker))
+            if (portfolioPosition == null || string.IsNullOrEmpty(portfolioPosition.Ticker))
             {
-                return isin;
+                return "";
             }
 
-            if (_isinOverrideLookup.ContainsKey(ticker))
+            if (investmentInstrument == null)
             {
-                return _isinOverrideLookup[ticker];
+                return portfolioPosition.Ticker;
             }
 
-            return isin;
-        }
-
-        private static string ResolveTicker(string ticker)
-        {
-            if (string.IsNullOrEmpty(ticker))
+            if (!string.IsNullOrEmpty(investmentInstrument.ExternalPageTickerOverride))
             {
-                return ticker;
+                return investmentInstrument.ExternalPageTickerOverride;
             }
 
-            if (_tickerOverrideLookup.ContainsKey(ticker))
-            {
-                return _tickerOverrideLookup[ticker];
-            }
-
-            return ticker;
+            return portfolioPosition.Ticker;
         }
 
         private static string ResolveTickerPageType(InstrumentType instrumentType)
@@ -82,16 +72,21 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return "";
         }
 
-        public static string ResolveAvatarImageLink(string ticker, string isin)
+        public static string ResolveAvatarImageLink(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
         {
-            string id = ResolveIsin(ticker, isin);
+            string id = ResolveInstrumentAvatarId(portfolioPosition, investmentInstrument);
             return string.Format(Constants.TinkoffStaticLinks.AVATAR_IMAGE_LINK_FORMAT, id);
         }
 
-        public static string ResolveTickerPageLink(string ticker, InstrumentType instrumentType)
+        public static string ResolveExternalPageId(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
         {
-            string tickerPageType = ResolveTickerPageType(instrumentType);
-            string tickerOverride = ResolveTicker(ticker);
+            if (investmentInstrument == null || investmentInstrument == null)
+            {
+                return null;
+            }
+
+            string tickerPageType = ResolveTickerPageType(portfolioPosition.Type);
+            string tickerOverride = ResolveInstrumentPageId(portfolioPosition, investmentInstrument);
             return string.Format(Constants.TinkoffStaticLinks.TICKER_PAGE_LINK_FORMAT, tickerPageType, tickerOverride);
         }
     }

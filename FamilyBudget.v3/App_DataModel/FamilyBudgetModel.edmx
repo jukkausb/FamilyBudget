@@ -72,6 +72,9 @@
           <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" />
           <Property Name="PortfolioPercent" Type="int" />
           <Property Name="PortfolioPercentDelta" Type="int" />
+          <Property Name="Market" Type="nvarchar" MaxLength="30" />
+          <Property Name="ExternalAvatarIsinOverride" Type="nvarchar" MaxLength="30" />
+          <Property Name="ExternalPageTickerOverride" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <Association Name="FK_Account_Currency">
           <End Role="Currency" Type="Self.Currency" Multiplicity="1" />
@@ -332,6 +335,9 @@
           <Property Name="PortfolioPercent" Type="Int32" />
           <Property Name="PortfolioPercentDelta" Type="Int32" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Market" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ExternalAvatarIsinOverride" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ExternalPageTickerOverride" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -404,6 +410,9 @@
           <EntitySetMapping Name="InvestmentInstrument">
             <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentInstrument">
               <MappingFragment StoreEntitySet="InvestmentInstrument">
+                <ScalarProperty Name="ExternalPageTickerOverride" ColumnName="ExternalPageTickerOverride" />
+                <ScalarProperty Name="ExternalAvatarIsinOverride" ColumnName="ExternalAvatarIsinOverride" />
+                <ScalarProperty Name="Market" ColumnName="Market" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
                 <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />

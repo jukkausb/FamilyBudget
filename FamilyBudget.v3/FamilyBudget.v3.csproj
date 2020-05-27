@@ -2460,6 +2460,7 @@
     <Compile Include="App_CodeBase\Prosperity.cs" />
     <Compile Include="App_CodeBase\Sitemap.cs" />
     <Compile Include="App_CodeBase\SitemapHelper.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\DeltaType.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\IPieDiagramDataItem.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioCurrenciesExtended.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffBrokerAccounts.cs" />
@@ -2516,6 +2517,7 @@
     <Compile Include="App_DataModel\Metadata\FamilyBudgetMetadata.cs" />
     <Compile Include="App_Helpers\CurrencyExtensions.cs" />
     <Compile Include="App_Helpers\BusinessHelper.cs" />
+    <Compile Include="App_Helpers\DiagramHelper.cs" />
     <Compile Include="App_Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="App_Helpers\JsonSerializeHelper.cs" />
     <Compile Include="App_Helpers\JsonUtils.cs" />
