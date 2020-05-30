@@ -2452,6 +2452,7 @@
     <Compile Include="App_CodeBase\IAccountableEntity.cs" />
     <Compile Include="App_CodeBase\ICategoryInfo.cs" />
     <Compile Include="App_CodeBase\ICurrencyProvider.cs" />
+    <Compile Include="App_CodeBase\IPieDiagramDataSourceItem.cs" />
     <Compile Include="App_CodeBase\JsonDotNetResult.cs" />
     <Compile Include="App_CodeBase\Json\FreeCurrencyConverter.cs" />
     <Compile Include="App_CodeBase\Json\FreeCurrencyRate.cs" />
@@ -2464,7 +2465,8 @@
     <Compile Include="App_CodeBase\Tinkoff\Models\IPieDiagramDataItem.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioCurrenciesExtended.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffBrokerAccounts.cs" />
-    <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioGroup.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioDiagramGroupItem.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioTableGroup.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioPosition.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffContext.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffDataRetrieverBase.cs" />
@@ -2512,6 +2514,12 @@
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\InvestmentInstrument.cs">
+      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DataModel\InvestmentInstrumentMarket.cs">
+      <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="App_DataModel\InvestmentInstrumentType.cs">
       <DependentUpon>FamilyBudgetModel.tt</DependentUpon>
     </Compile>
     <Compile Include="App_DataModel\Metadata\FamilyBudgetMetadata.cs" />
@@ -2603,6 +2611,10 @@
     <Compile Include="Models\Report\ReportIncomesModel.cs" />
     <Compile Include="Models\Report\ReportsModel.cs" />
     <Compile Include="Models\Repository\AccountRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IInvestmentInstrumentMarketRepository.cs" />
+    <Compile Include="Models\Repository\Interfaces\IInvestmentInstrumentTypeRepository.cs" />
+    <Compile Include="Models\Repository\InvestmentInstrumentMarketRepository.cs" />
+    <Compile Include="Models\Repository\InvestmentInstrumentTypeRepository.cs" />
     <Compile Include="Models\Repository\InvestmentInstrumentRepository.cs" />
     <Compile Include="Models\Repository\CurrencyRepository.cs" />
     <Compile Include="Models\Repository\ExpenditureCategoryRepository.cs" />

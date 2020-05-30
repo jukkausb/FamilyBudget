@@ -22,13 +22,20 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
     {
         private readonly IExpenditureRepository _expenditureRepository;
         private readonly IInvestmentInstrumentRepository _investmentInstrumentRepository;
+        private readonly IInvestmentInstrumentTypeRepository _investmentInstrumentTypeRepository;
+        private readonly IInvestmentInstrumentMarketRepository _investmentInstrumentMarketRepository;
         private readonly ICurrencyProvider _currencyProvider;
 
         public TinkoffInvestmentDataProvider(IExpenditureRepository expenditureRepository,
-            IInvestmentInstrumentRepository investmentInstrumentRepository, ICurrencyProvider currencyProvider)
+            IInvestmentInstrumentRepository investmentInstrumentRepository,
+            IInvestmentInstrumentMarketRepository investmentInstrumentMarketRepository,
+            IInvestmentInstrumentTypeRepository investmentInstrumentTypeRepository,
+            ICurrencyProvider currencyProvider)
         {
             _expenditureRepository = expenditureRepository;
             _investmentInstrumentRepository = investmentInstrumentRepository;
+            _investmentInstrumentMarketRepository = investmentInstrumentMarketRepository;
+            _investmentInstrumentTypeRepository = investmentInstrumentTypeRepository;
             _currencyProvider = currencyProvider;
         }
 
@@ -111,7 +118,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             foreach (var portfolioPosition in portfolioPositions)
             {
                 var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == portfolioPosition.Ticker).FirstOrDefault();
-                ApplyPortfolioPositionCustomAttributes(portfolioPosition, investmentInstrument);
+                ApplyTinkoffPortfolioPositionCustomAttributes(portfolioPosition, investmentInstrument);
             }
 
             var accountCashRub = GetPortfolioCurrencies(account.BrokerAccountId).
@@ -132,7 +139,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             foreach (var positionGroup in positionGroups)
             {
-                TinkoffPortfolioGroup group = null;
+                TinkoffPortfolioTableGroup group = null;
                 var groupData = positionGroup.OrderBy(p => p.Name).ToList();
 
                 if (positionGroup.Key == InstrumentType.Bond)
@@ -153,7 +160,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                         CurrentTotalInPortfolio = accountCashRub.Balance
                     };
 
-                    ApplyPortfolioPositionCustomAttributes(rublePortfolioPosition, null);
+                    ApplyTinkoffPortfolioPositionCustomAttributes(rublePortfolioPosition, null);
 
                     groupData.Add(rublePortfolioPosition);
 
@@ -179,52 +186,117 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
                 if (group != null)
                 {
-                    investmentAccount.Groups.Add(group);
+                    investmentAccount.TableGroups.Add(group);
                 }
             }
 
-            var allInstruments = investmentAccount.Groups.SelectMany(g => g.Positions).ToList();
-            var totalAccountBalance = investmentAccount.Totals.Value;
-
-            // Check investment instrument rules on account
-            investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentRulesOnAccount(allInstruments, totalAccountBalance));
-
-            MessageGroup mgCommon = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_COMMON };
-
-            // Check investment instrument type rules on account
-            var etfPercentOnAccount = etfTotal / totalAccountBalance * 100;
-            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_ETF, etfPercentOnAccount));
-            var bondsPercentOnAccount = bondsTotal / totalAccountBalance * 100;
-            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_BONDS, bondsPercentOnAccount));
-            var stocksPercentOnAccount = stocksTotal / totalAccountBalance * 100;
-            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_STOCKS, stocksPercentOnAccount));
-            var currenciesPercentOnAccount = currenciesTotal / totalAccountBalance * 100;
-            mgCommon.Messages.AddRange(CheckInvestmentInstrumentTypeOnAccount(Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES, currenciesPercentOnAccount));
-
-            investmentAccount.MessageGroups.Insert(0, mgCommon);
-
-            // Add market groups
-            var positionMarketGroups = portfolioPositions.GroupBy(p => p.Market).Where(p => !string.IsNullOrEmpty(p.Key)).ToList();
-            foreach (var group in positionMarketGroups)
-            {
-                string marketGroupCode = Constants.InstrumentMarket.INSTRUMENT_MARKET_CODE_PREFIX + group.Key;
-                TinkoffPortfolioGroup portfolioMarketGroup = new TinkoffPortfolioGroup
-                {
-                    Code = marketGroupCode,
-                    Name = group.Key,
-                    CurrentTotalInPortfolio = group.Sum(p => p.CurrentTotalInPortfolio)
-                };
-
-                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == marketGroupCode).FirstOrDefault();
-                ApplyPortfolioGroupCustomAttributes(portfolioMarketGroup, investmentInstrument);
-
-                investmentAccount.MarketGroups.Add(portfolioMarketGroup);
-            }
+            AddMessages(investmentAccount);
+            AddTypeGroups(investmentAccount, portfolioPositions, accountCashRub.Balance);
+            AddMarketGroups(investmentAccount, portfolioPositions);
 
             return investmentAccount;
         }
 
-        private void ApplyPortfolioPositionCustomAttributes(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
+        private void AddMessages(InvestmentAccount investmentAccount)
+        {
+            var allInstruments = investmentAccount.TableGroups.SelectMany(g => g.Positions).ToList();
+            var totalAccountBalance = investmentAccount.Totals.Value;
+
+            // Check investment instrument rules
+            investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentRules(allInstruments, totalAccountBalance));
+            investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentTypeRules(allInstruments, totalAccountBalance));
+            investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentMarketRules(allInstruments, totalAccountBalance));
+        }
+
+        private void AddTypeGroups(InvestmentAccount investmentAccount,
+            List<TinkoffPortfolioPosition> portfolioPositions,
+            decimal rubleCashBalance)
+        {
+            if (investmentAccount == null || portfolioPositions == null)
+            {
+                return;
+            }
+
+            var positionMarketGroups = portfolioPositions
+                .Where(p => p.CustomType != null)
+                .GroupBy(p => p.CustomType.Code)
+                .Where(p => !string.IsNullOrEmpty(p.Key))
+                .ToList();
+
+            foreach (var group in positionMarketGroups)
+            {
+                string typeCode = group.Key;
+                var investmentInstrumentType = _investmentInstrumentTypeRepository.FindBy(i => i.Code == typeCode).FirstOrDefault();
+
+                PortfolioDiagramGroupItem portfolioDiagramGroupItem = new PortfolioDiagramGroupItem
+                {
+                    Name = investmentInstrumentType.Name,
+                    CurrentTotalInPortfolio = group.Sum(p =>
+                    {
+                        if (p.Currency.ToUpper() == Constants.CURRENCY_RUB)
+                        {
+                            return p.CurrentTotalInPortfolio.Round();
+                        }
+                        else
+                        {
+                            decimal rate = _currencyProvider.GetSellCurrencyRate(p.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                            return (p.CurrentTotalInPortfolio * rate).Round();
+                        }
+                    })
+                };
+
+                if (typeCode == Constants.InstrumentMarket.INSTRUMENT_MARKET_CODE_CASH)
+                {
+                    portfolioDiagramGroupItem.CurrentTotalInPortfolio += rubleCashBalance;
+                }
+
+                DiagramHelper.ApplyPieDiagramColors(portfolioDiagramGroupItem, investmentInstrumentType);
+                investmentAccount.TypeGroupItems.Add(portfolioDiagramGroupItem);
+            }
+        }
+
+        private void AddMarketGroups(InvestmentAccount investmentAccount,
+            List<TinkoffPortfolioPosition> portfolioPositions)
+        {
+            if (investmentAccount == null || portfolioPositions == null)
+            {
+                return;
+            }
+
+            var positionMarketGroups = portfolioPositions
+                .Where(p => p.CustomMarket != null)
+                .GroupBy(p => p.CustomMarket.Code)
+                .Where(p => !string.IsNullOrEmpty(p.Key))
+                .ToList();
+
+            foreach (var group in positionMarketGroups)
+            {
+                string marketCode = group.Key;
+                var investmentInstrumentMarket = _investmentInstrumentMarketRepository.FindBy(i => i.Code == marketCode).FirstOrDefault();
+
+                PortfolioDiagramGroupItem portfolioDiagramGroupItem = new PortfolioDiagramGroupItem
+                {
+                    Name = investmentInstrumentMarket.Name,
+                    CurrentTotalInPortfolio = group.Sum(p =>
+                    {
+                        if (p.Currency.ToUpper() == Constants.CURRENCY_RUB)
+                        {
+                            return p.CurrentTotalInPortfolio.Round();
+                        }
+                        else
+                        {
+                            decimal rate = _currencyProvider.GetSellCurrencyRate(p.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                            return (p.CurrentTotalInPortfolio * rate).Round();
+                        }
+                    })
+                };
+
+                DiagramHelper.ApplyPieDiagramColors(portfolioDiagramGroupItem, investmentInstrumentMarket);
+                investmentAccount.MarketGroupItems.Add(portfolioDiagramGroupItem);
+            }
+        }
+
+        private void ApplyTinkoffPortfolioPositionCustomAttributes(TinkoffPortfolioPosition portfolioPosition, InvestmentInstrument investmentInstrument)
         {
             if (portfolioPosition == null)
             {
@@ -233,23 +305,14 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             if (investmentInstrument != null)
             {
-                portfolioPosition.Market = investmentInstrument.Market;
+                portfolioPosition.CustomType = investmentInstrument.InvestmentInstrumentType;
+                portfolioPosition.CustomMarket = investmentInstrument.InvestmentInstrumentMarket;
             }
 
             portfolioPosition.AvatarImageLink = TinkoffStaticUrlResolver.ResolveAvatarImageLink(portfolioPosition, investmentInstrument);
             portfolioPosition.TickerPageLink = TinkoffStaticUrlResolver.ResolveExternalPageId(portfolioPosition, investmentInstrument);
 
             DiagramHelper.ApplyPieDiagramColors(portfolioPosition, investmentInstrument);
-        }
-
-        private void ApplyPortfolioGroupCustomAttributes(TinkoffPortfolioGroup portfolioGroup, InvestmentInstrument investmentInstrument)
-        {
-            if (portfolioGroup == null)
-            {
-                return;
-            }
-
-            DiagramHelper.ApplyPieDiagramColors(portfolioGroup, investmentInstrument);
         }
 
         private decimal GetInvestmentAccountTotalBalance(List<TinkoffPortfolioPosition> portfolioPositions)
@@ -294,13 +357,13 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return total;
         }
 
-        private TinkoffPortfolioGroup BuildGroup(List<TinkoffPortfolioPosition> instrumentsInGroup,
+        private TinkoffPortfolioTableGroup BuildGroup(List<TinkoffPortfolioPosition> instrumentsInGroup,
             string groupCode,
             string groupTitle)
         {
             decimal total = instrumentsInGroup.Sum(e => e.CurrentTotalInPortfolio);
 
-            TinkoffPortfolioGroup group = new TinkoffPortfolioGroup();
+            TinkoffPortfolioTableGroup group = new TinkoffPortfolioTableGroup();
             group.Positions = instrumentsInGroup;
             group.Code = groupCode;
             group.Name = groupTitle;
@@ -308,12 +371,15 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == groupCode).FirstOrDefault();
 
-            ApplyPortfolioGroupCustomAttributes(group, investmentInstrument);
+            DiagramHelper.ApplyPieDiagramColors(group, investmentInstrument);
 
             return group;
         }
 
-        private List<MessageGroup> CheckInvestmentInstrumentRulesOnAccount(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
+        /// <summary>
+        /// Checks investment instrument type rules
+        /// </summary>
+        private List<MessageGroup> CheckInvestmentInstrumentRules(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
         {
             List<MessageGroup> messageGroups = new List<MessageGroup>();
             if (instruments == null)
@@ -321,20 +387,20 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 return messageGroups;
             }
 
-            MessageGroup mgStocks = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_STOCKS };
-            MessageGroup mgBonds = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_BONDS };
-            MessageGroup mgEtf = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_ETF };
-
-            MessageGroup targetGroup = null;
+            MessageGroup msg = new MessageGroup()
+            {
+                Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_BY_INSTRUMENT_DETAILS
+            };
 
             foreach (var instrument in instruments)
             {
-                if (string.IsNullOrEmpty(instrument.Ticker))
+                string ticker = instrument.Ticker;
+                if (string.IsNullOrEmpty(ticker))
                 {
                     continue;
                 }
 
-                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == instrument.Ticker).FirstOrDefault();
+                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == ticker).FirstOrDefault();
                 if (investmentInstrument == null)
                 {
                     continue;
@@ -348,104 +414,124 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
-                if (instrument.Type == InstrumentType.Stock)
-                {
-                    targetGroup = mgStocks;
-                }
-                else if (instrument.Type == InstrumentType.Bond)
-                {
-                    targetGroup = mgBonds;
-                }
-                else if (instrument.Type == InstrumentType.Etf)
-                {
-                    targetGroup = mgEtf;
-                }
-
                 var currentPercentOnAccount = instrument.CurrentTotalInPortfolio / totalAccountBalance * 100;
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
 
                 if (currentPercentOnAccount > instrumentPersentOnAccountTarget + instrumentPersentOnAccountDelta)
                 {
-                    targetGroup.Messages.Add(GetMessageToDecreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
-                }
-
-                if (instrument.Type == InstrumentType.Stock)
-                {
-                    // Do not encourage to increase Stocks share in portfolio
-                    // No need to introduce more risk (more stocks more risk)
-                    continue;
+                    msg.Messages.Add(GetMessageToDecreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
                 }
 
                 if (currentPercentOnAccount < instrumentPersentOnAccountTarget - instrumentPersentOnAccountDelta)
                 {
-                    targetGroup.Messages.Add(GetMessageToIncreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                    msg.Messages.Add(GetMessageToIncreaseInstrumentInPortfolio(instrument.Ticker, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
                 }
             }
 
-            messageGroups.Add(mgStocks);
-            messageGroups.Add(mgBonds);
-            messageGroups.Add(mgEtf);
+            messageGroups.Add(msg);
 
             return messageGroups;
         }
 
-        private List<Message> CheckInvestmentInstrumentTypeOnAccount(string instrumentTypeCode, decimal currentInstrumentTypePercentOnAccount)
+        /// <summary>
+        /// Checks investment instrument type rules
+        /// </summary>
+        private List<MessageGroup> CheckInvestmentInstrumentTypeRules(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
         {
-            List<Message> messages = new List<Message>();
-            if (string.IsNullOrEmpty(instrumentTypeCode))
+            List<MessageGroup> messageGroups = new List<MessageGroup>();
+            if (instruments == null)
             {
-                return messages;
+                return messageGroups;
             }
 
-            var investmentInstrumentType = _investmentInstrumentRepository.FindBy(i => i.Code == instrumentTypeCode).FirstOrDefault();
-            if (investmentInstrumentType == null)
+            var allTypes = _investmentInstrumentTypeRepository.GetAll().ToList();
+            foreach (var type in allTypes)
             {
-                return messages;
+                MessageGroup msg = new MessageGroup()
+                {
+                    Name = type.Name
+                };
+
+                var instrumentsOfType = instruments.Where(p => p.CustomType != null && p.CustomType.Code == type.Code);
+
+                var instrumentPersentOnAccountTarget = type.PortfolioPercent;
+                var instrumentPersentOnAccountDelta = type.PortfolioPercentDelta;
+                if (!instrumentPersentOnAccountTarget.HasValue || !instrumentPersentOnAccountTarget.HasValue)
+                {
+                    // Do not check if rule values are not specified
+                    continue;
+                }
+
+                decimal currentGroupTotalInPortfolio = instrumentsOfType.Sum(p => p.CurrentTotalInPortfolio);
+                var currentPercentOnAccount = currentGroupTotalInPortfolio / totalAccountBalance * 100;
+                string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
+                string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
+
+                if (currentPercentOnAccount > instrumentPersentOnAccountTarget + instrumentPersentOnAccountDelta)
+                {
+                    msg.Messages.Add(GetMessageToDecreaseInstrumentTypeInPortfolio(type, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                }
+
+                if (currentPercentOnAccount < instrumentPersentOnAccountTarget - instrumentPersentOnAccountDelta)
+                {
+                    msg.Messages.Add(GetMessageToIncreaseInstrumentTypeInPortfolio(type, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                }
+
+                messageGroups.Add(msg);
             }
 
-            var instrumentTypePersentOnAccountTarget = investmentInstrumentType.PortfolioPercent;
-            var instrumentTypePersentOnAccountDelta = investmentInstrumentType.PortfolioPercentDelta;
-            if (!instrumentTypePersentOnAccountDelta.HasValue || !instrumentTypePersentOnAccountDelta.HasValue)
+            return messageGroups;
+        }
+
+        /// <summary>
+        /// Checks investment instrument market rules
+        /// </summary>
+        private List<MessageGroup> CheckInvestmentInstrumentMarketRules(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
+        {
+            List<MessageGroup> messageGroups = new List<MessageGroup>();
+            if (instruments == null)
             {
-                // Do not check if rule values are not specified
-                return messages;
+                return messageGroups;
             }
 
-            MessageGroup mgCommon = new MessageGroup() { Name = Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_COMMON };
+            var allMarkets = _investmentInstrumentMarketRepository.GetAll().ToList();
+            foreach (var market in allMarkets)
+            {
+                MessageGroup msg = new MessageGroup()
+                {
+                    Name = market.Name
+                };
 
-            string currentPercentOnAccountPresentationString = Math.Round(currentInstrumentTypePercentOnAccount, 2).ToString();
-            string instrumentTypePersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentTypePersentOnAccountTarget, 2).ToString();
+                var instrumentsOnMarket = instruments.Where(p => p.CustomMarket != null && p.CustomMarket.Code == market.Code);
 
-            string instrumentName = instrumentTypeCode;
-            if (instrumentTypeCode == Constants.InstrumentType.INSTRUMENT_TYPE_CODE_STOCKS)
-            {
-                instrumentName = "акций";
-            }
-            else if (instrumentTypeCode == Constants.InstrumentType.INSTRUMENT_TYPE_CODE_BONDS)
-            {
-                instrumentName = "облигаций";
-            }
-            else if (instrumentTypeCode == Constants.InstrumentType.INSTRUMENT_TYPE_CODE_ETF)
-            {
-                instrumentName = "ETF";
-            }
-            else if (instrumentTypeCode == Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES)
-            {
-                instrumentName = "валюты";
-            }
+                var instrumentPersentOnAccountTarget = market.PortfolioPercent;
+                var instrumentPersentOnAccountDelta = market.PortfolioPercentDelta;
+                if (!instrumentPersentOnAccountTarget.HasValue || !instrumentPersentOnAccountTarget.HasValue)
+                {
+                    // Do not check if rule values are not specified
+                    continue;
+                }
 
-            if (currentInstrumentTypePercentOnAccount > instrumentTypePersentOnAccountTarget + instrumentTypePersentOnAccountDelta)
-            {
-                messages.Add(GetMessageToDecreaseInstrumentInPortfolio(instrumentName, currentPercentOnAccountPresentationString, instrumentTypePersentOnAccountTargetPresentationString));
-            }
+                decimal currentGroupTotalInPortfolio = instrumentsOnMarket.Sum(p => p.CurrentTotalInPortfolio);
+                var currentPercentOnAccount = currentGroupTotalInPortfolio / totalAccountBalance * 100;
+                string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
+                string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
 
-            if (currentInstrumentTypePercentOnAccount < instrumentTypePersentOnAccountTarget - instrumentTypePersentOnAccountDelta)
-            {
-                messages.Add(GetMessageToIncreaseInstrumentInPortfolio(instrumentName, currentPercentOnAccountPresentationString, instrumentTypePersentOnAccountTargetPresentationString));
+                if (currentPercentOnAccount > instrumentPersentOnAccountTarget + instrumentPersentOnAccountDelta)
+                {
+                    msg.Messages.Add(GetMessageToDecreaseMarketInPortfolio(market, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                }
+
+                if (currentPercentOnAccount < instrumentPersentOnAccountTarget - instrumentPersentOnAccountDelta)
+                {
+                    msg.Messages.Add(GetMessageToIncreaseMarketInPortfolio(market, currentPercentOnAccountPresentationString, instrumentPersentOnAccountTargetPresentationString));
+                }
+
+                messageGroups.Add(msg);
             }
 
-            return messages;
+            return messageGroups;
         }
 
         private Message GetMessageToIncreaseInstrumentInPortfolio(string code,
@@ -473,30 +559,80 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             };
         }
 
-        private Message GetMessageToIncreaseInstrumentInGroup(string code, string groupCode,
-            string currentPercentInGroupPresentationString,
-            string instrumentPersentInGroupTargetPresentationString)
+        private Message GetMessageToIncreaseInstrumentTypeInPortfolio(InvestmentInstrumentType investmentInstrumentType,
+            string currentPercentInPortfolioPresentationString,
+            string instrumentPersentInPortfolioTargetPresentationString)
         {
+            if (investmentInstrumentType == null)
+            {
+                return null;
+            }
+
             return new Message
             {
                 Type = MessageType.Warning,
-                Text = $"Доля {code} (<b>{currentPercentInGroupPresentationString}%</b>) ниже целевого значения для группы (<b>{instrumentPersentInGroupTargetPresentationString}%</b>). " +
-                            $"Рекомендуется увеличить долю {code} в группе {groupCode}"
+                Text = $"Доля '{investmentInstrumentType.Name}' (<b>{currentPercentInPortfolioPresentationString}%</b>) " +
+                       $"ниже целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
+                       $"Рекомендуется увеличить долю '{investmentInstrumentType.Name}' в портфеле"
             };
 
         }
 
-        private Message GetMessageToDecreaseInstrumentInGroup(string code, string groupTitle,
-            string currentPercentInGroupPresentationString,
-            string instrumentPersentInGroupTargetPresentationString)
+        private Message GetMessageToDecreaseInstrumentTypeInPortfolio(InvestmentInstrumentType investmentInstrumentType,
+            string currentPercentInPortfolioPresentationString,
+            string instrumentPersentInPortfolioTargetPresentationString)
         {
+            if (investmentInstrumentType == null)
+            {
+                return null;
+            }
+
             return new Message
             {
                 Type = MessageType.Warning,
-                Text = $"Доля {code} (<b>{currentPercentInGroupPresentationString}</b>%) выше целевого значения для группы (<b>{instrumentPersentInGroupTargetPresentationString}%</b>) для группы '{groupTitle}'. " +
-                            $"Рекомендуется снизить долю {code} в группе '{groupTitle}'"
+                Text = $"Доля '{investmentInstrumentType.Name}' (<b>{currentPercentInPortfolioPresentationString}%</b>) " +
+                       $"выше целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
+                       $"Рекомендуется снизить долю '{investmentInstrumentType.Name}' в портфеле"
             };
+
         }
 
+        private Message GetMessageToIncreaseMarketInPortfolio(InvestmentInstrumentMarket investmentInstrumentMarket,
+            string currentPercentInPortfolioPresentationString,
+            string instrumentPersentInPortfolioTargetPresentationString)
+        {
+            if (investmentInstrumentMarket == null)
+            {
+                return null;
+            }
+
+            return new Message
+            {
+                Type = MessageType.Warning,
+                Text = $"Доля '{investmentInstrumentMarket.Name}' (<b>{currentPercentInPortfolioPresentationString}%</b>) " +
+                       $"ниже целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
+                       $"Рекомендуется увеличить долю '{investmentInstrumentMarket.Name}' в портфеле"
+            };
+
+        }
+
+        private Message GetMessageToDecreaseMarketInPortfolio(InvestmentInstrumentMarket investmentInstrumentMarket,
+            string currentPercentInPortfolioPresentationString,
+            string instrumentPersentInPortfolioTargetPresentationString)
+        {
+            if (investmentInstrumentMarket == null)
+            {
+                return null;
+            }
+
+            return new Message
+            {
+                Type = MessageType.Warning,
+                Text = $"Доля '{investmentInstrumentMarket.Name}' (<b>{currentPercentInPortfolioPresentationString}%</b>) " +
+                       $"выше целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
+                       $"Рекомендуется снизить долю '{investmentInstrumentMarket.Name}' в портфеле"
+            };
+
+        }
     }
 }

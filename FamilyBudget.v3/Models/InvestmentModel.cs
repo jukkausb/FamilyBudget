@@ -23,15 +23,17 @@ namespace FamilyBudget.v3.Models
         public BrokerAccountType Type { get; set; }
         public string Name { get; set; }
         public string Currency { get; set; }
-        public List<TinkoffPortfolioGroup> Groups { get; set; }
-        public List<TinkoffPortfolioGroup> MarketGroups { get; set; }
+        public List<TinkoffPortfolioTableGroup> TableGroups { get; set; }
+        public List<PortfolioDiagramGroupItem> TypeGroupItems { get; set; }
+        public List<PortfolioDiagramGroupItem> MarketGroupItems { get; set; }
         public MoneyWithDeltaModel Totals { get; set; }
         public decimal TotalInvested { get; set; }
         public InvestmentAccount()
         {
             MessageGroups = new List<MessageGroup>();
-            Groups = new List<TinkoffPortfolioGroup>();
-            MarketGroups = new List<TinkoffPortfolioGroup>();
+            TableGroups = new List<TinkoffPortfolioTableGroup>();
+            TypeGroupItems = new List<PortfolioDiagramGroupItem>();
+            MarketGroupItems = new List<PortfolioDiagramGroupItem>();
         }
     }
 }

@@ -72,9 +72,36 @@
           <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" />
           <Property Name="PortfolioPercent" Type="int" />
           <Property Name="PortfolioPercentDelta" Type="int" />
-          <Property Name="Market" Type="nvarchar" MaxLength="30" />
           <Property Name="ExternalAvatarIsinOverride" Type="nvarchar" MaxLength="30" />
           <Property Name="ExternalPageTickerOverride" Type="nvarchar" MaxLength="30" />
+          <Property Name="TypeID" Type="int" Nullable="false" />
+          <Property Name="MarketID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InvestmentInstrumentMarket">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DiagramBackgroundColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="DiagramBackgroundHoverColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="PortfolioPercent" Type="int" />
+          <Property Name="PortfolioPercentDelta" Type="int" />
+        </EntityType>
+        <EntityType Name="InvestmentInstrumentType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DiagramBackgroundColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="DiagramBackgroundHoverColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="DiagramHoverBorderColor" Type="nvarchar" MaxLength="30" />
+          <Property Name="PortfolioPercent" Type="int" />
+          <Property Name="PortfolioPercentDelta" Type="int" />
         </EntityType>
         <Association Name="FK_Account_Currency">
           <End Role="Currency" Type="Self.Currency" Multiplicity="1" />
@@ -136,6 +163,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrument1">
+          <End Role="InvestmentInstrument" Type="Self.InvestmentInstrument" Multiplicity="1" />
+          <End Role="InvestmentInstrument1" Type="Self.InvestmentInstrument" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InvestmentInstrument">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentInstrument1">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentType">
+          <End Role="InvestmentInstrumentType" Type="Self.InvestmentInstrumentType" Multiplicity="1" />
+          <End Role="InvestmentInstrument" Type="Self.InvestmentInstrument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvestmentInstrumentType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentInstrument">
+              <PropertyRef Name="TypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="FamilyBudgetModelStoreContainer">
           <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Currency" EntityType="Self.Currency" Schema="dbo" store:Type="Tables" />
@@ -144,6 +195,8 @@
           <EntitySet Name="Income" EntityType="Self.Income" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IncomeCategory" EntityType="Self.IncomeCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InvestmentInstrument" EntityType="Self.InvestmentInstrument" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvestmentInstrumentMarket" EntityType="Self.InvestmentInstrumentMarket" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InvestmentInstrumentType" EntityType="Self.InvestmentInstrumentType" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Account_Currency" Association="Self.FK_Account_Currency">
             <End Role="Currency" EntitySet="Currency" />
             <End Role="Account" EntitySet="Account" />
@@ -163,6 +216,14 @@
           <AssociationSet Name="FK_Income_IncomeCategory" Association="Self.FK_Income_IncomeCategory">
             <End Role="IncomeCategory" EntitySet="IncomeCategory" />
             <End Role="Income" EntitySet="Income" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrument1" Association="Self.FK_InvestmentInstrument_InvestmentInstrument1">
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
+            <End Role="InvestmentInstrument1" EntitySet="InvestmentInstrument" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType" Association="Self.FK_InvestmentInstrument_InvestmentInstrumentType">
+            <End Role="InvestmentInstrumentType" EntitySet="InvestmentInstrumentType" />
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -323,6 +384,20 @@
             <End Role="Income" EntitySet="Income" />
           </AssociationSet>
           <EntitySet Name="InvestmentInstrument" EntityType="FamilyBudgetModel.InvestmentInstrument" />
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrument" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrument">
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
+            <End Role="InvestmentInstrument1" EntitySet="InvestmentInstrument" />
+          </AssociationSet>
+          <EntitySet Name="InvestmentInstrumentMarket" EntityType="FamilyBudgetModel.InvestmentInstrumentMarket" />
+          <EntitySet Name="InvestmentInstrumentType" EntityType="FamilyBudgetModel.InvestmentInstrumentType" />
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType">
+            <End Role="InvestmentInstrumentMarket" EntitySet="InvestmentInstrumentMarket" />
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType1" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType1">
+            <End Role="InvestmentInstrumentType" EntitySet="InvestmentInstrumentType" />
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="InvestmentInstrument">
           <Key>
@@ -335,10 +410,75 @@
           <Property Name="PortfolioPercent" Type="Int32" />
           <Property Name="PortfolioPercentDelta" Type="Int32" />
           <Property Name="Code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="Market" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ExternalAvatarIsinOverride" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ExternalPageTickerOverride" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TypeID" Type="Int32" Nullable="false" />
+          <Property Name="MarketID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InvestmentInstrumentMarket" Relationship="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType" FromRole="InvestmentInstrument" ToRole="InvestmentInstrumentMarket" />
+          <NavigationProperty Name="InvestmentInstrumentType" Relationship="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType1" FromRole="InvestmentInstrument" ToRole="InvestmentInstrumentType" />
         </EntityType>
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrument">
+          <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InvestmentInstrument">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentInstrument1">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InvestmentInstrumentMarket">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundHoverColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramHoverBorderColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PortfolioPercent" Type="Int32" />
+          <Property Name="PortfolioPercentDelta" Type="Int32" />
+        </EntityType>
+        <EntityType Name="InvestmentInstrumentType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramBackgroundHoverColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DiagramHoverBorderColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PortfolioPercent" Type="Int32" />
+          <Property Name="PortfolioPercentDelta" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentType">
+          <End Type="FamilyBudgetModel.InvestmentInstrumentMarket" Role="InvestmentInstrumentMarket" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvestmentInstrumentMarket">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentInstrument">
+              <PropertyRef Name="MarketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentType1">
+          <End Type="FamilyBudgetModel.InvestmentInstrumentType" Role="InvestmentInstrumentType" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvestmentInstrumentType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="InvestmentInstrument">
+              <PropertyRef Name="TypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -410,15 +550,44 @@
           <EntitySetMapping Name="InvestmentInstrument">
             <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentInstrument">
               <MappingFragment StoreEntitySet="InvestmentInstrument">
+                <ScalarProperty Name="MarketID" ColumnName="MarketID" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
                 <ScalarProperty Name="ExternalPageTickerOverride" ColumnName="ExternalPageTickerOverride" />
                 <ScalarProperty Name="ExternalAvatarIsinOverride" ColumnName="ExternalAvatarIsinOverride" />
-                <ScalarProperty Name="Market" ColumnName="Market" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
                 <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
                 <ScalarProperty Name="DiagramHoverBorderColor" ColumnName="DiagramHoverBorderColor" />
                 <ScalarProperty Name="DiagramBackgroundHoverColor" ColumnName="DiagramBackgroundHoverColor" />
                 <ScalarProperty Name="DiagramBackgroundColor" ColumnName="DiagramBackgroundColor" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvestmentInstrumentMarket">
+            <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentInstrumentMarket">
+              <MappingFragment StoreEntitySet="InvestmentInstrumentMarket">
+                <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
+                <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
+                <ScalarProperty Name="DiagramHoverBorderColor" ColumnName="DiagramHoverBorderColor" />
+                <ScalarProperty Name="DiagramBackgroundHoverColor" ColumnName="DiagramBackgroundHoverColor" />
+                <ScalarProperty Name="DiagramBackgroundColor" ColumnName="DiagramBackgroundColor" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InvestmentInstrumentType">
+            <EntityTypeMapping TypeName="FamilyBudgetModel.InvestmentInstrumentType">
+              <MappingFragment StoreEntitySet="InvestmentInstrumentType">
+                <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
+                <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
+                <ScalarProperty Name="DiagramHoverBorderColor" ColumnName="DiagramHoverBorderColor" />
+                <ScalarProperty Name="DiagramBackgroundHoverColor" ColumnName="DiagramBackgroundHoverColor" />
+                <ScalarProperty Name="DiagramBackgroundColor" ColumnName="DiagramBackgroundColor" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

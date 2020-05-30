@@ -157,21 +157,21 @@
                             @RenderWarningModalTrigger(modalId, false)
                             @RenderModal(modalId, "Информация (" + @account.Name + ")", true, RenderMessageGroups(account.MessageGroups))
                         }
-                        @if (account.Groups.Any())
+                        @if (account.TypeGroupItems.Any())
                         {
                             string parentId = "accordionInstrumentGroups_" + account.Id;
-                            string modalId = "modalInstrumentGroupChart_" + parentId;
-                            string canvasId = "modalInstrumentChartGroupCanvas_" + parentId;
+                            string modalId = "modalTypeGroupChart_" + parentId;
+                            string canvasId = "modalTypeChartGroupCanvas_" + parentId;
                             @RenderPieChartModalTrigger(modalId, true);
-                            @RenderModal(modalId, "Пропорции инструментов (по типам)", false, RenderPositionsPieChart(canvasId, modalId, account.Groups.Cast<IPieDiagramDataItem>()));
+                            @RenderModal(modalId, "Пропорции инструментов (по типам)", false, RenderPositionsPieChart(canvasId, modalId, account.TypeGroupItems.Cast<IPieDiagramDataItem>()));
                         }
-                        @if (account.MarketGroups.Any())
+                        @if (account.MarketGroupItems.Any())
                         {
                             string parentId = "accordionInstrumentGroups_" + account.Id;
                             string modalId = "modalMarketGroupChart_" + parentId;
                             string canvasId = "modalMarketChartGroupCanvas_" + parentId;
                             @RenderPieChartModalTrigger(modalId, true);
-                            @RenderModal(modalId, "Пропорции инструментов (по рынкам)", false, RenderPositionsPieChart(canvasId, modalId, account.MarketGroups.Cast<IPieDiagramDataItem>()));
+                            @RenderModal(modalId, "Пропорции инструментов (по рынкам)", false, RenderPositionsPieChart(canvasId, modalId, account.MarketGroupItems.Cast<IPieDiagramDataItem>()));
                         }
                     </div>
                 </div>
@@ -219,7 +219,7 @@
                 <div class="input-group-text"><i class="fa fa-chart-pie"></i></div>
             </div>
         }
-        @helper RenderGroup(string parentId, string id, string caption, string modalCaption, TinkoffPortfolioGroup data)
+        @helper RenderGroup(string parentId, string id, string caption, string modalCaption, TinkoffPortfolioTableGroup data)
         {
             if (data.Positions != null)
             {
@@ -315,7 +315,7 @@
                     <div class="col-lg-6">
                         @RenderAccountHeader(account)
                         <div id="accordionInstrumentGroups_@account.Id">
-                            @foreach (var group in account.Groups)
+                            @foreach (var group in account.TableGroups)
                             {
                                 @RenderGroup("accordionInstrumentGroups_" + @account.Id, @group.Code, @group.Name, @account.Name + " - " + @group.Name, group)
                             }

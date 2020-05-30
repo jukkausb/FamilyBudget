@@ -32,5 +32,7 @@ namespace FamilyBudget.v3.App_DataModel
         public virtual DbSet<Income> Income { get; set; }
         public virtual DbSet<IncomeCategory> IncomeCategory { get; set; }
         public virtual DbSet<InvestmentInstrument> InvestmentInstrument { get; set; }
+        public virtual DbSet<InvestmentInstrumentMarket> InvestmentInstrumentMarket { get; set; }
+        public virtual DbSet<InvestmentInstrumentType> InvestmentInstrumentType { get; set; }
     }
 }

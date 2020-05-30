@@ -41,6 +41,11 @@ namespace FamilyBudget.v3.App_Helpers
             return d.ToString(format) + " " + ToCurrencySymbol(currency);
         }
 
+        public static decimal Round(this decimal d)
+        {
+            return Math.Round(d, 2);
+        }
+
         private static int GetDecimals(decimal d, int i = 2)
         {
             decimal multiplied = (decimal)((double)d * Math.Pow(10, i));

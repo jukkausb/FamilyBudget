@@ -10,18 +10,18 @@ namespace FamilyBudget.v3.App_Helpers
 {
     public static class DiagramHelper
     {
-        public static void ApplyPieDiagramColors(IPieDiagramDataItem pieDiagramDataItem, InvestmentInstrument investmentInstrument)
+        public static void ApplyPieDiagramColors(IPieDiagramDataItem pieDiagramDataItem, IPieDiagramDataSourceItem pieDiagramDataSourceItem)
         {
             if (pieDiagramDataItem == null)
             {
                 return;
             }
 
-            if (investmentInstrument != null)
+            if (pieDiagramDataSourceItem != null)
             {
-                pieDiagramDataItem.DiagramBackgroundColor = investmentInstrument.DiagramBackgroundColor;
-                pieDiagramDataItem.DiagramBackgroundHoverColor = investmentInstrument.DiagramBackgroundHoverColor;
-                pieDiagramDataItem.DiagramHoverBorderColor = investmentInstrument.DiagramHoverBorderColor;
+                pieDiagramDataItem.DiagramBackgroundColor = pieDiagramDataSourceItem.DiagramBackgroundColor;
+                pieDiagramDataItem.DiagramBackgroundHoverColor = pieDiagramDataSourceItem.DiagramBackgroundHoverColor;
+                pieDiagramDataItem.DiagramHoverBorderColor = pieDiagramDataSourceItem.DiagramHoverBorderColor;
             }
             else
             {

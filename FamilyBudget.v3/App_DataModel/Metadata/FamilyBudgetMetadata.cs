@@ -223,4 +223,28 @@ namespace FamilyBudget.v3.App_DataModel
     }
 
     #endregion
+
+    #region Investment instrument
+
+    public partial class InvestmentInstrument : IPieDiagramDataSourceItem
+    {
+    }
+
+    #endregion
+
+    #region Investment instrument market
+
+    public partial class InvestmentInstrumentMarket : IPieDiagramDataSourceItem
+    { 
+    }
+
+    #endregion
+
+    #region Investment instrument type
+
+    public partial class InvestmentInstrumentType : IPieDiagramDataSourceItem
+    {
+    }
+
+    #endregion
 }

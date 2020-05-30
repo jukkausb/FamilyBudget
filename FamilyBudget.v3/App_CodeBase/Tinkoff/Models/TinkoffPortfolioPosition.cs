@@ -1,4 +1,5 @@
-﻿using FamilyBudget.v3.App_Helpers;
+﻿using FamilyBudget.v3.App_DataModel;
+using FamilyBudget.v3.App_Helpers;
 using System;
 using Tinkoff.Trading.OpenApi.Models;
 
@@ -10,7 +11,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         public string AvatarImageLink { get; set; }
         public string TickerPageLink { get; set; }
         public InstrumentType Type { get; set; }
-        public string Market { get; set; }
         /// <summary>
         /// Position without price change (typically brocker account currency, RUB)
         /// </summary>
@@ -57,5 +57,21 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         public string DiagramBackgroundColor { get; set; }
         public string DiagramBackgroundHoverColor { get; set; }
         public string DiagramHoverBorderColor { get; set; }
+
+        #region Custom attributes
+
+        /// <summary>
+        /// Custom attribute - Market
+        /// </summary>
+        public InvestmentInstrumentMarket CustomMarket { get; set; }
+
+        /// <summary>
+        /// Custom attribute - Type
+        /// This may be different from Tinkoff instrument type.
+        /// It is used for better presentation on diagrams
+        /// </summary>
+        public InvestmentInstrumentType CustomType { get; set; }
+
+        #endregion
     }
 }

@@ -16,7 +16,7 @@
 
         public static class InstrumentMarket
         {
-            public const string INSTRUMENT_MARKET_CODE_PREFIX = "MARKET_";
+            public const string INSTRUMENT_MARKET_CODE_CASH = "CASH";
         }
 
         public static class InstrumentType
@@ -32,6 +32,7 @@
             public const string INSTRUMENT_TYPE_TITLE_BONDS = "Облигации";
 
             public const string INSTRUMENT_TYPE_TITLE_COMMON = "Общее";
+            public const string INSTRUMENT_TYPE_TITLE_BY_INSTRUMENT_DETAILS = "По инструментам";
         }
 
         public static class InstrumentDiagram

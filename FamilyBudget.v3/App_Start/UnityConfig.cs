@@ -48,6 +48,8 @@ namespace FamilyBudget.v3
             container.RegisterType(typeof(IIncomeCategoryRepository), typeof(IncomeCategoryRepository));
             container.RegisterType(typeof(IIncomeRepository), typeof(IncomeRepository));
             container.RegisterType(typeof(IInvestmentInstrumentRepository), typeof(InvestmentInstrumentRepository));
+            container.RegisterType(typeof(IInvestmentInstrumentTypeRepository), typeof(InvestmentInstrumentTypeRepository));
+            container.RegisterType(typeof(IInvestmentInstrumentMarketRepository), typeof(InvestmentInstrumentMarketRepository));
 
             container.RegisterType(typeof(IIncomeSuggestionService), typeof(IncomeSuggestionService));
             container.RegisterType(typeof(IExpenditureSuggestionService), typeof(ExpenditureSuggestionService));
