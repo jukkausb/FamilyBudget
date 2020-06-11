@@ -1,0 +1,67 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Areas.Administration.Models.InvestmentInstrumentMarketModel
+
+@{
+    ViewBag.Title = "Новый рынок интсрументов";
+}
+@Scripts.Render("~/bundles/jqueryvalglobalize")
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/bootstrap-colorpicker-js")
+@Styles.Render("~/bundles/bootstrap-colorpicker-css")
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="card">
+            <div class="card-header text-center py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Новый рынок инструментов</h4>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                <div class="card-body">
+                    @Html.AntiForgeryToken()
+                    @Html.Raw(Html.FamilyBudgetValidationSummary())
+                    <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                            @Html.EditorFor(model => model.Object.Code, "_TextValue")
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.EditorFor(model => model.Object.Name, "_TextValue")
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            @Html.EditorFor(model => model.Object.DiagramBackgroundColor, "_ColorPicker")
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            @Html.EditorFor(model => model.Object.DiagramBackgroundHoverColor, "_ColorPicker")
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            @Html.EditorFor(model => model.Object.DiagramHoverBorderColor, "_ColorPicker")
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.EditorFor(model => model.Object.PortfolioPercent, "_IntValue")
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            @Html.EditorFor(model => model.Object.PortfolioPercentDelta, "_IntValue")
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="row justify-content-between">
+                                <div class="col-6">
+                                    @{
+                                        string queryParams = "/Administration/InvestmentInstrumentMarket" + QueryStringParser.DecodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+                                        <a class="btn btn-primary" href="@queryParams">Назад к списку рынков инструментов</a>
+                                    }
+                                </div>
+                                <div class="col-6 text-right">
+                                    <div>
+                                        <button name="submit" type="submit" class="btn btn-success" value="1">Сохранить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

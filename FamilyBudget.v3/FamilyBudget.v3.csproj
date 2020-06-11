@@ -298,6 +298,10 @@
     <Content Include="Scripts\angular-scenario.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
+    <Content Include="Content\bootstrap-colorpicker\bootstrap-colorpicker.css" />
+    <Content Include="Content\bootstrap-colorpicker\bootstrap-colorpicker.min.css" />
+    <Content Include="Scripts\bootstrap-colorpicker\bootstrap-colorpicker.js" />
+    <Content Include="Scripts\bootstrap-colorpicker\bootstrap-colorpicker.min.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -410,6 +414,14 @@
       <DependentUpon>FamilyBudgetModel.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Administration\Views\InvestmentConfig\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Create.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Delete.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Edit.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Create.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Delete.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Edit.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Index.cshtml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Scripts\cldr\main\ru\ca-gregorian.json" />
     <Content Include="Scripts\cldr\main\ru\numbers.json" />
@@ -440,6 +452,10 @@
     <Content Include="Scripts\cldr\supplemental\unitPreferenceData.json" />
     <Content Include="Scripts\cldr\supplemental\weekData.json" />
     <Content Include="Scripts\cldr\supplemental\windowsZones.json" />
+    <Content Include="Content\bootstrap-colorpicker\bootstrap-colorpicker.css.map" />
+    <Content Include="Content\bootstrap-colorpicker\bootstrap-colorpicker.min.css.map" />
+    <Content Include="Scripts\bootstrap-colorpicker\bootstrap-colorpicker.js.map" />
+    <Content Include="Scripts\bootstrap-colorpicker\bootstrap-colorpicker.min.js.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\globalize.js" />
     <Content Include="Scripts\globalize\currency.js" />
@@ -2086,7 +2102,6 @@
     <Content Include="Views\Income\Edit.cshtml" />
     <Content Include="Views\Income\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\_Suggestions.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Summa.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\Warning.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -2263,6 +2278,10 @@
     <Content Include="Views\Shared\DisplayTemplates\_Delta.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\_DeltaArrow.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\_MoneyWithDelta.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\_ColorPicker.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\_IntValue.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\_TextValue.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\_TextValue.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2544,10 +2563,16 @@
     <Compile Include="Areas\Administration\Controllers\CurrencyController.cs" />
     <Compile Include="Areas\Administration\Controllers\ExpenditureCategoryController.cs" />
     <Compile Include="Areas\Administration\Controllers\IncomeCategoryController.cs" />
+    <Compile Include="Areas\Administration\Controllers\InvestmentInstrumentTypeController.cs" />
+    <Compile Include="Areas\Administration\Controllers\InvestmentInstrumentMarketController.cs" />
     <Compile Include="Areas\Administration\Models\AccountListModel.cs" />
     <Compile Include="Areas\Administration\Models\AccountModel.cs" />
     <Compile Include="Areas\Administration\Models\CurrencyListModel.cs" />
     <Compile Include="Areas\Administration\Models\CurrencyModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentTypeListModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentTypeModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentMarketModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentMarketListModel.cs" />
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryListModel.cs" />
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryListModel.cs" />

@@ -1,0 +1,18 @@
+﻿@model int?
+
+@{
+    var inputId = ViewData.ModelMetadata.PropertyName + "Input";
+}
+
+@Html.LabelFor(x => x)
+@Html.TextBoxFor(x => x, new { @class = "form-control", placeholder = "0", pattern = @"^\d$", id = @inputId })
+@Html.ValidationMessageFor(x => x)
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var intField = $('#@inputId');
+        intField.on('keypress', function (e) {
+            return isDecimalInput(this, event);
+        })
+    });
+</script>

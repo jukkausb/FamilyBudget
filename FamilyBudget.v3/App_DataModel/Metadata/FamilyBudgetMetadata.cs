@@ -234,13 +234,60 @@ namespace FamilyBudget.v3.App_DataModel
 
     #region Investment instrument market
 
+    public class InvestmentInstrumentMarketMetadata
+    {
+        [Key]
+        public int ID { get; set; }
+        [Required]
+        [Display(Name = "Код")]
+        public string Code { get; set; }
+        [Required]
+        [Display(Name = "Наименование")]
+        public string Name { get; set; }
+        [Display(Name = "Цвет фона диаграммы")]
+        public string DiagramBackgroundColor { get; set; }
+        [Display(Name = "Цвет фона диаграммы в фокусе")]
+        public string DiagramBackgroundHoverColor { get; set; }
+        [Display(Name = "Цвет границ диаграммы в фокусе")]
+        public string DiagramHoverBorderColor { get; set; }
+        [Display(Name = "Целевой процент в портфеле")]
+        public Nullable<int> PortfolioPercent { get; set; }
+        [Display(Name = "Отклонение от целевого процента в портфеле")]
+        public Nullable<int> PortfolioPercentDelta { get; set; }
+    }
+
+    [MetadataType(typeof(InvestmentInstrumentMarketMetadata))]
     public partial class InvestmentInstrumentMarket : IPieDiagramDataSourceItem
-    { 
+    {
     }
 
     #endregion
 
     #region Investment instrument type
+
+    public class InvestmentInstrumentTypeMetadata
+    {
+        [Key]
+        public int ID { get; set; }
+        [Required]
+        [Display(Name = "Код")]
+        public string Code { get; set; }
+        [Required]
+        [Display(Name = "Наименование")]
+        public string Name { get; set; }
+        [Display(Name = "Цвет фона диаграммы")]
+        public string DiagramBackgroundColor { get; set; }
+        [Display(Name = "Цвет фона диаграммы в фокусе")]
+        public string DiagramBackgroundHoverColor { get; set; }
+        [Display(Name = "Цвет границ диаграммы в фокусе")]
+        public string DiagramHoverBorderColor { get; set; }
+        [Display(Name = "Целевой процент в портфеле")]
+        public Nullable<int> PortfolioPercent { get; set; }
+        [Display(Name = "Отклонение от целевого процента в портфеле")]
+        public Nullable<int> PortfolioPercentDelta { get; set; }
+    }
+
+    [MetadataType(typeof(InvestmentInstrumentTypeMetadata))]
 
     public partial class InvestmentInstrumentType : IPieDiagramDataSourceItem
     {

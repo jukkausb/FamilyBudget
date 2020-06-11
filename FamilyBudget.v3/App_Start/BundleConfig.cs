@@ -43,6 +43,10 @@ namespace FamilyBudget.v3
                 "~/Scripts/tempusdominus-bootstrap-4.min.js"
                 ));
 
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-colorpicker-js").Include(
+               "~/Scripts/bootstrap-colorpicker/bootstrap-colorpicker.min.js"
+               ));
+
             //// Custom JS scripts
 
             bundles.Add(new ScriptBundle("~/bundles/initialize").Include(
@@ -88,6 +92,10 @@ namespace FamilyBudget.v3
                 "~/Content/plugins/dataTables/dataTables.bootstrap*",
                 "~/Content/ladda*",
                 "~/Content/tempusdominus-bootstrap-4.min.css"
+                ));
+
+            bundles.Add(new StyleBundle("~/bundles/bootstrap-colorpicker-css").Include(
+                "~/Content/bootstrap-colorpicker/bootstrap-colorpicker.min.css"
                 ));
         }
     }

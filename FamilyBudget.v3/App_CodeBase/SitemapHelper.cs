@@ -26,7 +26,9 @@ namespace FamilyBudget.v3.App_CodeBase
                         new SitemapEntry { Id = "pageSettingsAccount", Url = "/Administration/Account", Title = "Счета" },
                         new SitemapEntry { Id = "pageSettingsCurrency", Url = "/Administration/Currency", Title = "Валюты" },
                         new SitemapEntry { Id = "pageSettingsExpenditureCategory", Url = "/Administration/ExpenditureCategory", Title = "Категории затрат" },
-                        new SitemapEntry { Id = "pageSettingsIncomeCategory", Url = "/Administration/IncomeCategory", Title = "Категории доходов" }
+                        new SitemapEntry { Id = "pageSettingsIncomeCategory", Url = "/Administration/IncomeCategory", Title = "Категории доходов" },
+                        new SitemapEntry { Id = "pageSettingsInvestmentInstrumentMarket", Url = "/Administration/InvestmentInstrumentMarket", Title = "Рынки инструментов" },
+                        new SitemapEntry { Id = "pageSettingsInvestmentInstrumentType", Url = "/Administration/InvestmentInstrumentType", Title = "Типы инструментов" }
                     }
                 },
 

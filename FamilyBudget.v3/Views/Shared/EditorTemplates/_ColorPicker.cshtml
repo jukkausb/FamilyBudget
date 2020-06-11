@@ -1,0 +1,40 @@
+﻿@model string
+
+@{
+    var inputId = ViewData.ModelMetadata.PropertyName + "Input";
+    var sampleDivId = ViewData.ModelMetadata.PropertyName + "Sample";
+    var defaultColor = !string.IsNullOrEmpty(Model) ? Model.Trim().ToUpper() : "";
+}
+
+@Html.LabelFor(x => x)
+<div class="input-group">
+
+    @Html.TextBoxFor(x => x, new { @class = "form-control", id = @inputId, data_color = @defaultColor })
+    <div class="input-group-append">
+        <div class="input-group-text" style="width: 100px;" id="@sampleDivId">
+        </div>
+    </div>
+</div>
+@Html.ValidationMessageFor(x => x)
+
+<script type="text/javascript">
+    $(function () {
+
+        initializeColorPicker('#@inputId', '#@sampleDivId');
+
+        function initializeColorPicker(inputId, sampleDivId) {
+            var diagramBackgroundColorInput = $(inputId);
+            var diagramBackgroundColorSample = $(sampleDivId);
+            diagramBackgroundColorInput.colorpicker();
+
+            var defaultColor = '@defaultColor'.toUpperCase();
+            if (defaultColor) {
+                diagramBackgroundColorSample.css('background-color', '@Model'.toUpperCase());
+            }
+
+            diagramBackgroundColorInput.on('colorpickerChange', function (event) {
+                diagramBackgroundColorSample.css('background-color', event.color.toString());
+            });
+        }
+    });
+</script>

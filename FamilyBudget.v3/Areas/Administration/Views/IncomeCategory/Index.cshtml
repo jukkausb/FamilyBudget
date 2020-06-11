@@ -28,10 +28,9 @@
                                     columns: grid.Columns(
                                         grid.Column("Name", "Категория", item => Html.Raw("<span class=\"d-none\">Категория</span>" + item.Name)),
                                         grid.Column("Description", "Описание", item => Html.Raw("<span class=\"d-none\">Описание</span>" + item.Description)),
-                                        grid.Column(style: "webgrid-actionColumn", format: @<div>
-                                                <a href="@Url.Action("Edit", "IncomeCategory", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-info btn-circle mr-2"><i class="fa fa-list"></i></a>
-                                                <a href="@Url.Action("Delete", "IncomeCategory", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-danger btn-circle"><i class="fa fa-trash-o"></i></a>
-                                            </div>)));
+                                        grid.Column(style: "webgrid-editColumn", format: @<a href="@Url.Action("Edit", "IncomeCategory", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-info btn-circle"><i class="far fa-edit"></i></a>),
+                                        grid.Column(style: "webgrid-deleteColumn", format: @<a href="@Url.Action("Delete", "IncomeCategory", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-danger btn-circle"><i class="far fa-trash-alt"></i></a>)
+));
                             }
                         </div>
                     </div>
