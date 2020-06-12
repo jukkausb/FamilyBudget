@@ -18,7 +18,7 @@ namespace FamilyBudget.v3.App_CodeBase
                 new SitemapEntry { Id = "pageExpenditure", Url = "/Expenditure?sort=Date&sortdir=DESC", Title = "Расходы", IconCssClass = "fa-ruble-sign" },
                 new SitemapEntry { IsDivider = true },
                 new SitemapEntry { Id = "pageInvestment", Url = "/Investment", Title = "Инвестиции", IconCssClass = "fa-dollar-sign" },
-                new SitemapEntry { Id = "pageInvestmentConfig", Url = "/Administration/InvestmentConfig", Title = "Конфегурация портфеля", IconCssClass = "fa-cog" },
+                new SitemapEntry { Id = "pageInvestmentInstrument", Url = "/Administration/InvestmentInstrument", Title = "Конфегурация портфеля", IconCssClass = "fa-cog" },
                 new SitemapEntry { IsDivider = true },
                 new SitemapEntry { Id = "pageSettings", Title = "Настройка", IconCssClass = "fa-wrench",
                     Children = new List<SitemapEntry>

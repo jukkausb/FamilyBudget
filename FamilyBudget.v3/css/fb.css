@@ -83,8 +83,9 @@ input[type="checkbox"].input-validation-error {
 }
 
 .grid-color-sample {
-    width: 50px;
-    height: 30px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%
 }
 
 .cursor-pointer {

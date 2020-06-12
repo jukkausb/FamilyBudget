@@ -5,23 +5,22 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="549b3fd04b864f64ba25ce378dd45031" Name="Diagram1">
-        <EntityTypeShape EntityType="FamilyBudgetModel.Account" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.Currency" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.Expenditure" Width="1.5" PointX="5.25" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.ExpenditureCategory" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.Income" Width="1.5" PointX="8.25" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.IncomeCategory" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_Account_Currency" ManuallyRouted="false" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_Expenditure_Account" ManuallyRouted="false" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_Income_Account" ManuallyRouted="false" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_Expenditure_ExpenditureCategory" ManuallyRouted="false" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_Income_IncomeCategory" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrument" Width="2.625" PointX="0.75" PointY="7.25" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrument" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrumentMarket" Width="2.625" PointX="4.375" PointY="9.125" />
-        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrumentType" Width="2.625" PointX="4.375" PointY="6.375" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.Account" Width="2.875" PointX="3" PointY="3.375" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.Currency" Width="2.875" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.Expenditure" Width="2.875" PointX="5.25" PointY="3.375" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.ExpenditureCategory" Width="2.875" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.Income" Width="2.875" PointX="8.25" PointY="3.375" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.IncomeCategory" Width="2.875" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrument" Width="2.875" PointX="4.5" PointY="9.5" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrumentMarket" Width="2.875" PointX="0.75" PointY="12" />
+        <EntityTypeShape EntityType="FamilyBudgetModel.InvestmentInstrumentType" Width="2.875" PointX="0.75" PointY="8" />
+        <AssociationConnector Association="FamilyBudgetModel.FK_Account_Currency" />
+        <AssociationConnector Association="FamilyBudgetModel.FK_Expenditure_Account" />
+        <AssociationConnector Association="FamilyBudgetModel.FK_Income_Account" />
+        <AssociationConnector Association="FamilyBudgetModel.FK_Expenditure_ExpenditureCategory" />
+        <AssociationConnector Association="FamilyBudgetModel.FK_Income_IncomeCategory" />
+        <AssociationConnector Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentMarket" />
         <AssociationConnector Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType" />
-        <AssociationConnector Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

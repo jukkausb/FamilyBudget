@@ -413,7 +413,7 @@
     <Content Include="App_DataModel\FamilyBudgetModel.edmx.diagram">
       <DependentUpon>FamilyBudgetModel.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Administration\Views\InvestmentConfig\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrument\Index.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Create.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Delete.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrumentMarket\Edit.cshtml" />
@@ -422,6 +422,9 @@
     <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Delete.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Edit.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrumentType\Index.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrument\Create.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrument\Edit.cshtml" />
+    <Content Include="Areas\Administration\Views\InvestmentInstrument\Delete.cshtml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Scripts\cldr\main\ru\ca-gregorian.json" />
     <Content Include="Scripts\cldr\main\ru\numbers.json" />
@@ -2559,7 +2562,7 @@
     <Compile Include="App_Utils\Logger.cs" />
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
     <Compile Include="Areas\Administration\Controllers\AccountController.cs" />
-    <Compile Include="Areas\Administration\Controllers\InvestmentConfigController.cs" />
+    <Compile Include="Areas\Administration\Controllers\InvestmentInstrumentController.cs" />
     <Compile Include="Areas\Administration\Controllers\CurrencyController.cs" />
     <Compile Include="Areas\Administration\Controllers\ExpenditureCategoryController.cs" />
     <Compile Include="Areas\Administration\Controllers\IncomeCategoryController.cs" />
@@ -2569,6 +2572,8 @@
     <Compile Include="Areas\Administration\Models\AccountModel.cs" />
     <Compile Include="Areas\Administration\Models\CurrencyListModel.cs" />
     <Compile Include="Areas\Administration\Models\CurrencyModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentInfoModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentModel.cs" />
     <Compile Include="Areas\Administration\Models\InvestmentInstrumentTypeListModel.cs" />
     <Compile Include="Areas\Administration\Models\InvestmentInstrumentTypeModel.cs" />
     <Compile Include="Areas\Administration\Models\InvestmentInstrumentMarketModel.cs" />
@@ -2577,7 +2582,7 @@
     <Compile Include="Areas\Administration\Models\ExpenditureCategoryModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryListModel.cs" />
     <Compile Include="Areas\Administration\Models\IncomeCategoryModel.cs" />
-    <Compile Include="Areas\Administration\Models\InvestmentConfigModel.cs" />
+    <Compile Include="Areas\Administration\Models\InvestmentInstrumentListModel.cs" />
     <Compile Include="CallHandlers\LoggingCallHandler.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ChartsController.cs" />

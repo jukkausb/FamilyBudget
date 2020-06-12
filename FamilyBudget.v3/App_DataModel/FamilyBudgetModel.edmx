@@ -75,7 +75,7 @@
           <Property Name="ExternalAvatarIsinOverride" Type="nvarchar" MaxLength="30" />
           <Property Name="ExternalPageTickerOverride" Type="nvarchar" MaxLength="30" />
           <Property Name="TypeID" Type="int" Nullable="false" />
-          <Property Name="MarketID" Type="int" Nullable="false" />
+          <Property Name="MarketID" Type="int" />
         </EntityType>
         <EntityType Name="InvestmentInstrumentMarket">
           <Key>
@@ -163,15 +163,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_InvestmentInstrument_InvestmentInstrument1">
-          <End Role="InvestmentInstrument" Type="Self.InvestmentInstrument" Multiplicity="1" />
-          <End Role="InvestmentInstrument1" Type="Self.InvestmentInstrument" Multiplicity="0..1" />
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentMarket">
+          <End Role="InvestmentInstrumentMarket" Type="Self.InvestmentInstrumentMarket" Multiplicity="0..1" />
+          <End Role="InvestmentInstrument" Type="Self.InvestmentInstrument" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="InvestmentInstrument">
+            <Principal Role="InvestmentInstrumentMarket">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="InvestmentInstrument1">
-              <PropertyRef Name="ID" />
+            <Dependent Role="InvestmentInstrument">
+              <PropertyRef Name="MarketID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -217,9 +217,9 @@
             <End Role="IncomeCategory" EntitySet="IncomeCategory" />
             <End Role="Income" EntitySet="Income" />
           </AssociationSet>
-          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrument1" Association="Self.FK_InvestmentInstrument_InvestmentInstrument1">
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentMarket" Association="Self.FK_InvestmentInstrument_InvestmentInstrumentMarket">
+            <End Role="InvestmentInstrumentMarket" EntitySet="InvestmentInstrumentMarket" />
             <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
-            <End Role="InvestmentInstrument1" EntitySet="InvestmentInstrument" />
           </AssociationSet>
           <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType" Association="Self.FK_InvestmentInstrument_InvestmentInstrumentType">
             <End Role="InvestmentInstrumentType" EntitySet="InvestmentInstrumentType" />
@@ -230,27 +230,66 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="FamilyBudgetModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FamilyBudgetEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Account" EntityType="FamilyBudgetModel.Account" />
+          <EntitySet Name="Currency" EntityType="FamilyBudgetModel.Currency" />
+          <EntitySet Name="Expenditure" EntityType="FamilyBudgetModel.Expenditure" />
+          <EntitySet Name="ExpenditureCategory" EntityType="FamilyBudgetModel.ExpenditureCategory" />
+          <EntitySet Name="Income" EntityType="FamilyBudgetModel.Income" />
+          <EntitySet Name="IncomeCategory" EntityType="FamilyBudgetModel.IncomeCategory" />
+          <EntitySet Name="InvestmentInstrument" EntityType="FamilyBudgetModel.InvestmentInstrument" />
+          <EntitySet Name="InvestmentInstrumentMarket" EntityType="FamilyBudgetModel.InvestmentInstrumentMarket" />
+          <EntitySet Name="InvestmentInstrumentType" EntityType="FamilyBudgetModel.InvestmentInstrumentType" />
+          <AssociationSet Name="FK_Account_Currency" Association="FamilyBudgetModel.FK_Account_Currency">
+            <End Role="Currency" EntitySet="Currency" />
+            <End Role="Account" EntitySet="Account" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Expenditure_Account" Association="FamilyBudgetModel.FK_Expenditure_Account">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Expenditure" EntitySet="Expenditure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Income_Account" Association="FamilyBudgetModel.FK_Income_Account">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Income" EntitySet="Income" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Expenditure_ExpenditureCategory" Association="FamilyBudgetModel.FK_Expenditure_ExpenditureCategory">
+            <End Role="ExpenditureCategory" EntitySet="ExpenditureCategory" />
+            <End Role="Expenditure" EntitySet="Expenditure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Income_IncomeCategory" Association="FamilyBudgetModel.FK_Income_IncomeCategory">
+            <End Role="IncomeCategory" EntitySet="IncomeCategory" />
+            <End Role="Income" EntitySet="Income" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentMarket" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentMarket">
+            <End Role="InvestmentInstrumentMarket" EntitySet="InvestmentInstrumentMarket" />
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType">
+            <End Role="InvestmentInstrumentType" EntitySet="InvestmentInstrumentType" />
+            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Account">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CurrencyID" Type="Int32" Nullable="false" />
-          <Property Name="Balance" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="Balance" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
           <Property Name="IsMain" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Currency" Relationship="Self.FK_Account_Currency" FromRole="Account" ToRole="Currency" />
-          <NavigationProperty Name="Expenditure" Relationship="Self.FK_Expenditure_Account" FromRole="Account" ToRole="Expenditure" />
-          <NavigationProperty Name="Income" Relationship="Self.FK_Income_Account" FromRole="Account" ToRole="Income" />
+          <NavigationProperty Name="Currency" Relationship="FamilyBudgetModel.FK_Account_Currency" FromRole="Account" ToRole="Currency" />
+          <NavigationProperty Name="Expenditure" Relationship="FamilyBudgetModel.FK_Expenditure_Account" FromRole="Account" ToRole="Expenditure" />
+          <NavigationProperty Name="Income" Relationship="FamilyBudgetModel.FK_Income_Account" FromRole="Account" ToRole="Income" />
         </EntityType>
         <EntityType Name="Currency">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_Account_Currency" FromRole="Currency" ToRole="Account" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Account" Relationship="FamilyBudgetModel.FK_Account_Currency" FromRole="Currency" ToRole="Account" />
         </EntityType>
         <EntityType Name="Expenditure">
           <Key>
@@ -258,177 +297,62 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Summa" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="Summa" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="AccountID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_Expenditure_Account" FromRole="Expenditure" ToRole="Account" />
-          <NavigationProperty Name="ExpenditureCategory" Relationship="Self.FK_Expenditure_ExpenditureCategory" FromRole="Expenditure" ToRole="ExpenditureCategory" />
+          <NavigationProperty Name="Account" Relationship="FamilyBudgetModel.FK_Expenditure_Account" FromRole="Expenditure" ToRole="Account" />
+          <NavigationProperty Name="ExpenditureCategory" Relationship="FamilyBudgetModel.FK_Expenditure_ExpenditureCategory" FromRole="Expenditure" ToRole="ExpenditureCategory" />
         </EntityType>
         <EntityType Name="ExpenditureCategory">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Expenditure" Relationship="Self.FK_Expenditure_ExpenditureCategory" FromRole="ExpenditureCategory" ToRole="Expenditure" />
+          <NavigationProperty Name="Expenditure" Relationship="FamilyBudgetModel.FK_Expenditure_ExpenditureCategory" FromRole="ExpenditureCategory" ToRole="Expenditure" />
         </EntityType>
         <EntityType Name="Income">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Summa" Type="Decimal" Precision="12" Scale="2" Nullable="false" />
+          <Property Name="Summa" Type="Decimal" Nullable="false" Precision="12" Scale="2" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CategoryID" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="AccountID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Account" Relationship="Self.FK_Income_Account" FromRole="Income" ToRole="Account" />
-          <NavigationProperty Name="IncomeCategory" Relationship="Self.FK_Income_IncomeCategory" FromRole="Income" ToRole="IncomeCategory" />
+          <NavigationProperty Name="Account" Relationship="FamilyBudgetModel.FK_Income_Account" FromRole="Income" ToRole="Account" />
+          <NavigationProperty Name="IncomeCategory" Relationship="FamilyBudgetModel.FK_Income_IncomeCategory" FromRole="Income" ToRole="IncomeCategory" />
         </EntityType>
         <EntityType Name="IncomeCategory">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Income" Relationship="Self.FK_Income_IncomeCategory" FromRole="IncomeCategory" ToRole="Income" />
+          <NavigationProperty Name="Income" Relationship="FamilyBudgetModel.FK_Income_IncomeCategory" FromRole="IncomeCategory" ToRole="Income" />
         </EntityType>
-        <Association Name="FK_Account_Currency">
-          <End Role="Currency" Type="Self.Currency" Multiplicity="1" />
-          <End Role="Account" Type="Self.Account" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Currency">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Account">
-              <PropertyRef Name="CurrencyID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Expenditure_Account">
-          <End Role="Account" Type="Self.Account" Multiplicity="1" />
-          <End Role="Expenditure" Type="Self.Expenditure" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Account">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Expenditure">
-              <PropertyRef Name="AccountID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Income_Account">
-          <End Role="Account" Type="Self.Account" Multiplicity="1" />
-          <End Role="Income" Type="Self.Income" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Account">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Income">
-              <PropertyRef Name="AccountID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Expenditure_ExpenditureCategory">
-          <End Role="ExpenditureCategory" Type="Self.ExpenditureCategory" Multiplicity="1" />
-          <End Role="Expenditure" Type="Self.Expenditure" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ExpenditureCategory">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Expenditure">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Income_IncomeCategory">
-          <End Role="IncomeCategory" Type="Self.IncomeCategory" Multiplicity="1" />
-          <End Role="Income" Type="Self.Income" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="IncomeCategory">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Income">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="FamilyBudgetEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Account" EntityType="Self.Account" />
-          <EntitySet Name="Currency" EntityType="Self.Currency" />
-          <EntitySet Name="Expenditure" EntityType="Self.Expenditure" />
-          <EntitySet Name="ExpenditureCategory" EntityType="Self.ExpenditureCategory" />
-          <EntitySet Name="Income" EntityType="Self.Income" />
-          <EntitySet Name="IncomeCategory" EntityType="Self.IncomeCategory" />
-          <AssociationSet Name="FK_Account_Currency" Association="Self.FK_Account_Currency">
-            <End Role="Currency" EntitySet="Currency" />
-            <End Role="Account" EntitySet="Account" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Expenditure_Account" Association="Self.FK_Expenditure_Account">
-            <End Role="Account" EntitySet="Account" />
-            <End Role="Expenditure" EntitySet="Expenditure" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Income_Account" Association="Self.FK_Income_Account">
-            <End Role="Account" EntitySet="Account" />
-            <End Role="Income" EntitySet="Income" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Expenditure_ExpenditureCategory" Association="Self.FK_Expenditure_ExpenditureCategory">
-            <End Role="ExpenditureCategory" EntitySet="ExpenditureCategory" />
-            <End Role="Expenditure" EntitySet="Expenditure" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Income_IncomeCategory" Association="Self.FK_Income_IncomeCategory">
-            <End Role="IncomeCategory" EntitySet="IncomeCategory" />
-            <End Role="Income" EntitySet="Income" />
-          </AssociationSet>
-          <EntitySet Name="InvestmentInstrument" EntityType="FamilyBudgetModel.InvestmentInstrument" />
-          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrument" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrument">
-            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
-            <End Role="InvestmentInstrument1" EntitySet="InvestmentInstrument" />
-          </AssociationSet>
-          <EntitySet Name="InvestmentInstrumentMarket" EntityType="FamilyBudgetModel.InvestmentInstrumentMarket" />
-          <EntitySet Name="InvestmentInstrumentType" EntityType="FamilyBudgetModel.InvestmentInstrumentType" />
-          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType">
-            <End Role="InvestmentInstrumentMarket" EntitySet="InvestmentInstrumentMarket" />
-            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InvestmentInstrument_InvestmentInstrumentType1" Association="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType1">
-            <End Role="InvestmentInstrumentType" EntitySet="InvestmentInstrumentType" />
-            <End Role="InvestmentInstrument" EntitySet="InvestmentInstrument" />
-          </AssociationSet>
-        </EntityContainer>
         <EntityType Name="InvestmentInstrument">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DiagramBackgroundColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DiagramBackgroundHoverColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DiagramHoverBorderColor" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PortfolioPercent" Type="Int32" />
           <Property Name="PortfolioPercentDelta" Type="Int32" />
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ExternalAvatarIsinOverride" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ExternalPageTickerOverride" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="TypeID" Type="Int32" Nullable="false" />
-          <Property Name="MarketID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="InvestmentInstrumentMarket" Relationship="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType" FromRole="InvestmentInstrument" ToRole="InvestmentInstrumentMarket" />
-          <NavigationProperty Name="InvestmentInstrumentType" Relationship="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType1" FromRole="InvestmentInstrument" ToRole="InvestmentInstrumentType" />
+          <Property Name="MarketID" Type="Int32" />
+          <NavigationProperty Name="InvestmentInstrumentMarket" Relationship="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentMarket" FromRole="InvestmentInstrument" ToRole="InvestmentInstrumentMarket" />
+          <NavigationProperty Name="InvestmentInstrumentType" Relationship="FamilyBudgetModel.FK_InvestmentInstrument_InvestmentInstrumentType" FromRole="InvestmentInstrument" ToRole="InvestmentInstrumentType" />
         </EntityType>
-        <Association Name="FK_InvestmentInstrument_InvestmentInstrument">
-          <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument" Multiplicity="1" />
-          <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument1" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="InvestmentInstrument">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="InvestmentInstrument1">
-              <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="InvestmentInstrumentMarket">
           <Key>
             <PropertyRef Name="ID" />
@@ -455,8 +379,68 @@
           <Property Name="PortfolioPercent" Type="Int32" />
           <Property Name="PortfolioPercentDelta" Type="Int32" />
         </EntityType>
-        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentType">
-          <End Type="FamilyBudgetModel.InvestmentInstrumentMarket" Role="InvestmentInstrumentMarket" Multiplicity="1" />
+        <Association Name="FK_Account_Currency">
+          <End Type="FamilyBudgetModel.Currency" Role="Currency" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.Account" Role="Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Currency">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="CurrencyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Expenditure_Account">
+          <End Type="FamilyBudgetModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.Expenditure" Role="Expenditure" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Expenditure">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Income_Account">
+          <End Type="FamilyBudgetModel.Account" Role="Account" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.Income" Role="Income" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Income">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Expenditure_ExpenditureCategory">
+          <End Type="FamilyBudgetModel.ExpenditureCategory" Role="ExpenditureCategory" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.Expenditure" Role="Expenditure" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenditureCategory">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Expenditure">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Income_IncomeCategory">
+          <End Type="FamilyBudgetModel.IncomeCategory" Role="IncomeCategory" Multiplicity="1" />
+          <End Type="FamilyBudgetModel.Income" Role="Income" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IncomeCategory">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Income">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentMarket">
+          <End Type="FamilyBudgetModel.InvestmentInstrumentMarket" Role="InvestmentInstrumentMarket" Multiplicity="0..1" />
           <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="InvestmentInstrumentMarket">
@@ -467,7 +451,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentType1">
+        <Association Name="FK_InvestmentInstrument_InvestmentInstrumentType">
           <End Type="FamilyBudgetModel.InvestmentInstrumentType" Role="InvestmentInstrumentType" Multiplicity="1" />
           <End Type="FamilyBudgetModel.InvestmentInstrument" Role="InvestmentInstrument" Multiplicity="*" />
           <ReferentialConstraint>
@@ -479,7 +463,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -488,62 +472,62 @@
           <EntitySetMapping Name="Account">
             <EntityTypeMapping TypeName="FamilyBudgetModel.Account">
               <MappingFragment StoreEntitySet="Account">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
-                <ScalarProperty Name="Balance" ColumnName="Balance" />
                 <ScalarProperty Name="IsMain" ColumnName="IsMain" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Currency">
             <EntityTypeMapping TypeName="FamilyBudgetModel.Currency">
               <MappingFragment StoreEntitySet="Currency">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Expenditure">
             <EntityTypeMapping TypeName="FamilyBudgetModel.Expenditure">
               <MappingFragment StoreEntitySet="Expenditure">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Summa" ColumnName="Summa" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Summa" ColumnName="Summa" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ExpenditureCategory">
             <EntityTypeMapping TypeName="FamilyBudgetModel.ExpenditureCategory">
               <MappingFragment StoreEntitySet="ExpenditureCategory">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Income">
             <EntityTypeMapping TypeName="FamilyBudgetModel.Income">
               <MappingFragment StoreEntitySet="Income">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Summa" ColumnName="Summa" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Summa" ColumnName="Summa" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="IncomeCategory">
             <EntityTypeMapping TypeName="FamilyBudgetModel.IncomeCategory">
               <MappingFragment StoreEntitySet="IncomeCategory">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -554,12 +538,12 @@
                 <ScalarProperty Name="TypeID" ColumnName="TypeID" />
                 <ScalarProperty Name="ExternalPageTickerOverride" ColumnName="ExternalPageTickerOverride" />
                 <ScalarProperty Name="ExternalAvatarIsinOverride" ColumnName="ExternalAvatarIsinOverride" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="PortfolioPercentDelta" ColumnName="PortfolioPercentDelta" />
                 <ScalarProperty Name="PortfolioPercent" ColumnName="PortfolioPercent" />
                 <ScalarProperty Name="DiagramHoverBorderColor" ColumnName="DiagramHoverBorderColor" />
                 <ScalarProperty Name="DiagramBackgroundHoverColor" ColumnName="DiagramBackgroundHoverColor" />
                 <ScalarProperty Name="DiagramBackgroundColor" ColumnName="DiagramBackgroundColor" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

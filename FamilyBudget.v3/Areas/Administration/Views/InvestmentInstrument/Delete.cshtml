@@ -1,0 +1,80 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Areas.Administration.Models.InvestmentInstrumentModel
+
+@{
+    ViewBag.Title = "Удаление интсрумента";
+}
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="card">
+            <div class="card-header text-center py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Удалить интсрумент?</h4>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+        <div class="card-body">
+            @Html.Raw(Html.FamilyBudgetValidationSummary())
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Object.ID)
+            @Html.HiddenFor(model => model.Object.Code)
+            @Html.HiddenFor(model => model.Object.DiagramBackgroundColor)
+            @Html.HiddenFor(model => model.Object.DiagramBackgroundHoverColor)
+            @Html.HiddenFor(model => model.Object.DiagramHoverBorderColor)
+            @Html.HiddenFor(model => model.Object.PortfolioPercent)
+            @Html.HiddenFor(model => model.Object.PortfolioPercentDelta)
+            @Html.HiddenFor(model => model.Object.TypeID)
+            @Html.HiddenFor(model => model.Object.MarketID)
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    @Html.DisplayFor(model => model.Object.Code, "_TextValue")
+                </div>
+                <div class="col-md-4 mb-3">
+                    @Html.LabelFor(model => model.Object.TypeID)
+                    <div class="form-control">
+                        @Html.DisplayFor(model => model.Object.InvestmentInstrumentType.Name)
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    @Html.LabelFor(model => model.Object.MarketID)
+                    <div class="form-control">
+                        @Html.DisplayFor(model => model.Object.InvestmentInstrumentMarket.Name)
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    @Html.DisplayFor(model => model.Object.DiagramBackgroundColor, "_TextValue")
+                </div>
+                <div class="col-md-4 mb-3">
+                    @Html.DisplayFor(model => model.Object.DiagramBackgroundHoverColor, "_TextValue")
+                </div>
+                <div class="col-md-4 mb-3">
+                    @Html.DisplayFor(model => model.Object.DiagramHoverBorderColor, "_TextValue")
+                </div>
+                <div class="col-md-6 mb-3">
+                    @Html.DisplayFor(model => model.Object.PortfolioPercent, "_TextValue")
+                </div>
+                <div class="col-md-6 mb-3">
+                    @Html.DisplayFor(model => model.Object.PortfolioPercentDelta, "_TextValue")
+                </div>
+                <div class="col-md-12">
+                    <div class="row justify-content-between">
+                        <div class="col-6">
+                            @{
+                                string queryParams = "/Administration/InvestmentInstrument" + QueryStringParser.DecodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+                                <a class="btn btn-primary" href="@queryParams">Назад к списку инстументов</a>
+                            }
+                        </div>
+                        <div class="col-6 text-right">
+                            <div>
+                                <button name="submit" type="submit" class="btn btn-danger" value="1">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            }
+        </div>
+    </div>
+</div>

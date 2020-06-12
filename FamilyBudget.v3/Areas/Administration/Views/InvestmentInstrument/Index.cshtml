@@ -1,0 +1,45 @@
+﻿@using FamilyBudget.v3.App_Helpers
+@model FamilyBudget.v3.Areas.Administration.Models.InvestmentInstrumentListModel
+
+@{
+    string returnParameters = QueryStringParser.EncodeGridParameters(Model.PageIndex, Model.SortField, Model.SortDirection);
+}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="text-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Конфигурация инвестиционного портфеля</h1>
+    </div>
+
+    <div class="row list-view">
+        <div class="col-lg-12 mb-3">
+            @Html.ActionLink("Создать инструмент", "Create", new { returnParams = @returnParameters }, new { @class = "btn btn-primary pull-right" })
+        </div>
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    @{
+                        WebGrid grid = WebGridHelpers.CreateWebGridWithJqueryUiStyle(Model.Entities, rowsPerPage: Model.PageSize, canPage: true, canSort: true, defaultSort: "Code");
+                        @grid.GetHtmlJqueryUiStyle(mode: WebGridPagerModes.All, showNoDataFound: true,
+                            columns: grid.Columns(
+                            grid.Column("Code", "Код", item => Html.Raw("<span class=\"d-none\">Код</span>" + item.Code)),
+                            grid.Column("DiagramBackgroundColor", "Цвет фона диаграммы", item => Html.Raw("<span class=\"d-none\">Цвет фона диаграммы</span><div class=\"grid-color-sample\" style=\"background-color: " + item.DiagramBackgroundColor + "\"></div>")),
+                            grid.Column("DiagramBackgroundHoverColor", "Цвет фона диаграммы в фокусе", item => Html.Raw("<span class=\"d-none\">Цвет фона диаграммы в фокусе</span><div class=\"grid-color-sample\" style=\"background-color: " + item.DiagramBackgroundHoverColor + "\"></div>")),
+                            grid.Column("DiagramHoverBorderColor", "Цвет границ диаграммы в фокусе", item => Html.Raw("<span class=\"d-none\">Цвет границ диаграммы в фокусе</span><div class=\"grid-color-sample\" style=\"background-color: " + item.DiagramHoverBorderColor + "\"></div>")),
+
+                            grid.Column("Type", "Тип", item => Html.Raw("<span class=\"d-none\">Тип</span>" + item.Type)),
+                            grid.Column("Market", "Рынок", item => Html.Raw("<span class=\"d-none\">Рынок</span>" + item.Market)),
+
+                            grid.Column("PortfolioPercent", "Целевой процент в портфеле", item => Html.Raw("<span class=\"d-none\">Целевой процент в портфеле</span>" + item.PortfolioPercent)),
+                            grid.Column("PortfolioPercentDelta", "Отклонение от целевого процента в портфеле", item => Html.Raw("<span class=\"d-none\">Отклонение от целевого процента в портфеле</span>" + item.PortfolioPercentDelta)),
+
+                            grid.Column(style: "webgrid-editColumn", format: @<a href="@Url.Action("Edit", "InvestmentInstrument", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-info btn-circle"><i class="far fa-edit"></i></a>),
+grid.Column(style: "webgrid-deleteColumn", format: @<a href="@Url.Action("Delete", "InvestmentInstrument", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-danger btn-circle"><i class="far fa-trash-alt"></i></a>)
+));
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
