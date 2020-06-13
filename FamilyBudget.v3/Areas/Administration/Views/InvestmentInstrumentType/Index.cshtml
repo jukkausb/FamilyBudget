@@ -29,8 +29,8 @@
                             grid.Column("Code", "Код", item => Html.Raw("<span class=\"d-none\">Код</span>" + item.Code)),
                             grid.Column("Name", "Наименование", item => Html.Raw("<span class=\"d-none\">Наименование</span>" + item.Name)),
                             grid.Column("DiagramBackgroundColor", "Цвет фона диаграммы", item => Html.Raw("<span class=\"d-none\">Цвет фона диаграммы</span><div class=\"grid-color-sample\" style=\"background-color: " + item.DiagramBackgroundColor + "\"></div>")),
-                            grid.Column("DiagramBackgroundHoverColor", "Цвет фона диаграммы в фокусе", item => Html.Raw("<span class=\"d-none\">Цвет фона диаграммы в фокусе</span>" + item.DiagramBackgroundHoverColor)),
-                            grid.Column("DiagramHoverBorderColor", "Цвет границ диаграммы в фокусе", item => Html.Raw("<span class=\"d-none\">Цвет границ диаграммы в фокусе</span>" + item.DiagramHoverBorderColor)),
+                            grid.Column("DiagramBackgroundHoverColor", "Цвет фона диаграммы в фокусе", item => Html.Raw("<span class=\"d-none\">Цвет фона диаграммы в фокусе</span><div class=\"grid-color-sample\" style=\"background-color: " + item.DiagramBackgroundHoverColor + "\"></div>")),
+                            grid.Column("DiagramHoverBorderColor", "Цвет границ диаграммы в фокусе", item => Html.Raw("<span class=\"d-none\">Цвет границ диаграммы в фокусе</span><div class=\"grid-color-sample\" style=\"background-color: " + item.DiagramHoverBorderColor + "\"></div>")),
                             grid.Column("PortfolioPercent", "Целевой процент в портфеле", item => Html.Raw("<span class=\"d-none\">Целевой процент в портфеле</span>" + item.PortfolioPercent)),
                             grid.Column("PortfolioPercentDelta", "Отклонение от целевого процента в портфеле", item => Html.Raw("<span class=\"d-none\">Отклонение от целевого процента в портфеле</span>" + item.PortfolioPercentDelta)),
 

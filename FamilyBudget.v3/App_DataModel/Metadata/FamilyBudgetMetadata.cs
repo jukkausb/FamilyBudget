@@ -27,7 +27,7 @@ namespace FamilyBudget.v3.App_DataModel
         public string Name { get; set; }
     }
 
-    [MetadataType(typeof (AccountMetadata))]
+    [MetadataType(typeof(AccountMetadata))]
     public partial class Account
     {
         public string DisplayName
@@ -61,7 +61,7 @@ namespace FamilyBudget.v3.App_DataModel
         public string Name { get; set; }
     }
 
-    [MetadataType(typeof (CurrencyMetadata))]
+    [MetadataType(typeof(CurrencyMetadata))]
     public partial class Currency
     {
     }
@@ -83,7 +83,7 @@ namespace FamilyBudget.v3.App_DataModel
         public string Description { get; set; }
     }
 
-    [MetadataType(typeof (ExpenditureCategoryMetadata))]
+    [MetadataType(typeof(ExpenditureCategoryMetadata))]
     public partial class ExpenditureCategory : ICategoryInfo
     {
     }
@@ -105,7 +105,7 @@ namespace FamilyBudget.v3.App_DataModel
         public string Description { get; set; }
     }
 
-    [MetadataType(typeof (IncomeCategoryMetadata))]
+    [MetadataType(typeof(IncomeCategoryMetadata))]
     public partial class IncomeCategory : ICategoryInfo
     {
     }
@@ -140,7 +140,7 @@ namespace FamilyBudget.v3.App_DataModel
         public string Description { get; set; }
     }
 
-    [MetadataType(typeof (ExpenditureMetadata))]
+    [MetadataType(typeof(ExpenditureMetadata))]
     public partial class Expenditure : IAccountableEntity
     {
         public Expenditure()
@@ -196,7 +196,7 @@ namespace FamilyBudget.v3.App_DataModel
         public string Description { get; set; }
     }
 
-    [MetadataType(typeof (IncomeMetadata))]
+    [MetadataType(typeof(IncomeMetadata))]
     public partial class Income : IAccountableEntity
     {
         public Income()
@@ -226,6 +226,31 @@ namespace FamilyBudget.v3.App_DataModel
 
     #region Investment instrument
 
+    public class InvestmentInstrumentMetadata
+    {
+        [Key]
+        public int ID { get; set; }
+        [Required]
+        [Display(Name = "Код")]
+        public string Code { get; set; }
+        [Display(Name = "Цвет фона диаграммы")]
+        public string DiagramBackgroundColor { get; set; }
+        [Display(Name = "Цвет фона диаграммы в фокусе")]
+        public string DiagramBackgroundHoverColor { get; set; }
+        [Display(Name = "Цвет границ диаграммы в фокусе")]
+        public string DiagramHoverBorderColor { get; set; }
+        [Display(Name = "Целевой процент в портфеле")]
+        public Nullable<int> PortfolioPercent { get; set; }
+        [Display(Name = "Отклонение от целевого процента в портфеле")]
+        public Nullable<int> PortfolioPercentDelta { get; set; }
+        [Required]
+        [Display(Name = "Тип инструмента")]
+        public Nullable<int> TypeID { get; set; }
+        [Display(Name = "Рынок инструмента")]
+        public Nullable<int> MarketID { get; set; }
+    }
+
+    [MetadataType(typeof(InvestmentInstrumentMetadata))]
     public partial class InvestmentInstrument : IPieDiagramDataSourceItem
     {
     }

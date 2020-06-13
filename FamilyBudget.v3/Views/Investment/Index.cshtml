@@ -146,7 +146,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="h5 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">@account.Name</div>
+                            <div class="h4 text-xl-center font-weight-bold text-gray-900 mb-1">@account.Name</div>
                             <div class="text-xl-center text-primary">
                                 @Html.Partial("~/Views/Shared/DisplayTemplates/_MoneyWithDelta.cshtml", account.Totals)
                             </div>
@@ -234,7 +234,6 @@
                             <div class="col mr-2">
                                 <h4 class="m-0 font-weight-bold text-primary cursor-pointer" data-toggle="collapse" data-target="#@collapseId" aria-controls="@collapseId">
                                     @caption
-
                                 </h4>
                             </div>
                             @if (data.Positions.Any())
