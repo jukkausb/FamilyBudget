@@ -125,7 +125,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 Where(c => c.Currency.ToString().ToUpper() == Constants.CURRENCY_RUB).
                 FirstOrDefault();
 
-            decimal investmentAccountTotalBalance = GetInvestmentAccountTotalBalance(portfolioPositions);
+            decimal investmentAccountTotalBalance = GetInvestmentAccountTotalBalance(portfolioPositions) + accountCashRub.Balance;
             decimal investmentAccountTotalDelta = GetInvestmentAccountTotalDelta(portfolioPositions);
 
             investmentAccount.Totals = new MoneyWithDeltaModel(investmentAccountTotalBalance, Constants.CURRENCY_RUB, investmentAccountTotalDelta);
