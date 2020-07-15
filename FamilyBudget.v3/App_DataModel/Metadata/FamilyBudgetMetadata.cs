@@ -243,6 +243,10 @@ namespace FamilyBudget.v3.App_DataModel
         public Nullable<int> PortfolioPercent { get; set; }
         [Display(Name = "Отклонение от целевого процента в портфеле")]
         public Nullable<int> PortfolioPercentDelta { get; set; }
+        [Display(Name = "Avatar ISIN override")]
+        public string ExternalAvatarIsinOverride { get; set; }
+        [Display(Name = "Ticker page override")]
+        public string ExternalPageTickerOverride { get; set; }
         [Required]
         [Display(Name = "Тип инструмента")]
         public Nullable<int> TypeID { get; set; }

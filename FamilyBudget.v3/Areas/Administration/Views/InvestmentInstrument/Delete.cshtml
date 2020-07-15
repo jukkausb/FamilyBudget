@@ -26,6 +26,8 @@
             @Html.HiddenFor(model => model.Object.PortfolioPercentDelta)
             @Html.HiddenFor(model => model.Object.TypeID)
             @Html.HiddenFor(model => model.Object.MarketID)
+            @Html.HiddenFor(model => model.Object.ExternalAvatarIsinOverride)
+            @Html.HiddenFor(model => model.Object.ExternalPageTickerOverride)
             <div class="form-row">
                 <div class="col-md-4 mb-3">
                     @Html.DisplayFor(model => model.Object.Code, "_TextValue")
@@ -50,6 +52,12 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     @Html.DisplayFor(model => model.Object.DiagramHoverBorderColor, "_TextValue")
+                </div>
+                <div class="col-md-6 mb-3">
+                    @Html.DisplayFor(model => model.Object.ExternalAvatarIsinOverride, "_TextValue")
+                </div>
+                <div class="col-md-6 mb-3">
+                    @Html.DisplayFor(model => model.Object.ExternalPageTickerOverride, "_TextValue")
                 </div>
                 <div class="col-md-6 mb-3">
                     @Html.DisplayFor(model => model.Object.PortfolioPercent, "_TextValue")

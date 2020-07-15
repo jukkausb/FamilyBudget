@@ -31,8 +31,11 @@
                             grid.Column("Type", "Тип", item => Html.Raw("<span class=\"d-none\">Тип</span>" + item.Type)),
                             grid.Column("Market", "Рынок", item => Html.Raw("<span class=\"d-none\">Рынок</span>" + item.Market)),
 
-                            grid.Column("PortfolioPercent", "Целевой процент в портфеле", item => Html.Raw("<span class=\"d-none\">Целевой процент в портфеле</span>" + item.PortfolioPercent)),
-                            grid.Column("PortfolioPercentDelta", "Отклонение от целевого процента в портфеле", item => Html.Raw("<span class=\"d-none\">Отклонение от целевого процента в портфеле</span>" + item.PortfolioPercentDelta)),
+                            grid.Column("ExternalAvatarIsinOverride", "Avatar ISIN override", item => Html.Raw("<span class=\"d-none\">Avatar ISIN override</span>" + item.ExternalAvatarIsinOverride)),
+                            grid.Column("ExternalPageTickerOverride", "Ticker page override", item => Html.Raw("<span class=\"d-none\">Ticker page override</span>" + item.ExternalPageTickerOverride)),
+
+                            grid.Column("PortfolioPercent", "% в портфеле", item => Html.Raw("<span class=\"d-none\">% в портфеле</span>" + item.PortfolioPercent)),
+                            grid.Column("PortfolioPercentDelta", "Дельта, %", item => Html.Raw("<span class=\"d-none\">Дельта, %</span>" + item.PortfolioPercentDelta)),
 
                             grid.Column(style: "webgrid-editColumn", format: @<a href="@Url.Action("Edit", "InvestmentInstrument", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-info btn-circle"><i class="far fa-edit"></i></a>),
 grid.Column(style: "webgrid-deleteColumn", format: @<a href="@Url.Action("Delete", "InvestmentInstrument", new { id = item.ID, returnParams = @returnParameters })" class="btn btn-danger btn-circle"><i class="far fa-trash-alt"></i></a>)
