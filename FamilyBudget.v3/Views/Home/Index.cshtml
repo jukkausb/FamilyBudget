@@ -1,13 +1,19 @@
 ﻿@model FamilyBudget.v3.Models.DashboardModel
-
-
-
 @{
     var getStyle = new Func<decimal, string>((total) => total >= 0 ? "text-success" : "text-danger");
 }
+<style>
+    .col-md-6, col-xl-6, .col-md-12, col-xl-12 {
+        padding-left: 0.3rem;
+        padding-right: 0.3rem;
+    }
+    .mb-4, .my-4 {
+        margin-bottom: 0.5rem !important;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xl-12 col-md-6 mb-4">
+        <div class="col-xl-12 col-md-6 mb-2">
             @if (Model.Message != null)
             {
                 @Html.Partial("~/Views/Shared/MessageModel.cshtml", Model.Message)
@@ -15,7 +21,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-12 col-md-6 mb-4">
+        <div class="col-xl-12 col-md-6 mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -23,8 +29,8 @@
                             <div class="h3 text-xl-center font-weight-bold text-gray-900 text-uppercase mb-1">Капитал</div>
                             <div class="h2 mb-0 text-xl-center font-weight-bold @getStyle(Model.Capital.Value)">@Model.Capital.ValuePresentation</div>
                             <div class="p-2">
-                                <div class="progress mt-2" style="height: 25px;">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.TargetAccomplishedPercent %;" aria-valuenow="@Model.TargetAccomplishedPercent" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress mt-2" style="height: 35px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.TargetAccomplishedPercent%;" aria-valuenow="@Model.TargetAccomplishedPercent" aria-valuemin="0" aria-valuemax="100">
                                         @Model.TargetAccomplishedPercent%
                                     </div>
                                 </div>
@@ -39,7 +45,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-6 mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -51,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-6 mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -67,7 +73,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -81,7 +87,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -96,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-2">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -113,7 +119,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-2">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -126,7 +132,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-2">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -139,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-2">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -155,7 +161,7 @@
     </div>
 
     <div class="row">
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-6 mb-2">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -167,7 +173,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-md-6 mb-4">
+        <div class="col-xl-6 col-md-6 mb-2">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
