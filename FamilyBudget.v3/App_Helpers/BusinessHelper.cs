@@ -50,7 +50,7 @@ namespace FamilyBudget.v3.App_Helpers
                 );
         }
 
-        public static DeltaType GetDeltaType(decimal deltaValue)
+        public static DeltaType GetDeltaType(double deltaValue)
         {
             if (deltaValue > 0)
             {

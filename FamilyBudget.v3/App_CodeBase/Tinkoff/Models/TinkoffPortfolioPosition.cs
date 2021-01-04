@@ -1,7 +1,6 @@
 ﻿using FamilyBudget.v3.App_DataModel;
 using FamilyBudget.v3.App_Helpers;
 using System;
-using Tinkoff.Trading.OpenApi.Models;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
 {
@@ -26,7 +25,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         /// <summary>
         /// Amount of stocks
         /// </summary>
-        public decimal Balance { get; set; }
+        public double Balance { get; set; }
         /// <summary>
         /// Currency of the position
         /// </summary>
@@ -34,7 +33,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         /// <summary>
         /// Current price of the single stock on market
         /// </summary>
-        public decimal CurrentPriceInMarket { get; set; }
+        public double CurrentPriceInMarket { get; set; }
         public string CurrentPriceInMarketPresentation
         {
             get
@@ -45,7 +44,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         /// <summary>
         /// Current price of the single stock in portfolio
         /// </summary>
-        public decimal CurrentPriceInPortfolio { get; set; }
+        public double CurrentPriceInPortfolio { get; set; }
         public string CurrentPriceInPortfolioPresentation
         {
             get
@@ -57,7 +56,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         /// <summary>
         /// Current percent of the position in portfolio
         /// </summary>
-        public decimal CurrentPercentInPortfolio { get; set; }
+        public double CurrentPercentInPortfolio { get; set; }
         public string CurrentPercentInPortfolioPresentation
         {
             get
@@ -69,7 +68,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         /// <summary>
         /// Current total price of the position in portfolio
         /// </summary>
-        public decimal CurrentTotalInPortfolio { get; set; }
+        public double CurrentTotalInPortfolio { get; set; }
         public string CurrentTotalInPortfolioPresentation
         {
             get
@@ -77,7 +76,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
                 return CurrentTotalInPortfolio.ToCurrencyDisplay(Currency);
             }
         }
-        public decimal CurrentDelta { get; set; }
+        public double CurrentDelta { get; set; }
         public string CurrentDeltaPresentation
         {
             get

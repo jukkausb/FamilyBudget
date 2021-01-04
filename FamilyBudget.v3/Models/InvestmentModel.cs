@@ -1,4 +1,5 @@
-﻿using FamilyBudget.v3.App_CodeBase.Tinkoff.Models;
+﻿using FamilyBudget.v3.App_CodeBase.Tinkoff;
+using FamilyBudget.v3.App_CodeBase.Tinkoff.Models;
 using FamilyBudget.v3.App_Helpers;
 using FamilyBudget.v3.Models.Base;
 using System;
@@ -27,7 +28,7 @@ namespace FamilyBudget.v3.Models
         public List<PortfolioDiagramGroupItem> TypeGroupItems { get; set; }
         public List<PortfolioDiagramGroupItem> MarketGroupItems { get; set; }
         public MoneyWithDeltaModel Totals { get; set; }
-        public decimal TotalInvested { get; set; }
+        public double TotalInvested { get; set; }
         public InvestmentAccount()
         {
             MessageGroups = new List<MessageGroup>();

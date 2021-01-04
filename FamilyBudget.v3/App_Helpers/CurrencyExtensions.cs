@@ -27,7 +27,7 @@ namespace FamilyBudget.v3.App_Helpers
                 .FirstOrDefault();
         }
 
-        public static string ToCurrencyDisplay(this decimal d, string currency, bool forceRound2Decimals = false)
+        public static string ToCurrencyDisplay(this double d, string currency, bool forceRound2Decimals = false)
         {
             string format;
             if (forceRound2Decimals)
@@ -41,12 +41,12 @@ namespace FamilyBudget.v3.App_Helpers
             return d.ToString(format) + " " + ToCurrencySymbol(currency);
         }
 
-        public static decimal Round(this decimal d)
+        public static double Round(this double d)
         {
             return Math.Round(d, 2);
         }
 
-        private static int GetDecimals(decimal d, int i = 2)
+        private static int GetDecimals(double d, int i = 2)
         {
             decimal multiplied = (decimal)((double)d * Math.Pow(10, i));
             if (Math.Round(multiplied) == multiplied)

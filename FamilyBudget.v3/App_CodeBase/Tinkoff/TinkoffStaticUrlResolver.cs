@@ -1,7 +1,6 @@
 ﻿using FamilyBudget.v3.App_CodeBase.Tinkoff.Models;
 using FamilyBudget.v3.App_DataModel;
 using System.Collections.Generic;
-using Tinkoff.Trading.OpenApi.Models;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {

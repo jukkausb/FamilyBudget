@@ -169,9 +169,6 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tinkoff.Trading.OpenApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Tinkoff.Trading.OpenApi.1.2.0\lib\netstandard2.0\Tinkoff.Trading.OpenApi.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Mvc5, Version=1.2.3.0, Culture=neutral, PublicKeyToken=43da31bc42a85347, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.Mvc5.1.2.3\lib\net45\Unity.Mvc5.dll</HintPath>
     </Reference>
@@ -425,6 +422,7 @@
     <Content Include="Areas\Administration\Views\InvestmentInstrument\Create.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrument\Edit.cshtml" />
     <Content Include="Areas\Administration\Views\InvestmentInstrument\Delete.cshtml" />
+    <Content Include="App_CodeBase\Tinkoff\TinkoffInvestApiClient.nswag" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Scripts\cldr\main\ru\ca-gregorian.json" />
     <Content Include="Scripts\cldr\main\ru\numbers.json" />
@@ -2485,13 +2483,11 @@
     <Compile Include="App_CodeBase\SitemapHelper.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\DeltaType.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\IPieDiagramDataItem.cs" />
-    <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioCurrenciesExtended.cs" />
-    <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffBrokerAccounts.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioDiagramGroupItem.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioTableGroup.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioPosition.cs" />
-    <Compile Include="App_CodeBase\Tinkoff\TinkoffContext.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffDataRetrieverBase.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\TinkoffInvestApiClient.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffInvestmentDataProvider.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffStaticUrlResolver.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffOpenApiTokenReader.cs" />

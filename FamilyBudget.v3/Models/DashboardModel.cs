@@ -12,7 +12,7 @@ namespace FamilyBudget.v3.Models
         /// </summary>
         public MoneyModel Capital { get; set; }
         public MoneyModel Target { get; set; }
-        public decimal TargetAccomplishedPercent { get; set; }
+        public double TargetAccomplishedPercent { get; set; }
         /// <summary>
         /// Cash on accounts
         /// </summary>

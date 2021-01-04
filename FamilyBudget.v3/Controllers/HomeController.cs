@@ -43,14 +43,14 @@ namespace FamilyBudget.v3.Controllers
             var accountUsd = accounts.FirstOrDefault(a => a.Currency.Code == "USD");
             var accountEur = accounts.FirstOrDefault(a => a.Currency.Code == "EUR");
 
-            var totalCash = _calculationService.CalculateCash(mainCurrencyCode);
+            var totalCash = (double)_calculationService.CalculateCash(mainCurrencyCode);
             model.Cash = new MoneyModel
             {
                 Currency = mainCurrencyCode,
                 Value = totalCash
             };
 
-            decimal totalInvested = 0;
+            double totalInvested = 0;
             List<InvestmentAccount> investmentAccounts = null;
 
             try
@@ -83,7 +83,7 @@ namespace FamilyBudget.v3.Controllers
                 Value = totalCapital
             };
 
-            decimal targetCapitalValue = 10000000;
+            double targetCapitalValue = 10000000; // Go RICH !!!
             model.Target = new MoneyModel
             {
                 Currency = mainCurrencyCode,
@@ -116,14 +116,14 @@ namespace FamilyBudget.v3.Controllers
 
             #region Investment
 
-            decimal allToIIS = BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
+            double allToIIS = (double)BusinessHelper.GetIISExpenditures(_expenditureRepository).Sum(e => e.Summa);
             model.AllIISExpenditureTotal = new MoneyModel
             {
                 Currency = mainCurrencyCode,
                 Value = allToIIS
             };
 
-            decimal allToBrokerAccount = BusinessHelper.GetBrokerAccountExpenditures(_expenditureRepository).Sum(e => e.Summa);
+            double allToBrokerAccount = (double)BusinessHelper.GetBrokerAccountExpenditures(_expenditureRepository).Sum(e => e.Summa);
             model.AllBrokerAccountExpenditureTotal = new MoneyModel
             {
                 Currency = mainCurrencyCode,

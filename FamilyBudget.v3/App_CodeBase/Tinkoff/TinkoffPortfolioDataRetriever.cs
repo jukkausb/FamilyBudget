@@ -4,14 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tinkoff.Trading.OpenApi.Models;
-using static FamilyBudget.v3.App_CodeBase.Tinkoff.Models.PortfolioCurrenciesExtended;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 {
     public interface ITinkoffPortfolioDataRetriever
     {
-        List<PortfolioCurrencyExtended> GetTinkoffPortfolioCurrencies(string brokerAccountId = null);
+        List<CurrencyPosition> GetTinkoffPortfolioCurrencies(string brokerAccountId = null);
         List<TinkoffPortfolioPosition> GetTinkoffPortfolioPositions(string brokerAccountId = null);
     }
 
@@ -26,24 +24,15 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         {
         }
 
-        public List<PortfolioCurrencyExtended> GetTinkoffPortfolioCurrencies(string brokerAccountId = null)
+        public List<CurrencyPosition> GetTinkoffPortfolioCurrencies(string brokerAccountId = null)
         {
-            var context = GetContext();
-
-            var portfolioCurrencies = string.IsNullOrEmpty(brokerAccountId) ?
-                Task.Run(() => context.PortfolioCurrenciesAsync()).Result :
-                Task.Run(() => context.PortfolioCurrenciesAsync(brokerAccountId)).Result;
-
-            return portfolioCurrencies.Currencies;
+            var portfolioCurrencies = Task.Run(() => PortfolioCurrenciesAsync(brokerAccountId)).Result;
+            return portfolioCurrencies.Payload.Currencies1.ToList();
         }
 
         public List<TinkoffPortfolioPosition> GetTinkoffPortfolioPositions(string brokerAccountId = null)
         {
-            var context = GetContext();
-
-            var portfolio = string.IsNullOrEmpty(brokerAccountId) ?
-                Task.Run(() => context.PortfolioAsync()).Result :
-                Task.Run(() => context.PortfolioAsync(brokerAccountId)).Result;
+            var portfolio = Task.Run(() => PortfolioAsync(brokerAccountId)).Result;
 
             List<TinkoffPortfolioPosition> portfolioPositions = new List<TinkoffPortfolioPosition>();
             if (portfolio == null)
@@ -53,7 +42,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             var marketInstruments = GetMarketInstruments();
 
-            foreach (var position in portfolio.Positions)
+            foreach (var position in portfolio.Payload.Positions)
             {
                 var portfolioInstrument = marketInstruments.FirstOrDefault(s => s.Ticker == position.Ticker);
                 if (portfolioInstrument == null)
@@ -62,8 +51,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 }
 
                 string currency = position.AveragePositionPrice.Currency.ToString().ToUpper();
-                decimal currentTotalInPortfolio = position.Balance * position.AveragePositionPrice.Value + position.ExpectedYield.Value;
-                decimal currentPriceInMarket = currentTotalInPortfolio / position.Balance;
+                double currentTotalInPortfolio = position.Balance * position.AveragePositionPrice.Value + position.ExpectedYield.Value;
+                double currentPriceInMarket = currentTotalInPortfolio / position.Balance;
 
                 var portfolioPosition = new TinkoffPortfolioPosition
                 {
@@ -91,38 +80,36 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
         private List<MarketInstrument> GetMarketInstruments()
         {
-            var context = GetContext();
-
-            var marketInstrumentsCurrencies = CacheHelper.Get<List<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_CURRENCIES);
+            var marketInstrumentsCurrencies = CacheHelper.Get<IList<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_CURRENCIES);
             if (marketInstrumentsCurrencies == null)
             {
-                var marketCurrencies = Task.Run(() => context.MarketCurrenciesAsync()).Result;
-                marketInstrumentsCurrencies = marketCurrencies.Instruments;
-                CacheHelper.Add(marketCurrencies.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_CURRENCIES);
+                var marketCurrencies = Task.Run(() => MarketCurrenciesAsync()).Result;
+                marketInstrumentsCurrencies = marketCurrencies.Payload.Instruments.ToList();
+                CacheHelper.Add(marketCurrencies.Payload.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_CURRENCIES);
             }
 
-            var marketInstrumentsEtfs = CacheHelper.Get<List<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_ETFS);
+            var marketInstrumentsEtfs = CacheHelper.Get<IList<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_ETFS);
             if (marketInstrumentsEtfs == null)
             {
-                var marketEtfs = Task.Run(() => context.MarketEtfsAsync()).Result;
-                marketInstrumentsEtfs = marketEtfs.Instruments;
-                CacheHelper.Add(marketEtfs.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_ETFS);
+                var marketEtfs = Task.Run(() => MarketEtfsAsync()).Result;
+                marketInstrumentsEtfs = marketEtfs.Payload.Instruments.ToList();
+                CacheHelper.Add(marketEtfs.Payload.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_ETFS);
             }
 
-            var marketInstrumentsBonds = CacheHelper.Get<List<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_BONDS);
+            var marketInstrumentsBonds = CacheHelper.Get<IList<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_BONDS);
             if (marketInstrumentsBonds == null)
             {
-                var marketBonds = Task.Run(() => context.MarketBondsAsync()).Result;
-                marketInstrumentsBonds = marketBonds.Instruments;
-                CacheHelper.Add(marketBonds.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_BONDS);
+                var marketBonds = Task.Run(() => MarketBondsAsync()).Result;
+                marketInstrumentsBonds = marketBonds.Payload.Instruments.ToList();
+                CacheHelper.Add(marketBonds.Payload.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_BONDS);
             }
 
-            var marketInstrumentsStocks = CacheHelper.Get<List<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_STOCKS);
+            var marketInstrumentsStocks = CacheHelper.Get<IList<MarketInstrument>>(CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_STOCKS);
             if (marketInstrumentsStocks == null)
             {
-                var marketStocks = Task.Run(() => context.MarketStocksAsync()).Result;
-                marketInstrumentsStocks = marketStocks.Instruments;
-                CacheHelper.Add(marketStocks.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_STOCKS);
+                var marketStocks = Task.Run(() => MarketStocksAsync()).Result;
+                marketInstrumentsStocks = marketStocks.Payload.Instruments.ToList();
+                CacheHelper.Add(marketStocks.Payload.Instruments, CACHE_KEY_TINKOFF_MARKET_INSTRUMENTS_STOCKS);
             }
 
             var marketInstruments = new List<MarketInstrument>();

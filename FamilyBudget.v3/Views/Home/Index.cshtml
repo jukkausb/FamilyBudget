@@ -1,6 +1,6 @@
 ﻿@model FamilyBudget.v3.Models.DashboardModel
 @{
-    var getStyle = new Func<decimal, string>((total) => total >= 0 ? "text-success" : "text-danger");
+    var getStyle = new Func<double, string>((total) => total >= 0 ? "text-success" : "text-danger");
 }
 <style>
     .col-md-6, col-xl-6, .col-md-12, col-xl-12 {

@@ -68,8 +68,8 @@ namespace FamilyBudget.v3.Controllers.Services
             int monthCount)
         {
             AverageMoneyModel model = new AverageMoneyModel();
-            decimal totalMonthIncome = 0;
-            decimal totalMonthExpenditure = 0;
+            double totalMonthIncome = 0;
+            double totalMonthExpenditure = 0;
 
             accounts.ForEach(a =>
             {
@@ -79,7 +79,7 @@ namespace FamilyBudget.v3.Controllers.Services
                 decimal rate = accountCurrencyCode != mainCurrencyCode ? _currencyProvider.GetSellCurrencyRate(accountCurrencyCode, mainCurrencyCode) : 1;
                 Logger.Info(string.Format("Exchange rate ({0}-{1}): {2}", a.Currency.Code, mainCurrencyCode, rate));
 
-                totalMonthIncome += (from income in allIncomesInMonth
+                totalMonthIncome += (double)(from income in allIncomesInMonth
                                      where income.AccountID == a.ID
                                      group income by new { income.Date.Month, income.Date.Year } into g
                                      select new
@@ -87,13 +87,13 @@ namespace FamilyBudget.v3.Controllers.Services
                                          IncomeTotal = accountCurrencyCode != mainCurrencyCode ? g.Sum(i => i.Summa * rate) : g.Sum(i => i.Summa)
                                      }).Sum(e => e.IncomeTotal);
 
-                totalMonthExpenditure += (from expenditure in allExpenditresInMonth
+                totalMonthExpenditure += (double)(from expenditure in allExpenditresInMonth
                                           where expenditure.AccountID == a.ID
                                           group expenditure by new { expenditure.Date.Month, expenditure.Date.Year } into g
                                           select new
                                           {
                                               ExpenditureTotal = accountCurrencyCode != mainCurrencyCode ? g.Sum(i => i.Summa * rate) : g.Sum(i => i.Summa)
-                                          }).Sum(e => e.ExpenditureTotal); ;
+                                          }).Sum(e => e.ExpenditureTotal);
             }
             );
 

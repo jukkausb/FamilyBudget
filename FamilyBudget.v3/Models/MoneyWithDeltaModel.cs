@@ -9,7 +9,7 @@ namespace FamilyBudget.v3.Models
 {
     public class MoneyWithDeltaModel : MoneyModel
     {
-        public MoneyWithDeltaModel(decimal value, string currency, decimal delta)
+        public MoneyWithDeltaModel(double value, string currency, double delta)
         {
             Currency = currency;
             Value = value;
@@ -21,7 +21,7 @@ namespace FamilyBudget.v3.Models
             DeltaPercent = Math.Round(Math.Abs(delta / value * 100), 2);
         }
         public DeltaModel Delta { get; set; }
-        public decimal DeltaPercent { get; set; }
+        public double DeltaPercent { get; set; }
         public string DeltaPercentPresentation
         {
             get
