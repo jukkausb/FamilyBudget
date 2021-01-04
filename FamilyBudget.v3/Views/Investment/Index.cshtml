@@ -29,7 +29,7 @@
                 type: 'doughnut',
                 data: {
                     labels: _.map(reportData, function (r) {
-                        return r.name;
+                        return r.name + " (" + r.currentPercentInPortfolio + "%)";
                     }),
                     datasets: [{
                         data: _.map(reportData, function (r) {

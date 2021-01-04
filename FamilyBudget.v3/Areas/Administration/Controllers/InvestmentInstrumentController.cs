@@ -1,7 +1,9 @@
-﻿using FamilyBudget.v3.App_DataModel;
+﻿using FamilyBudget.v3.App_CodeBase;
+using FamilyBudget.v3.App_DataModel;
 using FamilyBudget.v3.App_Helpers;
 using FamilyBudget.v3.Areas.Administration.Models;
 using FamilyBudget.v3.Controllers;
+using FamilyBudget.v3.Models;
 using FamilyBudget.v3.Models.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -46,6 +48,8 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
                     Type = i.InvestmentInstrumentType?.Name,
                     Market = i.InvestmentInstrumentMarket?.Name
                 }).ToList();
+
+                listModel.MessageGroups.AddRange(CheckInvestmentInstrumentRules(instruments));
 
                 listModel.PageSize = 1000;
                 listModel.ParseModelState(Request);
@@ -245,6 +249,39 @@ namespace FamilyBudget.v3.Areas.Administration.Controllers
 
             currencies.Insert(0, new SelectListItem { Text = " - Выберите рынок инструмента - ", Value = "" });
             return currencies;
+        }
+
+        private List<MessageGroup> CheckInvestmentInstrumentRules(List<InvestmentInstrument> instruments)
+        {
+            List<MessageGroup> messageGroups = new List<MessageGroup>();
+            if (instruments == null)
+            {
+                return messageGroups;
+            }
+
+            MessageGroup msg = new MessageGroup()
+            {
+                Name = Constants.InvestmentInstrument.TITLE_TOTAL_PERCENT_CHECK
+            };
+
+            var totalPercent = instruments.Sum(i => i.PortfolioPercent);
+            if (totalPercent != 100)
+            {
+                msg.Messages.Add(GetMessageToAdjustInstrumentTotalPercent(totalPercent.ToString()));
+            }
+
+            messageGroups.Add(msg);
+
+            return messageGroups;
+        }
+
+        private Message GetMessageToAdjustInstrumentTotalPercent(string currentPercentString)
+        {
+            return new Message
+            {
+                Type = MessageType.Warning,
+                Text = $"Суммарная доля инструментов в конфигурации портфеле не равна 100%. Текущая сумма долей в конфигурации портфеля - {currentPercentString}%."
+            };
         }
     }
 }

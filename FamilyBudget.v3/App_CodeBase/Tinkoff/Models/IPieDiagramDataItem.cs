@@ -10,6 +10,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
     {
         string Name { get; set; }
         decimal CurrentTotalInPortfolio { get; set; }
+        decimal CurrentPercentInPortfolio { get; set; }
         string DiagramBackgroundColor { get; set; }
         string DiagramBackgroundHoverColor { get; set; }
         string DiagramHoverBorderColor { get; set; }

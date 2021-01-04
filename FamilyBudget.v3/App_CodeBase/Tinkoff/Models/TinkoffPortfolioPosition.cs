@@ -7,19 +7,33 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
 {
     public class TinkoffPortfolioPosition : IPieDiagramDataItem
     {
+        public string Ticker { get; set; }
+        public string Isin { get; set; }
         public string Name { get; set; }
-        public string AvatarImageLink { get; set; }
-        public string TickerPageLink { get; set; }
+
+        /// <summary>
+        /// Provided by Tinkoff
+        /// </summary>
         public InstrumentType Type { get; set; }
         /// <summary>
         /// Position without price change (typically brocker account currency, RUB)
         /// </summary>
         public bool IsStatic { get; set; }
-        public string Ticker { get; set; }
-        public string Isin { get; set; }
+        /// <summary>
+        /// Amount of lots
+        /// </summary>
         public int Lots { get; set; }
+        /// <summary>
+        /// Amount of stocks
+        /// </summary>
         public decimal Balance { get; set; }
+        /// <summary>
+        /// Currency of the position
+        /// </summary>
         public string Currency { get; set; }
+        /// <summary>
+        /// Current price of the single stock on market
+        /// </summary>
         public decimal CurrentPriceInMarket { get; set; }
         public string CurrentPriceInMarketPresentation
         {
@@ -28,6 +42,9 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
                 return CurrentPriceInMarket.ToCurrencyDisplay(Currency);
             }
         }
+        /// <summary>
+        /// Current price of the single stock in portfolio
+        /// </summary>
         public decimal CurrentPriceInPortfolio { get; set; }
         public string CurrentPriceInPortfolioPresentation
         {
@@ -36,6 +53,22 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
                 return CurrentPriceInPortfolio.ToCurrencyDisplay(Currency);
             }
         }
+
+        /// <summary>
+        /// Current percent of the position in portfolio
+        /// </summary>
+        public decimal CurrentPercentInPortfolio { get; set; }
+        public string CurrentPercentInPortfolioPresentation
+        {
+            get
+            {
+                return CurrentPercentInPortfolio.ToCurrencyDisplay(Currency);
+            }
+        }
+
+        /// <summary>
+        /// Current total price of the position in portfolio
+        /// </summary>
         public decimal CurrentTotalInPortfolio { get; set; }
         public string CurrentTotalInPortfolioPresentation
         {
@@ -54,11 +87,15 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
         }
         public DeltaType CurrentDeltaType { get; set; }
         public string CurrentDeltaPercent { get; set; }
+
         public string DiagramBackgroundColor { get; set; }
         public string DiagramBackgroundHoverColor { get; set; }
         public string DiagramHoverBorderColor { get; set; }
 
         #region Custom attributes
+
+        public string AvatarImageLink { get; set; }
+        public string TickerPageLink { get; set; }
 
         /// <summary>
         /// Custom attribute - Market

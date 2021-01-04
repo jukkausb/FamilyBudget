@@ -35,6 +35,11 @@
             public const string INSTRUMENT_TYPE_TITLE_BY_INSTRUMENT_DETAILS = "По инструментам";
         }
 
+        public static class InvestmentInstrument
+        {
+            public const string TITLE_TOTAL_PERCENT_CHECK = "Проверка долей инструментов";
+        }
+
         public static class InstrumentDiagram
         {
             public const string DEFAULT_COLOR = "#000000";

@@ -115,20 +115,21 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
             var portfolioPositions = GetPortfolioPositions(account.BrokerAccountId);
 
-            foreach (var portfolioPosition in portfolioPositions)
-            {
-                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == portfolioPosition.Ticker).FirstOrDefault();
-                ApplyTinkoffPortfolioPositionCustomAttributes(portfolioPosition, investmentInstrument);
-            }
-
             var accountCashRub = GetPortfolioCurrencies(account.BrokerAccountId).
                 Where(c => c.Currency.ToString().ToUpper() == Constants.CURRENCY_RUB).
                 FirstOrDefault();
 
-            decimal investmentAccountTotalBalance = GetInvestmentAccountTotalBalance(portfolioPositions) + accountCashRub.Balance;
-            decimal investmentAccountTotalDelta = GetInvestmentAccountTotalDelta(portfolioPositions);
+            decimal investmentAccountTotalBalance = GetPositionsTotalInPortfolio(portfolioPositions) + accountCashRub.Balance;
+            decimal investmentAccountTotalDelta = GetPositionsTotalInPortfolio(portfolioPositions);
 
             investmentAccount.Totals = new MoneyWithDeltaModel(investmentAccountTotalBalance, Constants.CURRENCY_RUB, investmentAccountTotalDelta);
+
+            foreach (var portfolioPosition in portfolioPositions)
+            {
+                portfolioPosition.CurrentPercentInPortfolio = (portfolioPosition.CurrentTotalInPortfolio / investmentAccountTotalBalance * 100).Round();
+                var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == portfolioPosition.Ticker).FirstOrDefault();
+                ApplyTinkoffPortfolioPositionCustomAttributes(portfolioPosition, investmentInstrument);
+            }
 
             decimal stocksTotal = 0;
             decimal etfTotal = 0;
@@ -147,7 +148,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     group = BuildGroup(groupData,
                         Constants.InstrumentType.INSTRUMENT_TYPE_CODE_BONDS,
                         Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_BONDS);
-                    bondsTotal = groupData.Sum(g => g.CurrentTotalInPortfolio);
+                    bondsTotal = GetPositionsTotalInPortfolio(groupData);
                 }
                 if (positionGroup.Key == InstrumentType.Currency)
                 {
@@ -167,21 +168,21 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     group = BuildGroup(groupData,
                         Constants.InstrumentType.INSTRUMENT_TYPE_CODE_CURRENCIES,
                         Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_CURRENCIES);
-                    currenciesTotal = groupData.Sum(g => g.CurrentTotalInPortfolio);
+                    currenciesTotal = GetPositionsTotalInPortfolio(groupData);
                 }
                 if (positionGroup.Key == InstrumentType.Etf)
                 {
                     group = BuildGroup(groupData,
                         Constants.InstrumentType.INSTRUMENT_TYPE_CODE_ETF,
                         Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_ETF);
-                    etfTotal = groupData.Sum(g => g.CurrentTotalInPortfolio);
+                    etfTotal = GetPositionsTotalInPortfolio(groupData);
                 }
                 if (positionGroup.Key == InstrumentType.Stock)
                 {
                     group = BuildGroup(groupData,
                         Constants.InstrumentType.INSTRUMENT_TYPE_CODE_STOCKS,
                         Constants.InstrumentType.INSTRUMENT_TYPE_TITLE_STOCKS);
-                    stocksTotal = groupData.Sum(g => g.CurrentTotalInPortfolio);
+                    stocksTotal = GetPositionsTotalInPortfolio(groupData);
                 }
 
                 if (group != null)
@@ -223,26 +224,19 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 .Where(p => !string.IsNullOrEmpty(p.Key))
                 .ToList();
 
+            var total = GetPositionsTotalInPortfolio(portfolioPositions);
+
             foreach (var group in positionMarketGroups)
             {
                 string typeCode = group.Key;
                 var investmentInstrumentType = _investmentInstrumentTypeRepository.FindBy(i => i.Code == typeCode).FirstOrDefault();
+                var currentTotalInPortfolio = GetPositionsTotalInPortfolio(group.ToList());
 
                 PortfolioDiagramGroupItem portfolioDiagramGroupItem = new PortfolioDiagramGroupItem
                 {
                     Name = investmentInstrumentType.Name,
-                    CurrentTotalInPortfolio = group.Sum(p =>
-                    {
-                        if (p.Currency.ToUpper() == Constants.CURRENCY_RUB)
-                        {
-                            return p.CurrentTotalInPortfolio.Round();
-                        }
-                        else
-                        {
-                            decimal rate = _currencyProvider.GetSellCurrencyRate(p.Currency.ToUpper(), Constants.CURRENCY_RUB);
-                            return (p.CurrentTotalInPortfolio * rate).Round();
-                        }
-                    })
+                    CurrentTotalInPortfolio = GetPositionsTotalInPortfolio(group.ToList()),
+                    CurrentPercentInPortfolio = (currentTotalInPortfolio / total * 100).Round()
                 };
 
                 if (typeCode == Constants.InstrumentMarket.INSTRUMENT_MARKET_CODE_CASH)
@@ -269,26 +263,19 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 .Where(p => !string.IsNullOrEmpty(p.Key))
                 .ToList();
 
+            var total = GetPositionsTotalInPortfolio(portfolioPositions);
+
             foreach (var group in positionMarketGroups)
             {
                 string marketCode = group.Key;
                 var investmentInstrumentMarket = _investmentInstrumentMarketRepository.FindBy(i => i.Code == marketCode).FirstOrDefault();
+                var currentTotalInPortfolio = GetPositionsTotalInPortfolio(group.ToList());
 
                 PortfolioDiagramGroupItem portfolioDiagramGroupItem = new PortfolioDiagramGroupItem
                 {
                     Name = investmentInstrumentMarket.Name,
-                    CurrentTotalInPortfolio = group.Sum(p =>
-                    {
-                        if (p.Currency.ToUpper() == Constants.CURRENCY_RUB)
-                        {
-                            return p.CurrentTotalInPortfolio.Round();
-                        }
-                        else
-                        {
-                            decimal rate = _currencyProvider.GetSellCurrencyRate(p.Currency.ToUpper(), Constants.CURRENCY_RUB);
-                            return (p.CurrentTotalInPortfolio * rate).Round();
-                        }
-                    })
+                    CurrentTotalInPortfolio = currentTotalInPortfolio,
+                    CurrentPercentInPortfolio = (currentTotalInPortfolio / total * 100).Round()
                 };
 
                 DiagramHelper.ApplyPieDiagramColors(portfolioDiagramGroupItem, investmentInstrumentMarket);
@@ -315,20 +302,19 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             DiagramHelper.ApplyPieDiagramColors(portfolioPosition, investmentInstrument);
         }
 
-        private decimal GetInvestmentAccountTotalBalance(List<TinkoffPortfolioPosition> portfolioPositions)
+        private decimal GetPositionsTotalInPortfolio(List<TinkoffPortfolioPosition> portfolioPositions)
         {
             decimal total = 0;
 
             foreach (var portfolioPosition in portfolioPositions)
             {
-                string positionCurrency = portfolioPosition.Currency.ToUpper();
-                if (positionCurrency == Constants.CURRENCY_RUB)
+                if (string.IsNullOrEmpty(portfolioPosition.Currency) || portfolioPosition.Currency.ToUpper() == Constants.CURRENCY_RUB)
                 {
                     total += portfolioPosition.CurrentTotalInPortfolio;
                 }
                 else
                 {
-                    decimal rate = _currencyProvider.GetSellCurrencyRate(positionCurrency, Constants.CURRENCY_RUB);
+                    decimal rate = _currencyProvider.GetSellCurrencyRate(portfolioPosition.Currency.ToUpper(), Constants.CURRENCY_RUB);
                     total += portfolioPosition.CurrentTotalInPortfolio * rate;
                 }
             }
@@ -336,38 +322,22 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return total;
         }
 
-        private decimal GetInvestmentAccountTotalDelta(List<TinkoffPortfolioPosition> portfolioPositions)
-        {
-            decimal total = 0;
-
-            foreach (var portfolioPosition in portfolioPositions)
-            {
-                string positionCurrency = portfolioPosition.Currency.ToUpper();
-                if (positionCurrency == Constants.CURRENCY_RUB)
-                {
-                    total += portfolioPosition.CurrentDelta;
-                }
-                else
-                {
-                    decimal rate = _currencyProvider.GetSellCurrencyRate(positionCurrency, Constants.CURRENCY_RUB);
-                    total += portfolioPosition.CurrentDelta * rate;
-                }
-            }
-
-            return total;
-        }
-
-        private TinkoffPortfolioTableGroup BuildGroup(List<TinkoffPortfolioPosition> instrumentsInGroup,
+        private TinkoffPortfolioTableGroup BuildGroup(List<TinkoffPortfolioPosition> positions,
             string groupCode,
             string groupTitle)
         {
-            decimal total = instrumentsInGroup.Sum(e => e.CurrentTotalInPortfolio);
+            decimal totalBalanceOfPositions = GetPositionsTotalInPortfolio(positions);
+
+            foreach (var position in positions)
+            {
+                position.CurrentPercentInPortfolio = GetPositionCurrentPercentInPortfolio(position, totalBalanceOfPositions);
+            }
 
             TinkoffPortfolioTableGroup group = new TinkoffPortfolioTableGroup();
-            group.Positions = instrumentsInGroup;
+            group.Positions = positions;
             group.Code = groupCode;
             group.Name = groupTitle;
-            group.CurrentTotalInPortfolio = total;
+            group.CurrentTotalInPortfolio = totalBalanceOfPositions;
 
             var investmentInstrument = _investmentInstrumentRepository.FindBy(i => i.Code == groupCode).FirstOrDefault();
 
@@ -379,7 +349,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         /// <summary>
         /// Checks investment instrument type rules
         /// </summary>
-        private List<MessageGroup> CheckInvestmentInstrumentRules(List<TinkoffPortfolioPosition> instruments, decimal totalAccountBalance)
+        private List<MessageGroup> CheckInvestmentInstrumentRules(List<TinkoffPortfolioPosition> instruments,
+            decimal totalAccountBalance)
         {
             List<MessageGroup> messageGroups = new List<MessageGroup>();
             if (instruments == null)
@@ -414,7 +385,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
-                var currentPercentOnAccount = instrument.CurrentTotalInPortfolio / totalAccountBalance * 100;
+                decimal currentPercentOnAccount = GetPositionCurrentPercentInPortfolio(instrument, totalAccountBalance);
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
 
@@ -463,7 +434,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
-                decimal currentGroupTotalInPortfolio = instrumentsOfType.Sum(p => p.CurrentTotalInPortfolio);
+                decimal currentGroupTotalInPortfolio = instrumentsOfType.Sum(p => GetPositionCurrentPercentInPortfolio(p, totalAccountBalance));
                 var currentPercentOnAccount = currentGroupTotalInPortfolio / totalAccountBalance * 100;
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
@@ -513,7 +484,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
-                decimal currentGroupTotalInPortfolio = instrumentsOnMarket.Sum(p => p.CurrentTotalInPortfolio);
+                decimal currentGroupTotalInPortfolio = instrumentsOnMarket.Sum(p => GetPositionCurrentPercentInPortfolio(p, totalAccountBalance));
                 var currentPercentOnAccount = currentGroupTotalInPortfolio / totalAccountBalance * 100;
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
@@ -534,6 +505,27 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return messageGroups;
         }
 
+        private decimal GetPositionCurrentPercentInPortfolio(TinkoffPortfolioPosition position, decimal total)
+        {
+            decimal currentPercentOnAccount = 0;
+
+            if (position == null)
+            {
+                return currentPercentOnAccount;
+            }
+
+            if (string.IsNullOrEmpty(position.Currency) || position.Currency.ToUpper() == Constants.CURRENCY_RUB)
+            {
+                currentPercentOnAccount = position.CurrentTotalInPortfolio / total * 100;
+            }
+            else
+            {
+                decimal rate = _currencyProvider.GetSellCurrencyRate(position.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                currentPercentOnAccount = (position.CurrentTotalInPortfolio * rate).Round() / total * 100;
+            }
+            return currentPercentOnAccount.Round();
+        }
+
         private Message GetMessageToIncreaseInstrumentInPortfolio(string code,
             string currentPercentOnAccountPresentationString,
             string instrumentPersentOnAccountTargetPresentationString)
@@ -544,7 +536,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 Text = $"Доля {code} (<b>{currentPercentOnAccountPresentationString}%</b>) ниже целевого значения для портфеля (<b>{instrumentPersentOnAccountTargetPresentationString}%</b>). " +
                             $"Рекомендуется увеличить долю {code} в портфеле"
             };
-
         }
 
         private Message GetMessageToDecreaseInstrumentInPortfolio(string code,
@@ -594,7 +585,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                        $"выше целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
                        $"Рекомендуется снизить долю '{investmentInstrumentType.Name}' в портфеле"
             };
-
         }
 
         private Message GetMessageToIncreaseMarketInPortfolio(InvestmentInstrumentMarket investmentInstrumentMarket,
@@ -613,7 +603,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                        $"ниже целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
                        $"Рекомендуется увеличить долю '{investmentInstrumentMarket.Name}' в портфеле"
             };
-
         }
 
         private Message GetMessageToDecreaseMarketInPortfolio(InvestmentInstrumentMarket investmentInstrumentMarket,
@@ -632,7 +621,6 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                        $"выше целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
                        $"Рекомендуется снизить долю '{investmentInstrumentMarket.Name}' в портфеле"
             };
-
         }
     }
 }

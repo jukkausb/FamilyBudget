@@ -2,6 +2,18 @@
     color: #000000;
 }
 
+li.nav-item {
+    line-height: 1;
+}
+
+.sidebar {
+    width: 15rem !important;
+}
+
+.sidebar .nav-item .nav-link {
+    width: 15rem;
+}
+
 .progress {
     background-color: #e9ecef;
 }
