@@ -8,6 +8,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
     {
         public string Ticker { get; set; }
         public string Isin { get; set; }
+        public string Figi { get; set; }
         public string Name { get; set; }
 
         /// <summary>

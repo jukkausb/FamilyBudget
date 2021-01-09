@@ -9,6 +9,9 @@
 
         public const string CURRENCY_NAME_RUB = "Российский рубль";
 
+        public const string USD_FIGI = "BBG0013HGFT4";
+        public const string EUR_FIGI = "BBG0013HJJ31";
+
         public static class BondType
         {
             public const string BOND_TYPE_MINFIN = "minfin";

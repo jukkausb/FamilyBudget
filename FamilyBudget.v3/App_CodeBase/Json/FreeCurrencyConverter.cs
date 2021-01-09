@@ -10,28 +10,38 @@ namespace FamilyBudget.v3.App_CodeBase.Json
 {
     public class FreeCurrencyConverter : ICurrencyProvider
     {
-        public void DownloadCurrencyRates(string sellCurrencyCode, string purchaseCurrencyCode)
+        public void DownloadCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
         {
-            TryGetCurrencyRatesInternal(sellCurrencyCode, purchaseCurrencyCode);
+            TryGetCurrencyRateInternal(sellCurrencyCode, purchaseCurrencyCode);
         }
 
-        public decimal GetSellCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
+        public double GetSellCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode)
         {
-            FreeCurrencyRate[] rates = TryGetCurrencyRatesInternal(sellCurrencyCode, purchaseCurrencyCode);
+            FreeCurrencyRate rate = TryGetCurrencyRateInternal(sellCurrencyCode, purchaseCurrencyCode);
+            return rate?.Val ?? 0;
+        }
 
-            if (rates != null && rates.Any())
+        public void SetCurrencyRate(string sellCurrencyCode, string purchaseCurrencyCode, double value)
+        {
+            string key = string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode);
+            var rate = CacheHelper.Get<FreeCurrencyRate>(key);
+            if (rate == null)
             {
-                return rates[0].Val;
+                return;
             }
-            return 0;
+
+            rate.Val = value;
+
+            CacheHelper.Clear(key);
+            CacheHelper.Add(rate, key);
         }
 
-        private FreeCurrencyRate[] TryGetCurrencyRatesInternal(string sellCurrencyCode, string purchaseCurrencyCode)
+        private FreeCurrencyRate TryGetCurrencyRateInternal(string sellCurrencyCode, string purchaseCurrencyCode)
         {
-            var rates = CacheHelper.Get<FreeCurrencyRate[]>(string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
-            if (rates != null)
+            var rate = CacheHelper.Get<FreeCurrencyRate>(string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
+            if (rate != null)
             {
-                return rates;
+                return rate;
             }
 
             try
@@ -44,11 +54,11 @@ namespace FamilyBudget.v3.App_CodeBase.Json
                     CurrencyRateFileWriter.SaveRatesToJsonFile(sellCurrencyCode, purchaseCurrencyCode, jsonData);
                 }
 
-                rates = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(jsonData).Select(x => new FreeCurrencyRate() { Val = x.Value }).ToArray();
+                rate = JsonConvert.DeserializeObject<Dictionary<string, double>>(jsonData).Select(x => new FreeCurrencyRate { Val = x.Value }).FirstOrDefault();
 
-                CacheHelper.Add(rates, string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
+                CacheHelper.Add(rate, string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
                 GlobalExceptionHandler.RemoveApplicationWarning();
-                return rates;
+                return rate;
             }
             catch (Exception ex)
             {
@@ -59,8 +69,8 @@ namespace FamilyBudget.v3.App_CodeBase.Json
                 try
                 {
                     string jsonData = CurrencyRateFileWriter.ReadRatesFromJsonFile(sellCurrencyCode, purchaseCurrencyCode);
-                    rates = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(jsonData).Select(x => new FreeCurrencyRate() { Val = x.Value }).ToArray();
-                    CacheHelper.Add(rates, string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
+                    rate = JsonConvert.DeserializeObject<Dictionary<string, double>>(jsonData).Select(x => new FreeCurrencyRate { Val = x.Value }).FirstOrDefault();
+                    CacheHelper.Add(rate, string.Format(FreeCurrencyRate.CurrencyRateCacheKeyFormat, sellCurrencyCode, purchaseCurrencyCode));
                     GlobalExceptionHandler.RemoveApplicationWarning();
                 }
                 catch (Exception exFiles)

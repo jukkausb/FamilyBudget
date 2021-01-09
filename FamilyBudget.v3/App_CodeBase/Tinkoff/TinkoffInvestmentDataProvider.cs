@@ -117,6 +117,8 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 Where(c => c.Currency.ToString().ToUpper() == Constants.CURRENCY_RUB).
                 FirstOrDefault();
 
+            TryUpdateCurrencyRates(portfolioPositions);
+
             double investmentAccountTotalBalance = GetPositionsTotalInPortfolio(portfolioPositions) + accountCashRub.Balance;
             double investmentAccountTotalDelta = GetInvestmentAccountTotalDelta(portfolioPositions);
 
@@ -312,7 +314,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 }
                 else
                 {
-                    double rate = (double)_currencyProvider.GetSellCurrencyRate(portfolioPosition.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                    double rate = _currencyProvider.GetSellCurrencyRate(portfolioPosition.Currency.ToUpper(), Constants.CURRENCY_RUB);
                     total += portfolioPosition.CurrentTotalInPortfolio * rate;
                 }
             }
@@ -332,7 +334,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 }
                 else
                 {
-                    double rate = (double)_currencyProvider.GetSellCurrencyRate(portfolioPosition.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                    double rate = _currencyProvider.GetSellCurrencyRate(portfolioPosition.Currency.ToUpper(), Constants.CURRENCY_RUB);
                     total += portfolioPosition.CurrentDelta * rate;
                 }
             }
@@ -538,7 +540,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             }
             else
             {
-                double rate = (double)_currencyProvider.GetSellCurrencyRate(position.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                double rate = _currencyProvider.GetSellCurrencyRate(position.Currency.ToUpper(), Constants.CURRENCY_RUB);
                 currentPercentOnAccount = position.CurrentTotalInPortfolio * rate / total * 100;
             }
             return currentPercentOnAccount.Round();
@@ -639,6 +641,28 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                        $"выше целевого значения (<b>{instrumentPersentInPortfolioTargetPresentationString}%</b>) в портфеле. " +
                        $"Рекомендуется снизить долю '{investmentInstrumentMarket.Name}' в портфеле"
             };
+        }
+
+        private void TryUpdateCurrencyRates(List<TinkoffPortfolioPosition> portfolioPositions)
+        {
+            if (portfolioPositions == null)
+            {
+                return;
+            }
+
+            var usdPosition = portfolioPositions.FirstOrDefault(x => x.Figi == Constants.USD_FIGI);
+            if (usdPosition != null)
+            {
+                var usdRate = usdPosition.CurrentPriceInMarket;
+                _currencyProvider.SetCurrencyRate(Constants.CURRENCY_USD, Constants.CURRENCY_RUB, usdRate);
+            }
+
+            var eurPosition = portfolioPositions.FirstOrDefault(x => x.Figi == Constants.EUR_FIGI);
+            if (eurPosition != null)
+            {
+                var eurRate = eurPosition.CurrentPriceInMarket;
+                _currencyProvider.SetCurrencyRate(Constants.CURRENCY_EUR, Constants.CURRENCY_RUB, eurRate);
+            }
         }
     }
 }

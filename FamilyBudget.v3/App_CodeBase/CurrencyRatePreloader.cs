@@ -29,7 +29,7 @@ namespace FamilyBudget.v3.App_CodeBase
             {
                 if (currencyCodeFrom != mainCurrency)
                 {
-                    _currencyProvider.DownloadCurrencyRates(currencyCodeFrom, mainCurrency);
+                    _currencyProvider.DownloadCurrencyRate(currencyCodeFrom, mainCurrency);
                 }
             }
         }

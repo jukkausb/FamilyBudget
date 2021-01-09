@@ -60,6 +60,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     Type = position.InstrumentType,
                     Ticker = portfolioInstrument.Ticker,
                     Isin = portfolioInstrument.Isin,
+                    Figi = portfolioInstrument.Figi,
                     Lots = position.Lots,
                     Balance = position.Balance,
                     Currency = currency,

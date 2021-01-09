@@ -104,7 +104,7 @@ namespace FamilyBudget.v3.Controllers
 
             foreach (var account in accounts)
             {
-                decimal rate = _currencyProvider.GetSellCurrencyRate(account.Currency.Code, mainCurrencyCode);
+                decimal rate = (decimal)_currencyProvider.GetSellCurrencyRate(account.Currency.Code, mainCurrencyCode);
                 if (account.Currency.Code == mainCurrencyCode)
                 {
                     rate = 1;
@@ -186,7 +186,7 @@ namespace FamilyBudget.v3.Controllers
 
             foreach (var account in accounts)
             {
-                decimal rate = _currencyProvider.GetSellCurrencyRate(account.Currency.Code, mainCurrencyCode);
+                decimal rate = (decimal)_currencyProvider.GetSellCurrencyRate(account.Currency.Code, mainCurrencyCode);
                 if (account.Currency.Code == mainCurrencyCode)
                 {
                     rate = 1;

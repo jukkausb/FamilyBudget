@@ -49,7 +49,7 @@ namespace FamilyBudget.v3.Controllers.Services
             {
                 if (a.CurrencyCode != mainCurrencyCode)
                 {
-                    decimal rate = _currencyProvider.GetSellCurrencyRate(a.CurrencyCode, mainCurrencyCode);
+                    decimal rate = (decimal)_currencyProvider.GetSellCurrencyRate(a.CurrencyCode, mainCurrencyCode);
                     wealthValue += a.Balance * rate;
                 }
                 else
@@ -76,7 +76,7 @@ namespace FamilyBudget.v3.Controllers.Services
                 var accountCurrencyCode = a.Currency.Code;
                 var accountId = a.ID;
 
-                decimal rate = accountCurrencyCode != mainCurrencyCode ? _currencyProvider.GetSellCurrencyRate(accountCurrencyCode, mainCurrencyCode) : 1;
+                decimal rate = (decimal)(accountCurrencyCode != mainCurrencyCode ? _currencyProvider.GetSellCurrencyRate(accountCurrencyCode, mainCurrencyCode) : 1);
                 Logger.Info(string.Format("Exchange rate ({0}-{1}): {2}", a.Currency.Code, mainCurrencyCode, rate));
 
                 totalMonthIncome += (double)(from income in allIncomesInMonth
@@ -133,7 +133,7 @@ namespace FamilyBudget.v3.Controllers.Services
                 Name = accountUsd.Name,
                 Balance = accountUsd.Balance,
                 CurrencyCode = accountUsd.Currency.Code,
-                Rate = _currencyProvider.GetSellCurrencyRate(accountUsd.Currency.Code, mainCurrencyCode),
+                Rate = (decimal)_currencyProvider.GetSellCurrencyRate(accountUsd.Currency.Code, mainCurrencyCode),
                 Percent = accountUsd.Balance / wealth
             };
             usdAccountView.Percent = usdAccountView.Equivalent / wealth * 100;
@@ -144,7 +144,7 @@ namespace FamilyBudget.v3.Controllers.Services
                 Name = accountEur.Name,
                 Balance = accountEur.Balance,
                 CurrencyCode = accountEur.Currency.Code,
-                Rate = _currencyProvider.GetSellCurrencyRate(accountEur.Currency.Code, mainCurrencyCode)
+                Rate = (decimal)_currencyProvider.GetSellCurrencyRate(accountEur.Currency.Code, mainCurrencyCode)
             };
             eurAccountView.Percent = eurAccountView.Equivalent / wealth * 100;
             accountRateViews.Add(eurAccountView);
@@ -154,7 +154,7 @@ namespace FamilyBudget.v3.Controllers.Services
                 Name = accountNok.Name,
                 Balance = accountEur.Balance,
                 CurrencyCode = accountEur.Currency.Code,
-                Rate = _currencyProvider.GetSellCurrencyRate(accountNok.Currency.Code, mainCurrencyCode)
+                Rate = (decimal)_currencyProvider.GetSellCurrencyRate(accountNok.Currency.Code, mainCurrencyCode)
             };
             nokAccountView.Percent = nokAccountView.Equivalent / wealth * 100;
             accountRateViews.Add(nokAccountView);

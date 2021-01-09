@@ -2459,8 +2459,6 @@
     <Compile Include="App_CodeBase\Csv\GoldOunceRate.cs" />
     <Compile Include="App_CodeBase\Csv\GoldOunceRateFileWriter.cs" />
     <Compile Include="App_CodeBase\Csv\GoldOunceRateProvider.cs" />
-    <Compile Include="App_CodeBase\Csv\YahooCurrencyProvider.cs" />
-    <Compile Include="App_CodeBase\Csv\YahooCurrencyRate.cs" />
     <Compile Include="App_CodeBase\CurrencyRate.cs" />
     <Compile Include="App_CodeBase\CurrencyRatePreloader.cs" />
     <Compile Include="App_CodeBase\DecimalFormatConverter.cs" />
