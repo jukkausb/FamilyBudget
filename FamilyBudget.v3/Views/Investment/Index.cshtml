@@ -6,6 +6,7 @@
 <script src="~/js/chart.js/Chart.min.js"></script>
 <div class="container-fluid">
     <script type="text/javascript">
+
         // Set new default font family and font color to mimic Bootstrap's default styling
         Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
         Chart.defaults.global.defaultFontColor = '#858796';
@@ -280,12 +281,15 @@
                                 <a href="@sourceItem.TickerPageLink" target="_blank">
                                     @if (!sourceItem.IsStatic)
                                     {
+                                        var getStyle = new Func<double, string>((total) => total >= 0 ? "text-success" : "text-danger");
                                         <div class="row no-gutters align-items-center">
                                             <div class="col text-gray-800 table-instruments-price-details">
                                                 <div class="mb-0 font-weight-bold text-right">@sourceItem.CurrentTotalInPortfolioPresentation</div>
                                                 <div class="mb-0 text-right table-instruments-price-details-delta">
                                                     @RenderArrow(sourceItem.CurrentDeltaType)
-                                                    @sourceItem.CurrentDeltaPresentation (@sourceItem.CurrentDeltaPercent%)
+                                                    <div class="d-inline @getStyle(sourceItem.CurrentDelta)">
+                                                        @sourceItem.CurrentDeltaPresentation (@sourceItem.CurrentDeltaPercent%)
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
