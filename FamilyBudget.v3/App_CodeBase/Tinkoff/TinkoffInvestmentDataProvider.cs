@@ -454,7 +454,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
-                double currentGroupTotalInPortfolio = instrumentsOfType.Sum(p => GetPositionCurrentPercentInPortfolio(p, totalAccountBalance));
+                double currentGroupTotalInPortfolio = instrumentsOfType.Sum(p => GetPositionCurrentTotalInPortfolio(p));
                 double currentPercentOnAccount = currentGroupTotalInPortfolio / totalAccountBalance * 100;
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
@@ -504,7 +504,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                     continue;
                 }
 
-                double currentGroupTotalInPortfolio = instrumentsOnMarket.Sum(p => GetPositionCurrentPercentInPortfolio(p, totalAccountBalance));
+                double currentGroupTotalInPortfolio = instrumentsOnMarket.Sum(p => GetPositionCurrentTotalInPortfolio(p));
                 double currentPercentOnAccount = currentGroupTotalInPortfolio / totalAccountBalance * 100;
                 string currentPercentOnAccountPresentationString = Math.Round(currentPercentOnAccount, 2).ToString();
                 string instrumentPersentOnAccountTargetPresentationString = Math.Round((decimal)instrumentPersentOnAccountTarget, 2).ToString();
@@ -542,6 +542,27 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             {
                 double rate = _currencyProvider.GetSellCurrencyRate(position.Currency.ToUpper(), Constants.CURRENCY_RUB);
                 currentPercentOnAccount = position.CurrentTotalInPortfolio * rate / total * 100;
+            }
+            return currentPercentOnAccount.Round();
+        }
+
+        private double GetPositionCurrentTotalInPortfolio(TinkoffPortfolioPosition position)
+        {
+            double currentPercentOnAccount = 0;
+
+            if (position == null)
+            {
+                return currentPercentOnAccount;
+            }
+
+            if (string.IsNullOrEmpty(position.Currency) || position.Currency.ToUpper() == Constants.CURRENCY_RUB)
+            {
+                currentPercentOnAccount = position.CurrentTotalInPortfolio;
+            }
+            else
+            {
+                double rate = _currencyProvider.GetSellCurrencyRate(position.Currency.ToUpper(), Constants.CURRENCY_RUB);
+                currentPercentOnAccount = position.CurrentTotalInPortfolio * rate;
             }
             return currentPercentOnAccount.Round();
         }
