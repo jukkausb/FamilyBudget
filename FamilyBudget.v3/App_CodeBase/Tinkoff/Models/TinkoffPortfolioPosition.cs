@@ -4,7 +4,7 @@ using System;
 
 namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
 {
-    public class TinkoffPortfolioPosition : IPieDiagramDataItem
+    public class TinkoffPortfolioPosition : IPieDiagramDataItem, IPieDiagramDataSourceItem
     {
         public string Ticker { get; set; }
         public string Isin { get; set; }
@@ -77,6 +77,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff.Models
                 return CurrentTotalInPortfolio.ToCurrencyDisplay(Currency);
             }
         }
+
         public double CurrentDelta { get; set; }
         public string CurrentDeltaPresentation
         {

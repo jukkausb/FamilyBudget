@@ -222,8 +222,8 @@
         }
         @helper RenderGroup(string parentId, string id, string caption, string modalCaption, TinkoffPortfolioTableGroup data)
         {
-            if (data.Positions != null)
-            {
+if (data.Items != null)
+{
                 <div class="card mb-1">
                     @{
                         string headingId = parentId + "_heading_" + id;
@@ -237,18 +237,18 @@
                                     @caption
                                 </h4>
                             </div>
-                            @if (data.Positions.Any())
+                            @if (data.Items.Any())
                             {
                                 string modalId = "modalInstrumentChart_" + parentId + "_" + id;
                                 string canvasId = "modalInstrumentChartCanvas_" + parentId + "_" + id;
                                 @RenderPieChartModalTrigger(modalId, true);
-                                @RenderModal(modalId, "Пропорции инструментов", false, RenderPositionsPieChart(canvasId, modalId, data.Positions.Cast<IPieDiagramDataItem>()));
+                                @RenderModal(modalId, "Пропорции инструментов", false, RenderPositionsPieChart(canvasId, modalId, data.Items.Cast<IPieDiagramDataItem>()));
                             }
 
                         </div>
                     </div>
                     <div id="@collapseId" class="collapse" data-parent="#@parentId">
-                        @RenderGrid(data.Positions)
+                        @RenderGrid(data.Items)
                     </div>
                 </div>
             }
@@ -262,33 +262,33 @@
                     {
                         <tr class="table-instruments-row">
                             <td class="table-instruments-column">
-                                <a href="@sourceItem.TickerPageLink" target="_blank">
+                                <a href="@sourceItem.Position.TickerPageLink" target="_blank">
                                     <div class="table-instruments-info">
                                         <div class="table-instruments-info-avatar">
-                                            <img class="stock-position-avatar" src="@sourceItem.AvatarImageLink" />
+                                            <img class="stock-position-avatar" src="@sourceItem.Position.AvatarImageLink" />
                                         </div>
                                         <div class="table-instruments-info-details">
-                                            <div class="table-instruments-info-details-name">@sourceItem.Name</div>
-                                            @if (!sourceItem.IsStatic)
+                                            <div class="table-instruments-info-details-name">@sourceItem.Position.Name</div>
+                                            @if (!sourceItem.Position.IsStatic)
                                             {
-                                                <div class="table-instruments-info-details-ticker">@sourceItem.Balance шт.</div>
+                                                <div class="table-instruments-info-details-ticker">@sourceItem.Position.Balance шт.</div>
                                             }
                                         </div>
                                     </div>
                                 </a>
                             </td>
                             <td class="table-instruments-column">
-                                <a href="@sourceItem.TickerPageLink" target="_blank">
-                                    @if (!sourceItem.IsStatic)
+                                <a href="@sourceItem.Position.TickerPageLink" target="_blank">
+                                    @if (!sourceItem.Position.IsStatic)
                                     {
                                         var getStyle = new Func<double, string>((total) => total >= 0 ? "text-success" : "text-danger");
                                         <div class="row no-gutters align-items-center">
                                             <div class="col text-gray-800 table-instruments-price-details">
-                                                <div class="mb-0 font-weight-bold text-right">@sourceItem.CurrentTotalInPortfolioPresentation</div>
+                                                <div class="mb-0 font-weight-bold text-right">@sourceItem.Position.CurrentTotalInPortfolioPresentation</div>
                                                 <div class="mb-0 text-right table-instruments-price-details-delta">
-                                                    @RenderArrow(sourceItem.CurrentDeltaType)
-                                                    <div class="d-inline @getStyle(sourceItem.CurrentDelta)">
-                                                        @sourceItem.CurrentDeltaPresentation (@sourceItem.CurrentDeltaPercent%)
+                                                    @RenderArrow(sourceItem.Position.CurrentDeltaType)
+                                                    <div class="d-inline @getStyle(sourceItem.Position.CurrentDelta)">
+                                                        @sourceItem.Position.CurrentDeltaPresentation (@sourceItem.Position.CurrentDeltaPercent%)
                                                     </div>
                                                 </div>
                                             </div>
@@ -298,7 +298,7 @@
                                     {
                                         <div class="row no-gutters align-items-center">
                                             <div class="col">
-                                                <div class="mb-0 font-weight-bold text-gray-800 text-right">@sourceItem.CurrentTotalInPortfolioPresentation</div>
+                                                <div class="mb-0 font-weight-bold text-gray-800 text-right">@sourceItem.Position.CurrentTotalInPortfolioPresentation</div>
                                             </div>
                                         </div>
                                     }

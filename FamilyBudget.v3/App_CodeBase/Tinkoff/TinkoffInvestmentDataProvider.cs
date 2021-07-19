@@ -200,11 +200,11 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
 
         private void AddMessages(InvestmentAccount investmentAccount)
         {
-            var allInstruments = investmentAccount.TableGroups.SelectMany(g => g.Positions).ToList();
+            var allInstruments = investmentAccount.TableGroups.SelectMany(g => g.Items).Select(p => p.Position).ToList();
             double totalAccountBalance = investmentAccount.Totals.Value;
 
             // Check investment instrument rules
-            investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentRules(allInstruments, totalAccountBalance));
+            // investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentRules(allInstruments, totalAccountBalance));
             investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentTypeRules(allInstruments, totalAccountBalance));
             investmentAccount.MessageGroups.AddRange(CheckInvestmentInstrumentMarketRules(allInstruments, totalAccountBalance));
         }
@@ -235,7 +235,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 PortfolioDiagramGroupItem portfolioDiagramGroupItem = new PortfolioDiagramGroupItem
                 {
                     Name = investmentInstrumentType.Name,
-                    CurrentTotalInPortfolio = GetPositionsTotalInPortfolio(group.ToList()),
+                    CurrentTotalInPortfolio = currentTotalInPortfolio,
                     CurrentPercentInPortfolio = (currentTotalInPortfolio / total * 100).Round()
                 };
 
@@ -319,7 +319,7 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
                 }
             }
 
-            return total;
+            return total.Round();
         }
 
         private double GetInvestmentAccountTotalDelta(List<TinkoffPortfolioPosition> portfolioPositions)
@@ -348,13 +348,24 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
         {
             double totalBalanceOfPositions = GetPositionsTotalInPortfolio(positions);
 
+            TinkoffPortfolioTableGroup group = new TinkoffPortfolioTableGroup();
+
             foreach (var position in positions)
             {
-                position.CurrentPercentInPortfolio = GetPositionCurrentPercentInPortfolio(position, totalBalanceOfPositions);
+                var groupItem = new TinkoffPortfolioTableGroupItem
+                {
+                    Code = position.Ticker,
+                    Name = position.Name,
+                    Position = position,
+                    CurrentTotalInPortfolio = GetPositionCurrentTotalInPortfolio(position),
+                    CurrentPercentInPortfolio = GetPositionCurrentPercentInPortfolio(position, totalBalanceOfPositions)
+                };
+
+                DiagramHelper.ApplyPieDiagramColors(groupItem, position);
+
+                group.Items.Add(groupItem);
             }
 
-            TinkoffPortfolioTableGroup group = new TinkoffPortfolioTableGroup();
-            group.Positions = positions;
             group.Code = groupCode;
             group.Name = groupTitle;
             group.CurrentTotalInPortfolio = totalBalanceOfPositions;
@@ -525,6 +536,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             return messageGroups;
         }
 
+
+
+
+
         private double GetPositionCurrentPercentInPortfolio(TinkoffPortfolioPosition position, double total)
         {
             double currentPercentOnAccount = 0;
@@ -566,6 +581,10 @@ namespace FamilyBudget.v3.App_CodeBase.Tinkoff
             }
             return currentPercentOnAccount.Round();
         }
+
+
+
+
 
         private Message GetMessageToIncreaseInstrumentInPortfolio(string code,
             string currentPercentOnAccountPresentationString,

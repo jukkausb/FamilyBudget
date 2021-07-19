@@ -2482,6 +2482,7 @@
     <Compile Include="App_CodeBase\Tinkoff\Models\DeltaType.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\IPieDiagramDataItem.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\PortfolioDiagramGroupItem.cs" />
+    <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioTableGroupItem.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioTableGroup.cs" />
     <Compile Include="App_CodeBase\Tinkoff\Models\TinkoffPortfolioPosition.cs" />
     <Compile Include="App_CodeBase\Tinkoff\TinkoffDataRetrieverBase.cs" />
